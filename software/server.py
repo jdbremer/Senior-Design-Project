@@ -10,7 +10,7 @@ def on_new_client(clientSocket,addr):
     while True: 
         print (c.recv(1024))
         
-def clientCloseCheck
+#def clientCloseCheck
 
 # next create a socket object  
 s = socket.socket()       
