@@ -9,14 +9,14 @@ def on_new_client(clientSocket,addr):
     print (c.recv(1024))
     while True: 
         print (c.recv(1024))
-        print ("\n")
+        c.send('Received data from client')
         
 #def clientCloseCheck
 
 # next create a socket object  
 s = socket.socket()       
 print ("Socket successfully created") 
-  
+
 # reserve a port on your computer in our  
 # case it is 12345 but it can be anything  
 port = 12346                

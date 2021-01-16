@@ -16,10 +16,13 @@ print (s.recv(1024) )
 s.send('Thank') 
 
 s.send('1234')
-s.send('1235')
-s.send('1236')
-s.send('1237')
-
 print (s.recv(1024) ) 
+s.send('1235')
+print (s.recv(1024) ) 
+s.send('1236')
+print (s.recv(1024) ) 
+s.send('1237')
+print (s.recv(1024) ) 
+
 # close the connection  
 s.close()
