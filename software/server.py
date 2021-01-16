@@ -8,7 +8,7 @@ def on_new_client(clientSocket,addr):
     c.send('Thank you for connecting')
     print (c.recv(1024))
     while True: 
-  
+        continue
 # next create a socket object  
 s = socket.socket()       
 print ("Socket successfully created") 
