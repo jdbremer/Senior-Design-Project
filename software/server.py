@@ -9,6 +9,7 @@ def on_new_client(clientSocket,addr):
     print (c.recv(1024))
     while True: 
         print (c.recv(1024))
+        print ("\n")
         
 #def clientCloseCheck
 
