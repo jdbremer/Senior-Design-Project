@@ -1,5 +1,13 @@
 # first of all import the socket library  
-import socket             
+import socket    
+import thread         
+  
+  
+def on_new_client(clientSocket,addr):
+    print ('Got connection from', addr )
+    c.send('Thank you for connecting')
+    print (c.recv(1024))
+    while True: 
   
 # next create a socket object  
 s = socket.socket()       
@@ -26,11 +34,12 @@ print ("socket is listening")
 while True:  
   
     # Establish connection with client.  
-    c, addr = s.accept()      
-    print ('Got connection from', addr ) 
+    c, addr = s.accept()   
+    
+    thread.start_new_thread(on_new_client,(c,addr))
       
     # send a thank you message to the client.  
-    c.send('Thank you for connecting')  
+      
       
     # Close the connection with the client  
-    c.close()  
+    #c.close()  
