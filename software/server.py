@@ -48,7 +48,7 @@ while True:
     c, addr = s.accept()   
     
     thread.start_new_thread(on_new_client,(c,addr))
-    thread.start_new_thread(clientClosecheck,(c,addr))
+    thread.start_new_thread(clientCloseCheck,(c,addr))
     # send a thank you message to the client.  
       
       
