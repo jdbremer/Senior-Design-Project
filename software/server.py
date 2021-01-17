@@ -11,7 +11,6 @@ def on_new_client(clientSocket,addr):
     while True: 
         try:
             print (c.recv(1024))
-        
         except:
             print('Socket ' + addr + ' has disconnected!')
             clientSocket.close()

@@ -24,8 +24,7 @@ s.send('1236')
 time.sleep(5)
 s.send('1237')
 
-while True:
-    continue 
+
 
 # close the connection  
 s.close()
