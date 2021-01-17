@@ -12,7 +12,7 @@ def on_new_client(clientSocket,addr):
         try:
             print (clientSocket.recv(1024))
         except:
-            print('Socket ' + addr + ' has disconnected!')
+            print('Socket has disconnected! ', addr)
             clientSocket.close()
 
         
@@ -21,7 +21,7 @@ def clientCloseCheck(clientSocket,addr):
     try:
         clientSocket.send('Test')
     except:
-        print('Socket ' + addr + ' has disconnected!')
+        print('Socket has disconnected ', addr)
         clientSocket.close()
     
 # next create a socket object  
