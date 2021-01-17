@@ -9,11 +9,11 @@ def on_new_client(clientSocket,addr):
     clientSocket.send('Thank you for connecting')
     print (clientSocket.recv(1024))
     while True: 
-        try:
+ #       try:
             print (clientSocket.recv(1024))
-        except:
-            print('Socket ' + addr + ' has disconnected!')
-            clientSocket.close()
+ #       except:
+ #           print('Socket ' + addr + ' has disconnected!')
+ #           clientSocket.close()
 
         
 def clientCloseCheck(clientSocket,addr):
