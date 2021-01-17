@@ -9,7 +9,12 @@ def on_new_client(clientSocket,addr):
     clientSocket.send('Thank you for connecting')
     print (clientSocket.recv(1024))
     while True: 
-        print (c.recv(1024))
+        try:
+            print (c.recv(1024))
+        
+        except:
+            print('Socket ' + addr + ' has disconnected!')
+            clientSocket.close()
 
         
 def clientCloseCheck(clientSocket,addr):
@@ -48,7 +53,7 @@ while True:
     c, addr = s.accept()   
     
     thread.start_new_thread(on_new_client,(c,addr))
-    thread.start_new_thread(clientCloseCheck,(c,addr))
+    #thread.start_new_thread(clientCloseCheck,(c,addr))
     # send a thank you message to the client.  
       
       
