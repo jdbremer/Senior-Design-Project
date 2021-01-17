@@ -1,18 +1,25 @@
 # first of all import the socket library  
 import socket    
-import thread         
-  
+import thread 
+import select        
+import time
   
 def on_new_client(clientSocket,addr):
     print ('Got connection from', addr )
-    c.send('Thank you for connecting')
-    print (c.recv(1024))
+    clientSocket.send('Thank you for connecting')
+    print (clientSocket.recv(1024))
     while True: 
         print (c.recv(1024))
-        c.send('Received data from client')
-        
-#def clientCloseCheck
 
+        
+def clientCloseCheck(clientSocket,addr):
+    time.sleep(10)
+    try:
+        clientSocket.send('Test')
+    except:
+        print('Socket ' + addr + ' has disconnected!')
+        clientSocket.close()
+    
 # next create a socket object  
 s = socket.socket()       
 print ("Socket successfully created") 
@@ -41,7 +48,7 @@ while True:
     c, addr = s.accept()   
     
     thread.start_new_thread(on_new_client,(c,addr))
-      
+    thread.start_new_thread(clientClosecheck,(c,addr))
     # send a thank you message to the client.  
       
       

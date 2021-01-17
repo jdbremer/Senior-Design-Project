@@ -1,6 +1,7 @@
 # Import socket module  
 import socket             
-  
+import time
+
 # Create a socket object  
 s = socket.socket()       
   
@@ -14,15 +15,17 @@ s.connect(('192.168.1.28', port))
 print (s.recv(1024) ) 
 
 s.send('Thank') 
-
+time.sleep(5)
 s.send('1234')
-print (s.recv(1024) ) 
+time.sleep(5)
 s.send('1235')
-print (s.recv(1024) ) 
+time.sleep(5)
 s.send('1236')
-print (s.recv(1024) ) 
+time.sleep(5)
 s.send('1237')
-print (s.recv(1024) ) 
+
+while True:
+    continue 
 
 # close the connection  
 s.close()
