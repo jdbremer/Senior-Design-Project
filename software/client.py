@@ -15,13 +15,13 @@ s.connect(('192.168.1.28', port))
 print (s.recv(1024) ) 
 
 s.send('Thank') 
-time.sleep(5)
+time.sleep(2)
 s.send('1234')
-time.sleep(5)
+time.sleep(2)
 s.send('1235')
-time.sleep(5)
+time.sleep(2)
 s.send('1236')
-time.sleep(5)
+time.sleep(2)
 s.send('1237')
 
 
