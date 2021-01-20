@@ -1,16 +1,17 @@
 # first of all import the socket library
 import socket
-import thread
+import _thread
 import select
 import time
 
 def on_new_client(clientSocket,addr):
     print ('Got connection from', addr )
-    clientSocket.send('Thank you for connecting')
-    print (clientSocket.recv(1024))
+    thankYouMsg = 'Thank you for connecting'
+    clientSocket.send(thankYouMsg.encode('ascii'))
+    print (clientSocket.recv(1024).decode('ascii'))
     while True:
         try:
-            print (clientSocket.recv(1024), addr)
+            print (clientSocket.recv(1024).decode('ascii'), addr)
         except socket.error:
 #            print('Socket has disconnected! ', addr)
 #            clientSocket.close()
@@ -21,7 +22,8 @@ def clientCloseCheck(clientSocket,addr):
     while True:
         time.sleep(1)
         try:
-            clientSocket.send('Test')
+            checkMsg = 'Are you there?'
+            clientSocket.send(checkMsg.encode('ascii'))
         except socket.error:
             print('Socket has disconnected! ', addr)
             clientSocket.close()
@@ -33,7 +35,7 @@ print ("Socket successfully created")
 
 # reserve a port on your computer in our
 # case it is 12345 but it can be anything
-port = 12348
+port = 12346
 
 # Next bind to the port
 # we have not typed any ip in the ip field
@@ -54,8 +56,8 @@ while True:
     # Establish connection with client.
     c, addr = s.accept()
 
-    thread.start_new_thread(on_new_client,(c,addr))
-    thread.start_new_thread(clientCloseCheck,(c,addr))
+    _thread.start_new_thread(on_new_client,(c,addr))
+    _thread.start_new_thread(clientCloseCheck,(c,addr))
     # send a thank you message to the client.
 
 
