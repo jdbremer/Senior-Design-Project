@@ -17,10 +17,10 @@ database = firebase.database()
 def stream_handler_key1(post1):
 	print(post1)
 
-my_stream = database.child("testObj").child("Key1").stream(stream_handler, None)
+my_stream = database.child("testObj").child("Key1").stream(stream_handler_key1, None)
 
 
 def stream_handler_key2(post2):
 	print(post2)
 
-my_stream = database.child("testObj").child("Key2").stream(stream_handler, None)
+my_stream = database.child("testObj").child("Key2").stream(stream_handler_key2, None)
