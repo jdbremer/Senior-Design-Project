@@ -20,7 +20,16 @@ database = firebase.database()
 #my_stream = database.child("testObj").child("Key2").stream(stream_handler, None)
 
 #time.sleep(10)
-database.child("testObj").update({"Key1": "Lets"})
+value = 0
+
+
+while(True):
+	time.sleep(1)
+	database.child("testObj").update({"Key2": str(value)})
+	value = value + 1
+	if value >= 250:
+		value = 0
+
 database.child("testObj").update({"Key2": "Goooooooo"})
 
 ###Create a key/keys as well as a child###
