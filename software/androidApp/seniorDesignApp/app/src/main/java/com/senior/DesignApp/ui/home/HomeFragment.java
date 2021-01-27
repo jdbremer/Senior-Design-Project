@@ -38,6 +38,21 @@ public class HomeFragment extends Fragment {
     public DatabaseReference mDatabase;
     private DatabaseReference mPostReference;
     public EditText sensorDataObj;
+    public EditText intervalTxt;
+
+    // HANDLER //
+    //A handler will be needed if you were to update data on the UI while not doing a listen operation
+    //This is what you would call -> updatingUI.post(UIUpdate);
+    private final Handler updatingUI = new Handler();
+
+    final Runnable UIUpdate = new Runnable() {
+        public void run() {
+            sensorDataObj.setText(sensorData);
+        }
+    };
+    // END HANDLER //
+
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -53,47 +68,84 @@ public class HomeFragment extends Fragment {
                 //textView.setText(s);
             }
         });
-        //modifyUIText modUIText = new modifyUIText();
-//        modifyUIText.PrivatemodifyUIText mod = new modifyUIText.PrivatemodifyUIText();
-        PrivatemodifyUIText mod = new PrivatemodifyUIText();
+
+
+        //CONSTANT LISTENER CODE//
+        EditText receivedkey2 = (EditText) root.findViewById(R.id.receivedKey2);
+        ValueEventListener constantListener = new ValueEventListener(){
+            @Override
+            public void onDataChange (DataSnapshot dataSnapshot){
+                // Get Post object and use the values to update the UI
+                //System.out.println(dataSnapshot.getValue());
+                receivedkey2.setText(dataSnapshot.getValue().toString());
+
+                // ...
+            }
+
+            @Override
+            public void onCancelled (@NonNull DatabaseError error){
+                //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                System.out.println("The read failed: " + error.getMessage());
+            }
+        };
+        //mPostReference.addValueEventListener(constantListener);  //Uncomment this to start the continous grab of updated data
+        //END CONSTANT LISTENER CODE//
+
+        //SINGLE LISTEN CODE// //This code will allow a single listen... It will do a single grab of data and will have to be reinitialized again.
+        ValueEventListener singleListen = new ValueEventListener(){
+            @Override
+            public void onDataChange (DataSnapshot dataSnapshot){
+                // Get Post object and use the values to update the UI
+                //System.out.println(dataSnapshot.getValue());
+                sensorDataObj.setText(dataSnapshot.getValue().toString());
+
+                // ...
+            }
+
+            @Override
+            public void onCancelled (@NonNull DatabaseError error){
+                //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                System.out.println("The read failed: " + error.getMessage());
+            }
+        };
+        //END SINGLE LISTEN CODE//
+
+        Button timeUpdate = (Button) root.findViewById(R.id.updateTime);
+        intervalTxt = (EditText) root.findViewById(R.id.updateTimeText);
+        intervalTxt.setText(String.valueOf(sensorGrabTime));        //sets the value in the txt box to the initial value
+
+        timeUpdate.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Do something in response to button click
+                sensorGrabTime = Integer.parseInt(intervalTxt.getText().toString());        //grabs the value in char form and converts it to an int if button was pressed
+            }
+        });
+
+
+        //THREAD CODE//
         sensorDataObj = (EditText) root.findViewById(R.id.sensorDataText);
-
-//        Handler handler = new Handler(){
-//            @Override
-//            public void handleMessage(Message msg){
-//                if(msg.what == 0){
-//                    updateUI();
-//                }else{
-//                    showError();
-//                }
-//            }
-//        };
-
-//        Handler handler = new Handler() {
-//            @Override
-//            public void handleMessage(Message msg) {
-//                sensorDataObj.setText(msg.toString());
-//            }
-//        };
 
         Runnable runnable = new Runnable(){
             public void run() {
-                try {
-                    Thread.sleep(1000*sensorGrabTime);
+                while (true) {
+                    try {
+                        Thread.sleep(1000 * sensorGrabTime);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    mPostReference.addListenerForSingleValueEvent(singleListen); //do a single grab of data
+                    //updatingUI.post(UIUpdate);
                 }
-                catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-//                sensorData = mDatabase.child("testObj").child("Key2").get().toString();
-//                sensorDataObj.setText("yessir");
-//                sensorDataObj.setText(sensorData, TextView.BufferType.EDITABLE);
-//                sensorDataObj.textView.setText("Blah");
-//                modUIText.
-                mod.sendEmptyMessage(0);
             }
         };
         Thread thread = new Thread(runnable);
         thread.start();
+        //END THREAD CODE//
+
+
+
+
+
 
         Button b = (Button) root.findViewById(R.id.dataBaseSend);
         EditText key1 = (EditText) root.findViewById(R.id.Key1_text);
@@ -117,38 +169,9 @@ public class HomeFragment extends Fragment {
         });
 
 
-        //LISTENER CODE//
-        EditText receivedkey2 = (EditText) root.findViewById(R.id.receivedKey2);
-        ValueEventListener postListener = new ValueEventListener(){
-            @Override
-            public void onDataChange (DataSnapshot dataSnapshot){
-                // Get Post object and use the values to update the UI
-                //System.out.println(dataSnapshot.getValue());
-                receivedkey2.setText(dataSnapshot.getValue().toString());
 
-                // ...
-            }
-
-            @Override
-            public void onCancelled (@NonNull DatabaseError error){
-                //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                System.out.println("The read failed: " + error.getMessage());
-            }
-        };
-        mPostReference.addValueEventListener(postListener);
-        //END LISTENER CODE//
 
         return root;
     }
-    private static class PrivatemodifyUIText extends Handler {
-        public String sensorData;
-        HomeFragment frag = new HomeFragment();
-        public void handleMessage(Message msg) {
-            if(msg.what == 0)
-            {
-                sensorData = frag.mDatabase.child("testObj").child("Key2").get().toString();
-                frag.sensorDataObj.setText("sdolihnfaos");
-            }
-        }
-    };
+
 }
