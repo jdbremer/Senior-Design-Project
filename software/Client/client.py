@@ -1,16 +1,21 @@
 # Import socket module
 import socket
 import time
+import _thread
 
 # Create a socket object
 s = socket.socket()
+#status = socket.socket()
 
 # Define the port on which you want to connect
-port = 12346
+#port = 12346
+statusPort = 12347
 
 # connect to the server on local computer
 s.connect(('192.168.1.28', port))
-
+# connect to the server on local computer
+#status.connect(('192.168.1.28', statusPort))
+print(s.getsockname())
 # receive data from the server
 print (s.recv(1024).decode('ascii') )
 
