@@ -10,7 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.os.Handler;
 import android.widget.TextView;
+import android.os.Message;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,15 +33,17 @@ import com.google.firebase.database.ValueEventListener;
 import com.senior.DesignApp.R;
 
 public class HomeFragment extends Fragment {
-
-    private DatabaseReference mDatabase;
+    public int sensorGrabTime = 5;
+    public String sensorData = "";
+    public DatabaseReference mDatabase;
     private DatabaseReference mPostReference;
-
+    public EditText sensorDataObj;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         mPostReference = FirebaseDatabase.getInstance().getReference().child("testObj").child("Key2");  //LISTENER OBJECT
         mDatabase = FirebaseDatabase.getInstance().getReference();  //DATABASE OBJECT
+
         HomeViewModel homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         //final TextView textView = root.findViewById(R.id.text_home);
@@ -49,6 +53,47 @@ public class HomeFragment extends Fragment {
                 //textView.setText(s);
             }
         });
+        //modifyUIText modUIText = new modifyUIText();
+//        modifyUIText.PrivatemodifyUIText mod = new modifyUIText.PrivatemodifyUIText();
+        PrivatemodifyUIText mod = new PrivatemodifyUIText();
+        sensorDataObj = (EditText) root.findViewById(R.id.sensorDataText);
+
+//        Handler handler = new Handler(){
+//            @Override
+//            public void handleMessage(Message msg){
+//                if(msg.what == 0){
+//                    updateUI();
+//                }else{
+//                    showError();
+//                }
+//            }
+//        };
+
+//        Handler handler = new Handler() {
+//            @Override
+//            public void handleMessage(Message msg) {
+//                sensorDataObj.setText(msg.toString());
+//            }
+//        };
+
+        Runnable runnable = new Runnable(){
+            public void run() {
+                try {
+                    Thread.sleep(1000*sensorGrabTime);
+                }
+                catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+//                sensorData = mDatabase.child("testObj").child("Key2").get().toString();
+//                sensorDataObj.setText("yessir");
+//                sensorDataObj.setText(sensorData, TextView.BufferType.EDITABLE);
+//                sensorDataObj.textView.setText("Blah");
+//                modUIText.
+                mod.sendEmptyMessage(0);
+            }
+        };
+        Thread thread = new Thread(runnable);
+        thread.start();
 
         Button b = (Button) root.findViewById(R.id.dataBaseSend);
         EditText key1 = (EditText) root.findViewById(R.id.Key1_text);
@@ -95,4 +140,15 @@ public class HomeFragment extends Fragment {
 
         return root;
     }
+    private static class PrivatemodifyUIText extends Handler {
+        public String sensorData;
+        HomeFragment frag = new HomeFragment();
+        public void handleMessage(Message msg) {
+            if(msg.what == 0)
+            {
+                sensorData = frag.mDatabase.child("testObj").child("Key2").get().toString();
+                frag.sensorDataObj.setText("sdolihnfaos");
+            }
+        }
+    };
 }
