@@ -88,7 +88,7 @@ public class HomeFragment extends Fragment {
                 System.out.println("The read failed: " + error.getMessage());
             }
         };
-        //mPostReference.addValueEventListener(constantListener);  //Uncomment this to start the continous grab of updated data
+        //mPostReference.addValueEventListener(constantListener);  //Uncomment this to start the continous grab of updated data (runs code above, constant listener code)
         //END CONSTANT LISTENER CODE//
 
         //SINGLE LISTEN CODE// //This code will allow a single listen... It will do a single grab of data and will have to be reinitialized again.
