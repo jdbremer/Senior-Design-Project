@@ -12,6 +12,8 @@ def on_new_client(clientSocket,addr):
     while True:
         try:
             print (clientSocket.recv(1024).decode('ascii'), addr)
+            checkMsg = 'I am here'
+            clientSocket.send(checkMsg.encode('ascii'))
         except socket.error:
 #            print('Socket has disconnected! ', addr)
 #            clientSocket.close()

@@ -1,0 +1,30 @@
+com/senior/DesignApp/ui/gallery/GalleryViewModel.java
+ com.senior.DesignApp.ui.gallery.GalleryViewModel
+com/senior/DesignApp/ui/home/HomeViewModel.java
+ com.senior.DesignApp.ui.home.HomeViewModel
+com/senior/DesignApp/ui/slideshow/SlideshowFragment.java
+ com.senior.DesignApp.ui.slideshow.SlideshowFragment
+ com.senior.DesignApp.ui.slideshow.SlideshowFragment$1
+com/senior/DesignApp/BuildConfig.java
+ com.senior.DesignApp.BuildConfig
+com/senior/DesignApp/MainActivity.java
+ com.senior.DesignApp.MainActivity
+ com.senior.DesignApp.MainActivity$1
+com/senior/DesignApp/ui/gallery/GalleryFragment.java
+ com.senior.DesignApp.ui.gallery.GalleryFragment
+ com.senior.DesignApp.ui.gallery.GalleryFragment$1
+com/senior/DesignApp/ui/slideshow/SlideshowViewModel.java
+ com.senior.DesignApp.ui.slideshow.SlideshowViewModel
+com/senior/DesignApp/ui/home/HomeFragment.java
+ com.senior.DesignApp.ui.home.HomeFragment
+ com.senior.DesignApp.ui.home.HomeFragment$1
+ com.senior.DesignApp.ui.home.HomeFragment$2
+ com.senior.DesignApp.ui.home.HomeFragment$3
+ com.senior.DesignApp.ui.home.HomeFragment$4
+ com.senior.DesignApp.ui.home.HomeFragment$5
+ com.senior.DesignApp.ui.home.HomeFragment$6
+ com.senior.DesignApp.ui.home.HomeFragment$7
+ com.senior.DesignApp.ui.home.HomeFragment$8
+com/senior/DesignApp/ui/home/modifyUIText.java
+ com.senior.DesignApp.ui.home.modifyUIText
+ com.senior.DesignApp.ui.home.modifyUIText$PrivatemodifyUIText

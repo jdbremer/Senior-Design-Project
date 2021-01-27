@@ -16,24 +16,31 @@ print (s.recv(1024).decode('ascii') )
 
 msg = 'Thanks for connecting'
 s.send(msg.encode('ascii'))
+print (s.recv(1024).decode('ascii') )
 time.sleep(.00001)
 msg = '1234'
 s.send(msg.encode('ascii'))
+print (s.recv(1024).decode('ascii') )
 time.sleep(.00001)
 msg = '1235'
 s.send(msg.encode('ascii'))
+print (s.recv(1024).decode('ascii') )
 time.sleep(.00001)
 msg = '1236'
 s.send(msg.encode('ascii'))
+print (s.recv(1024).decode('ascii') )
 time.sleep(.00001)
 msg = '1237'
 s.send(msg.encode('ascii'))
+print (s.recv(1024).decode('ascii') )
 time.sleep(2)
 msg = '1238'
 s.send(msg.encode('ascii'))
+print (s.recv(1024).decode('ascii') )
 time.sleep(2)
 msg = '1239'
 s.send(msg.encode('ascii'))
+print (s.recv(1024).decode('ascii') )
 
 time.sleep(2)
 
