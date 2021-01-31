@@ -11,8 +11,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager.widget.ViewPager;
 
 import com.AndersonBremerSweeney.sensor_controliotnetwork.R;
+import com.AndersonBremerSweeney.sensor_controliotnetwork.SectionsPageAdapter;
+import com.AndersonBremerSweeney.sensor_controliotnetwork.tabLightDataFragment;
+import com.AndersonBremerSweeney.sensor_controliotnetwork.tabLightGraphFragment;
 
 public class HomeFragment extends Fragment {
 
@@ -32,4 +36,11 @@ public class HomeFragment extends Fragment {
         });
         return root;
     }
+
+//    private void setupViewPager(ViewPager viewPager){
+//        SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
+//        adapter.addFragment(new tabLightDataFragment(), "LightDataTab");
+//        adapter.addFragment(new tabLightGraphFragment(), "LightGraphTab");
+//        viewPager.setAdapter(adapter);
+//    }
 }

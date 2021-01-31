@@ -7,6 +7,7 @@ import android.view.Menu;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.tabs.TabLayout;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -15,11 +16,16 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
-
+//
+//    private static final String TAG = "MainActivity";
+//    private SectionsPageAdapter mSectionsPageAdapter;
+//    private ViewPager mViewPager;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +33,13 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
+//        mSectionsPageAdapter = new SectionsPageAdapter(getSupportFragmentManager());
+//
+//        mViewPager = (ViewPager) findViewById(R.id.container);
+//        setupViewPager(mViewPager);
+//        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLightLayout);
+//        tabLayout.setupWithViewPager(mViewPager);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -45,6 +58,9 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+//        replace(YourNewFragment.newInstance());
+
     }
 
     @Override
@@ -60,4 +76,11 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
+
+//    private void setupViewPager(ViewPager viewPager){
+//        SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
+//        adapter.addFragment(new tabLightDataFragment(), "LightDataTab");
+//        adapter.addFragment(new tabLightGraphFragment(), "LightGraphTab");
+//        viewPager.setAdapter(adapter);
+//    }
 }
