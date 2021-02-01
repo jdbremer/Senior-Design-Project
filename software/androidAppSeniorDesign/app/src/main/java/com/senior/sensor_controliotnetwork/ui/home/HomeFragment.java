@@ -1,5 +1,6 @@
 package com.senior.sensor_controliotnetwork.ui.home;
 
+import android.app.ActionBar;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +32,6 @@ public class HomeFragment extends Fragment {
                 new ViewModelProvider(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
-
         TabLayout tabLayout = root.findViewById(R.id.lightTabBar);
         TabItem tabData = root.findViewById(R.id.lightData);
         TabItem tabGraph = root.findViewById(R.id.lightGraph);
@@ -57,7 +57,17 @@ public class HomeFragment extends Fragment {
             public void onTabReselected(TabLayout.Tab tab) {
 
             }
+
         });
+
+
+        viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                //tabLayout.set(position);    // YOU WERE LAST ON THIS LINE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            }
+        });
+
 
 
         homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
