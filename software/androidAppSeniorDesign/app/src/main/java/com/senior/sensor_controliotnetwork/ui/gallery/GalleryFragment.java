@@ -36,6 +36,7 @@ public class GalleryFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_gallery, container, false);
         ListView connections = root.findViewById(R.id.connectionsList);
 
+
         //adapter=new ArrayAdapter<String>(this,R.layout.connectionsList,listItems);
         //setListAdapter(adapter);
 

@@ -27,19 +27,29 @@ public class HomeFragment extends Fragment {
 
 
 
-
         homeViewModel =
                 new ViewModelProvider(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
         TabLayout tabLayout = root.findViewById(R.id.lightTabBar);
-        TabItem tabData = root.findViewById(R.id.lightData);
-        TabItem tabGraph = root.findViewById(R.id.lightGraph);
         ViewPager viewPager = root.findViewById(R.id.viewPager);
 
-        PagerAdapter pagerAdapter = new PagerAdapter(getChildFragmentManager(), tabLayout.getTabCount());
 
+
+
+        //TabItem tabData = root.findViewById(R.id.lightData);
+        //TabItem tabGraph = root.findViewById(R.id.lightGraph);
+
+//        tabLayout.addTab(tabLayout.newTab().setText("Data"));
+//        tabLayout.addTab(tabLayout.newTab().setText("Graph"));
+        PagerAdapter pagerAdapter = new PagerAdapter(getChildFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(pagerAdapter);
+        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        //tabLayout.setupWithViewPager(viewPager);
+        viewPager.addOnPageChangeListener(
+                new TabLayout.TabLayoutOnPageChangeListener(tabLayout)
+        );
+
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
 
@@ -61,12 +71,8 @@ public class HomeFragment extends Fragment {
         });
 
 
-        viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                //tabLayout.set(position);    // YOU WERE LAST ON THIS LINE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            }
-        });
+        //tabLayout.setupWithViewPager(viewPager);
+        //pagerAdapter.getPageTitle(viewPager);
 
 
 
