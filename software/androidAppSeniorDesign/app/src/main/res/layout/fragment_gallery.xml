@@ -6,10 +6,22 @@
     android:layout_height="match_parent"
     tools:context=".ui.gallery.GalleryFragment">
 
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="Search.."
+        android:inputType="text"
+        android:id="@+id/searchConnections"/>
+
     <ListView
         android:id="@+id/connectionsList"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="17dp"
-        tools:layout_editor_absoluteY="18dp" />
+        android:layout_width="411dp"
+        android:layout_height="661dp"
+        android:layout_alignParentTop="true"
+        android:textSize="16dip"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/searchConnections"
+        tools:layout_editor_absoluteX="0dp" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
