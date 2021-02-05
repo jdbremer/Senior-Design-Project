@@ -15,9 +15,10 @@
 
     <ListView
         android:id="@+id/connectionsList"
-        android:layout_width="411dp"
-        android:layout_height="661dp"
+        android:layout_width="409dp"
+        android:layout_height="630dp"
         android:layout_alignParentTop="true"
+        android:layout_marginTop="4dp"
         android:textSize="16dip"
         android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@+id/searchConnections"
