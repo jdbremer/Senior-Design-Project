@@ -24,19 +24,19 @@ import com.senior.sensor_controliotnetwork.R;
 
 import java.util.ArrayList;
 
-public class GalleryFragment extends Fragment {
+public class ConnectionsFragment extends Fragment {
 
     private ArrayAdapter<String> adapter;
     public ArrayList<String> arrayList = new ArrayList<String>();
 
 
 
-    private GalleryViewModel galleryViewModel;
+    private ConnectionsViewModel connectionsViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        galleryViewModel =
-                new ViewModelProvider(this).get(GalleryViewModel.class);
+        connectionsViewModel =
+                new ViewModelProvider(this).get(ConnectionsViewModel.class);
         View root = inflater.inflate(R.layout.fragment_gallery, container, false);
 
         ListView connections = root.findViewById(R.id.connectionsList);

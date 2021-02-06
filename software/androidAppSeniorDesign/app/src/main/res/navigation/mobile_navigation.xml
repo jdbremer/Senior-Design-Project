@@ -13,7 +13,7 @@
 
     <fragment
         android:id="@+id/nav_connections"
-        android:name="com.senior.sensor_controliotnetwork.ui.gallery.GalleryFragment"
+        android:name="com.senior.sensor_controliotnetwork.ui.gallery.ConnectionsFragment"
         android:label="@string/menu_gallery"
         tools:layout="@layout/fragment_gallery" />
 
