@@ -1,4 +1,4 @@
-package com.senior.sensor_controliotnetwork.ui.home;
+package com.senior.sensor_controliotnetwork.ui.light;
 
 import android.app.ActionBar;
 import android.os.Bundle;
@@ -18,18 +18,18 @@ import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.senior.sensor_controliotnetwork.R;
 
-public class HomeFragment extends Fragment {
+public class LightFragment extends Fragment {
 
-    private HomeViewModel homeViewModel;
+    private LightViewModel lightViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
 
 
-        homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
+        lightViewModel =
+                new ViewModelProvider(this).get(LightViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_light, container, false);
 
         TabLayout tabLayout = root.findViewById(R.id.lightTabBar);
         ViewPager viewPager = root.findViewById(R.id.viewPager);
@@ -76,7 +76,7 @@ public class HomeFragment extends Fragment {
 
 
 
-        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        lightViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
 
