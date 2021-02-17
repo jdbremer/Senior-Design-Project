@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="48171d0f-e8cd-4d55-9ef4-fec9045fdb00" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../androidApp_vs2/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../androidApp_vs2/.idea/gradle.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../androidAppSeniorDesign/app/google-services.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../androidAppSeniorDesign/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/../androidAppSeniorDesign/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../androidAppSeniorDesign/app/src/main/java/com/senior/sensor_controliotnetwork/ui/connections/ConnectionsFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/../androidAppSeniorDesign/app/src/main/java/com/senior/sensor_controliotnetwork/ui/connections/ConnectionsFragment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../androidAppSeniorDesign/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/../androidAppSeniorDesign/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

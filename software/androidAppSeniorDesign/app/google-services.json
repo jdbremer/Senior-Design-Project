@@ -1,0 +1,127 @@
+{
+  "project_info": {
+    "project_number": "203545527901",
+    "firebase_url": "https://seniordesign-ajr-default-rtdb.firebaseio.com",
+    "project_id": "seniordesign-ajr",
+    "storage_bucket": "seniordesign-ajr.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:203545527901:android:06ac70ed74728d92f36fb4",
+        "android_client_info": {
+          "package_name": "Senior.Design.AndroidApp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "203545527901-rqttm927f0t9rpn1v666usms551idbqv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkispwNp16fKxJsm53Ud1uOztLUZLgkc8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "203545527901-rqttm927f0t9rpn1v666usms551idbqv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:203545527901:android:4964cdf6e5ae3029f36fb4",
+        "android_client_info": {
+          "package_name": "com.example.SeniorDesign"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "203545527901-rqttm927f0t9rpn1v666usms551idbqv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkispwNp16fKxJsm53Ud1uOztLUZLgkc8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "203545527901-rqttm927f0t9rpn1v666usms551idbqv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:203545527901:android:fa36e2c8261c67a9f36fb4",
+        "android_client_info": {
+          "package_name": "com.senior.DesignApp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "203545527901-rqttm927f0t9rpn1v666usms551idbqv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkispwNp16fKxJsm53Ud1uOztLUZLgkc8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "203545527901-rqttm927f0t9rpn1v666usms551idbqv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:203545527901:android:970da11d31e5de65f36fb4",
+        "android_client_info": {
+          "package_name": "com.senior.sensor_controliotnetwork"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "203545527901-rqttm927f0t9rpn1v666usms551idbqv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkispwNp16fKxJsm53Ud1uOztLUZLgkc8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "203545527901-rqttm927f0t9rpn1v666usms551idbqv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
