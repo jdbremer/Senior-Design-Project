@@ -1,8 +1,10 @@
 package com.senior.sensor_controliotnetwork;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
+import android.view.inputmethod.InputMethodManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -57,7 +59,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        closeKeyboard();
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    private void closeKeyboard(){
+        View view = this.getCurrentFocus();
+        if(view != null){   //if a view is open
+            InputMethodManager inputMM = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMM.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 }
