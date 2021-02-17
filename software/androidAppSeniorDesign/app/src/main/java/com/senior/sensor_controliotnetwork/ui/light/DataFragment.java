@@ -1,4 +1,4 @@
-package com.senior.sensor_controliotnetwork.ui.home;
+package com.senior.sensor_controliotnetwork.ui.light;
 
 import android.os.Bundle;
 
