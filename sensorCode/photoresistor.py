@@ -1,3 +1,6 @@
+
+
+
 import RPi.GPIO as GPIO
 
 # Simple example of reading the MCP3008 analog input channels and printing
@@ -24,22 +27,30 @@ SPI_DEVICE = 0
 mcp = Adafruit_MCP3008.MCP3008(spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE))
 
 
-GPIO.setmode(GPIO.BCM)
+GPIO.setmode(GPIO.BOARD)
 GPIO.setup(18, GPIO.OUT)
 
+inc = 0
+average = 0
 
-
-while(true)
+while True:
     start = time.time()
     GPIO.output(18, GPIO.HIGH)
 
-    while(true)
-       if(mcp.read_adc(0) => 1000)
+    while True:
+       if(mcp.read_adc(0) >= 1000):
           end = time.time()
           GPIO.output(18, GPIO.LOW)
           break
-       else 
+       else: 
           continue
 
-
-    print(end-start)
+    time.sleep(.5)
+    if(average == 0):
+       average = end-start
+    #print(end-start)
+    average = (average+(end-start))/2
+    inc = inc+1
+    if(inc > 20):
+       print(average)
+       inc = 0
