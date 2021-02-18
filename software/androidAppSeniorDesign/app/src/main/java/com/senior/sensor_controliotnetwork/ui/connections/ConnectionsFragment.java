@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.TypedValue;
@@ -37,12 +38,14 @@ import com.senior.sensor_controliotnetwork.MainActivity;
 import com.senior.sensor_controliotnetwork.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 
 public class ConnectionsFragment extends Fragment {
 
     private ArrayAdapter<String> adapter;
-    public ArrayList<String> arrayList = new ArrayList<String>();
+    public ArrayList<String> arrayList;
 
     public DatabaseReference mDatabase;
     private DatabaseReference mPostReference;
@@ -50,11 +53,15 @@ public class ConnectionsFragment extends Fragment {
 
     private ConnectionsViewModel connectionsViewModel;
 
+
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         connectionsViewModel =
                 new ViewModelProvider(this).get(ConnectionsViewModel.class);
         View root = inflater.inflate(R.layout.fragment_connections, container, false);
+
+
 
 
         mPostReference = FirebaseDatabase.getInstance().getReference().child("Connections");  //LISTENER OBJECT
@@ -90,8 +97,20 @@ public class ConnectionsFragment extends Fragment {
         };
 
 
+//        Collections.sort(arrayList, new Comparator<AppDetail>() {
+//
+//            /* This comparator will sort AppDetail objects alphabetically. */
+//
+//            @Override
+//            public int compare(AppDetail a1, AppDetail a2) {
+//
+//                // String implements Comparable
+//                return (a1.label.toString()).compareTo(a2.label.toString());
+//            }
+//        });
+
+
         //CONSTANT LISTENER CODE//
-        //EditText receivedkey2 = (EditText) root.findViewById(R.id.receivedKey2);
         ValueEventListener constantListener = new ValueEventListener(){
             @Override
             public void onDataChange (DataSnapshot dataSnapshot){
@@ -148,6 +167,8 @@ public class ConnectionsFragment extends Fragment {
 
         if(arrayList.contains(s)){
             arrayList.remove(s);
+            Collections.sort(arrayList);
+
             adapter.notifyDataSetChanged();
         }
 
@@ -158,6 +179,7 @@ public class ConnectionsFragment extends Fragment {
 
         if(!arrayList.contains(s)){
             arrayList.add(s);
+            Collections.sort(arrayList);
             adapter.notifyDataSetChanged();
 
             //send notification that device was added
