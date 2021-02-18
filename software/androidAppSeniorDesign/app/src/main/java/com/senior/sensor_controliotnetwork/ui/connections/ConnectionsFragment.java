@@ -1,6 +1,9 @@
 package com.senior.sensor_controliotnetwork.ui.connections;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,6 +18,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -54,6 +59,12 @@ public class ConnectionsFragment extends Fragment {
 
         mPostReference = FirebaseDatabase.getInstance().getReference().child("Connections");  //LISTENER OBJECT
         mDatabase = FirebaseDatabase.getInstance().getReference();  //DATABASE OBJECT
+
+//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+//            NotificationChannel channel = new NotificationChannel("Light Sensor Notification", "Light Sensor Notification", NotificationManager.IMPORTANCE_DEFAULT);
+//            NotificationManager manager = getSystemService(NotificationManager.class);
+//            manager.createNotificationChannel(channel);
+//        }
 
 
         ListView connections = root.findViewById(R.id.connectionsList);
@@ -104,7 +115,7 @@ public class ConnectionsFragment extends Fragment {
                 System.out.println("The read failed: " + error.getMessage());
             }
         };
-        mPostReference.addValueEventListener(constantListener);  //Uncomment this to start the continous grab of updated data (runs code above, constant listener code)
+        mPostReference.addValueEventListener(constantListener);  //Uncomment this to start the continuous grab of updated data (runs code above, constant listener code)
         //END CONSTANT LISTENER CODE//
 
 
@@ -148,8 +159,15 @@ public class ConnectionsFragment extends Fragment {
         if(!arrayList.contains(s)){
             arrayList.add(s);
             adapter.notifyDataSetChanged();
+
+            //send notification that device was added
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), "Light Sensor Notification");
+            builder.setContentTitle("Network Connection");
+            builder.setContentText("Light sensor has connected");
+            builder.setSmallIcon(R.drawable.ic_menu_send);
+            builder.setAutoCancel(true);
+            NotificationManagerCompat managerCompat = NotificationManagerCompat.from(getContext());
+            managerCompat.notify(1,builder.build());
         }
-
-
     }
 }
