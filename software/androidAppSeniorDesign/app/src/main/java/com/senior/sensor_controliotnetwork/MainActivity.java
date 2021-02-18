@@ -1,13 +1,14 @@
-package com.AndersonBremerSweeney.sensor_controliotnetwork;
+package com.senior.sensor_controliotnetwork;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
+import android.view.inputmethod.InputMethodManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.tabs.TabLayout;
 
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -16,16 +17,11 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.viewpager.widget.ViewPager;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
-//
-//    private static final String TAG = "MainActivity";
-//    private SectionsPageAdapter mSectionsPageAdapter;
-//    private ViewPager mViewPager;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,13 +29,6 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
-//        mSectionsPageAdapter = new SectionsPageAdapter(getSupportFragmentManager());
-//
-//        mViewPager = (ViewPager) findViewById(R.id.container);
-//        setupViewPager(mViewPager);
-//        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLightLayout);
-//        tabLayout.setupWithViewPager(mViewPager);
-
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -49,18 +38,18 @@ public class MainActivity extends AppCompatActivity {
         });
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
+
+
+
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
+                R.id.nav_connections, R.id.nav_light, R.id.nav_slideshow)
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-
-//        replace(YourNewFragment.newInstance());
-
     }
 
     @Override
@@ -73,14 +62,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        closeKeyboard();
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
 
-//    private void setupViewPager(ViewPager viewPager){
-//        SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
-//        adapter.addFragment(new tabLightDataFragment(), "LightDataTab");
-//        adapter.addFragment(new tabLightGraphFragment(), "LightGraphTab");
-//        viewPager.setAdapter(adapter);
-//    }
+    private void closeKeyboard(){
+        View view = this.getCurrentFocus();
+        if(view != null){   //if a view is open
+            InputMethodManager inputMM = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMM.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
 }

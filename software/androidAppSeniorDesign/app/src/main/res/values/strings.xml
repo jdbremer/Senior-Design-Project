@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Sensor_Control IoT Network</string>
+    <string name="app_name">Sensor-Control IoT Network</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -7,12 +7,10 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
+    <string name="menu_light">Light Sensor</string>
+    <string name="menu_connections">Connections</string>
     <string name="menu_slideshow">Slideshow</string>
-    <string name="light_sensor">Light Sensor</string>
 
-    <string name="lightDataTab">Data</string>
-    <string name="lightGraphTab">Graph</string>
-
+    <string name="lightData">Data</string>
+    <string name="lightGraph">Graph</string>
 </resources>
