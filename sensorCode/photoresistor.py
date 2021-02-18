@@ -28,14 +28,18 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(18, GPIO.OUT)
 
 
-start = time.time()
-GPIO.output(18, GPIO.HIGH)
 
 while(true)
-   if(mcp.read_adc(0) <= 1000)
-      end = time.time()
-      GPIO.output(18, GPIO.LOW)
-      break
+    start = time.time()
+    GPIO.output(18, GPIO.HIGH)
+
+    while(true)
+       if(mcp.read_adc(0) => 1000)
+          end = time.time()
+          GPIO.output(18, GPIO.LOW)
+          break
+       else 
+          continue
 
 
-print(end-start)
+    print(end-start)
