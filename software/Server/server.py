@@ -28,11 +28,11 @@ lock = threading.Lock() #thread lock initialization
 connections = {} #global dictionary initialization
 
 def receiveClient(recvDataSocket, addr, statusSocket, sendDataSocket):
-    print ('Got connection from', addr )
-    thankYouMsg = 'Thank you for connecting'
+    print ('Got connection from recv client.. ', addr )
+    thankYouMsg = 'Server :: Thank you for connecting.. '
     recvDataSocket.send(thankYouMsg.encode('ascii'))
     print (recvDataSocket.recv(1024).decode('ascii'))
-    checkMsg = 'I am here'
+    checkMsg = 'Connection Successful..'
     recvDataSocket.send(checkMsg.encode('ascii'))
     while True:
         try:

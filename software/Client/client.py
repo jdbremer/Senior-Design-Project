@@ -35,38 +35,43 @@ _thread.start_new_thread(receivingSocket,(status, receiving, sending))
 
 print(sending.getsockname())
 
+# receive data from the server
+print (sending.recv(1024).decode('ascii') )
+msg = 'Connection Successful..'
+sending.send(msg.encode('ascii'))
+print (sending.recv(1024).decode('ascii') )
 
 
 # receive data from the server
-print (sending.recv(1024).decode('ascii') )
+# print (sending.recv(1024).decode('ascii') )
 
-msg = 'Thanks for connecting'
-sending.send(msg.encode('ascii'))
-print (sending.recv(1024).decode('ascii') )
-time.sleep(.00001)
-msg = '1234'
-sending.send(msg.encode('ascii'))
-print (sending.recv(1024).decode('ascii') )
-time.sleep(.00001)
-msg = '1235'
-sending.send(msg.encode('ascii'))
-print (sending.recv(1024).decode('ascii') )
-time.sleep(.00001)
-msg = '1236'
-sending.send(msg.encode('ascii'))
-print (sending.recv(1024).decode('ascii') )
-time.sleep(.00001)
-msg = '1237'
-sending.send(msg.encode('ascii'))
-print (sending.recv(1024).decode('ascii') )
-time.sleep(2)
-msg = '1238'
-sending.send(msg.encode('ascii'))
-print (sending.recv(1024).decode('ascii') )
-time.sleep(2)
-msg = '1239'
-sending.send(msg.encode('ascii'))
-print (sending.recv(1024).decode('ascii') )
+# msg = 'Thanks for connecting'
+# sending.send(msg.encode('ascii'))
+# print (sending.recv(1024).decode('ascii') )
+# time.sleep(.00001)
+# msg = '1234'
+# sending.send(msg.encode('ascii'))
+# print (sending.recv(1024).decode('ascii') )
+# time.sleep(.00001)
+# msg = '1235'
+# sending.send(msg.encode('ascii'))
+# print (sending.recv(1024).decode('ascii') )
+# time.sleep(.00001)
+# msg = '1236'
+# sending.send(msg.encode('ascii'))
+# print (sending.recv(1024).decode('ascii') )
+# time.sleep(.00001)
+# msg = '1237'
+# sending.send(msg.encode('ascii'))
+# print (sending.recv(1024).decode('ascii') )
+# time.sleep(2)
+# msg = '1238'
+# sending.send(msg.encode('ascii'))
+# print (sending.recv(1024).decode('ascii') )
+# time.sleep(2)
+# msg = '1239'
+# sending.send(msg.encode('ascii'))
+# print (sending.recv(1024).decode('ascii') )
 
 time.sleep(2)
 
