@@ -133,9 +133,8 @@ print ("status socket is listening")
 # a forever loop until we interrupt it or
 # an error occurs
 while True:
-
-    send_data_accept, send_data_addr = sendData.accept()
     recv_data_accept, recv_data_addr = recvData.accept()
+    send_data_accept, send_data_addr = sendData.accept()
     status_accept, status_addr = status.accept()
     _thread.start_new_thread(clientCloseCheck, (status_accept,status_addr,recv_data_accept, send_data_accept))
     _thread.start_new_thread(receiveClient,(recv_data_accept,recv_data_addr,status_accept, send_data_accept))
