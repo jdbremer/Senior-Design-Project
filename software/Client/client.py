@@ -37,6 +37,7 @@ print(sending.getsockname())
 
 # receive data from the server
 print (sending.recv(1024).decode('ascii') )
+print("here")
 msg = 'Connection Successful..'
 sending.send(msg.encode('ascii'))
 print (sending.recv(1024).decode('ascii') )
