@@ -36,11 +36,11 @@ _thread.start_new_thread(statusSocket,(status, receiving, sending))
 print(sending.getsockname())
 
 # receive data from the server
-print (sending.recv(1024).decode('ascii') )
+print (receiving.recv(1024).decode('ascii') )
 print("here")
 msg = 'Connection Successful..'
-sending.send(msg.encode('ascii'))
-print (sending.recv(1024).decode('ascii') )
+receiving.send(msg.encode('ascii'))
+print (receiving.recv(1024).decode('ascii') )
 
 
 # receive data from the server
