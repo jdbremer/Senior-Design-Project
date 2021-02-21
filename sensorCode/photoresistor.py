@@ -2,6 +2,9 @@
 
 
 import RPi.GPIO as GPIO
+import socket
+import time
+import _thread
 
 # Simple example of reading the MCP3008 analog input channels and printing
 # them all out.
