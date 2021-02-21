@@ -30,47 +30,47 @@ sending.connect(('192.168.1.28', recvPort))
 # connect to the server on local computer
 status.connect(('192.168.1.28', statusPort))
 
-_thread.start_new_thread(statusSocket,(status, recvPort, sendPort))
-_thread.start_new_thread(receivingSocket,(status, recvPort, sendPort))
+_thread.start_new_thread(statusSocket,(status, receiving, sending))
+_thread.start_new_thread(receivingSocket,(status, receiving, sending))
 
-print(sendPort.getsockname())
+print(sending.getsockname())
 
 
 
 # receive data from the server
-print (sendPort.recv(1024).decode('ascii') )
+print (sending.recv(1024).decode('ascii') )
 
 msg = 'Thanks for connecting'
-sendPort.send(msg.encode('ascii'))
-print (sendPort.recv(1024).decode('ascii') )
+sending.send(msg.encode('ascii'))
+print (sending.recv(1024).decode('ascii') )
 time.sleep(.00001)
 msg = '1234'
-sendPort.send(msg.encode('ascii'))
-print (sendPort.recv(1024).decode('ascii') )
+sending.send(msg.encode('ascii'))
+print (sending.recv(1024).decode('ascii') )
 time.sleep(.00001)
 msg = '1235'
-sendPort.send(msg.encode('ascii'))
-print (sendPort.recv(1024).decode('ascii') )
+sending.send(msg.encode('ascii'))
+print (sending.recv(1024).decode('ascii') )
 time.sleep(.00001)
 msg = '1236'
-sendPort.send(msg.encode('ascii'))
-print (sendPort.recv(1024).decode('ascii') )
+sending.send(msg.encode('ascii'))
+print (sending.recv(1024).decode('ascii') )
 time.sleep(.00001)
 msg = '1237'
-sendPort.send(msg.encode('ascii'))
-print (sendPort.recv(1024).decode('ascii') )
+sending.send(msg.encode('ascii'))
+print (sending.recv(1024).decode('ascii') )
 time.sleep(2)
 msg = '1238'
-sendPort.send(msg.encode('ascii'))
-print (sendPort.recv(1024).decode('ascii') )
+sending.send(msg.encode('ascii'))
+print (sending.recv(1024).decode('ascii') )
 time.sleep(2)
 msg = '1239'
-sendPort.send(msg.encode('ascii'))
-print (sendPort.recv(1024).decode('ascii') )
+sending.send(msg.encode('ascii'))
+print (sending.recv(1024).decode('ascii') )
 
 time.sleep(2)
 
 # close the connection
-sendPort.close()
-recvPort.close()
+sending.close()
+receiving.close()
 status.close()
