@@ -31,7 +31,7 @@ sending.connect(('192.168.1.28', recvPort))
 status.connect(('192.168.1.28', statusPort))
 
 _thread.start_new_thread(statusSocket,(status, receiving, sending))
-_thread.start_new_thread(receivingSocket,(status, receiving, sending))
+#_thread.start_new_thread(receivingSocket,(status, receiving, sending))
 
 print(sending.getsockname())
 
