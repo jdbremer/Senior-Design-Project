@@ -114,7 +114,7 @@ public class ConnectionsFragment extends Fragment {
         ValueEventListener constantListener = new ValueEventListener(){
             @Override
             public void onDataChange (DataSnapshot dataSnapshot){
-                 Iterator<DataSnapshot> iter = dataSnapshot.getChildren().iterator();
+                Iterator<DataSnapshot> iter = dataSnapshot.getChildren().iterator();
                 while (iter.hasNext()){
                     DataSnapshot snap = iter.next();
                     String nodId = snap.getKey();
