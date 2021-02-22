@@ -25,58 +25,32 @@ recvPort = 12351
 statusPort = 12352
 
 # connect to the server on local computer
-receiving.connect(('192.168.1.28', sendPort))
 sending.connect(('192.168.1.28', recvPort))
+receiving.connect(('192.168.1.28', sendPort))
 # connect to the server on local computer
 status.connect(('192.168.1.28', statusPort))
 
 _thread.start_new_thread(statusSocket,(status, receiving, sending))
 #_thread.start_new_thread(receivingSocket,(status, receiving, sending))
 
-print(sending.getsockname())
 
-# receive data from the server
-print (receiving.recv(1024).decode('ascii') )
+
+
+
+
+# client rece
+print (sending.recv(1024).decode('ascii') )
 print("here")
 msg = 'Connection Successful..'
-receiving.send(msg.encode('ascii'))
-print (receiving.recv(1024).decode('ascii') )
+sending.send(msg.encode('ascii'))
+print (sending.recv(1024).decode('ascii') )
 
 
-# receive data from the server
-# print (sending.recv(1024).decode('ascii') )
 
-# msg = 'Thanks for connecting'
-# sending.send(msg.encode('ascii'))
-# print (sending.recv(1024).decode('ascii') )
-# time.sleep(.00001)
-# msg = '1234'
-# sending.send(msg.encode('ascii'))
-# print (sending.recv(1024).decode('ascii') )
-# time.sleep(.00001)
-# msg = '1235'
-# sending.send(msg.encode('ascii'))
-# print (sending.recv(1024).decode('ascii') )
-# time.sleep(.00001)
-# msg = '1236'
-# sending.send(msg.encode('ascii'))
-# print (sending.recv(1024).decode('ascii') )
-# time.sleep(.00001)
-# msg = '1237'
-# sending.send(msg.encode('ascii'))
-# print (sending.recv(1024).decode('ascii') )
-# time.sleep(2)
-# msg = '1238'
-# sending.send(msg.encode('ascii'))
-# print (sending.recv(1024).decode('ascii') )
-# time.sleep(2)
-# msg = '1239'
-# sending.send(msg.encode('ascii'))
-# print (sending.recv(1024).decode('ascii') )
 
 time.sleep(2)
 
-# close the connection
+# close the connections
 sending.close()
 receiving.close()
 status.close()
