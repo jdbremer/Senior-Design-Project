@@ -25,8 +25,8 @@ recvPort = 12351
 statusPort = 12352
 
 # connect to the server on local computer
-sending.connect(('192.168.1.28', recvPort))
-receiving.connect(('192.168.1.28', sendPort))
+sending.connect(('192.168.1.28', sendPort))
+receiving.connect(('192.168.1.28', recvPort))
 # connect to the server on local computer
 status.connect(('192.168.1.28', statusPort))
 
