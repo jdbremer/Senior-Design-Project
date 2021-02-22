@@ -3,66 +3,54 @@ import socket
 import time
 import _thread
 
-def statusSocket(serverSocket,dataSocket):
+def statusSocket(serverSocket,receiveSocket, sendingSocket):
 	print (serverSocket.recv(1024).decode('ascii'))
 	serverSocket.send('LightSensor'.encode('ascii'))
-    #    print (serverSocket.recv(1024).decode('ascii')
-    #    serverSocket.send(dataSocket.getsockname().decode('ascii'))
-#	while True:
-#        	continue
+    
+    
+
+def receivingSocket(serverSocket,receiveSocket, sendingSocket):
+	print (receiveSocket.recv(1024).decode('ascii'))
+
+
 
 # Create a socket object
-s = socket.socket()
+receiving = socket.socket()
+sending = socket.socket()
 status = socket.socket()
 
 # Define the port on which you want to connect
-port = 12346
-statusPort = 12347
+sendPort = 12350
+recvPort = 12351
+statusPort = 12352
 
 # connect to the server on local computer
-s.connect(('192.168.1.28', port))
+sending.connect(('192.168.1.28', sendPort))
+receiving.connect(('192.168.1.28', recvPort))
 # connect to the server on local computer
 status.connect(('192.168.1.28', statusPort))
 
-_thread.start_new_thread(statusSocket,(status, s))
-
-print(s.getsockname())
-
+_thread.start_new_thread(statusSocket,(status, receiving, sending))
+#_thread.start_new_thread(receivingSocket,(status, receiving, sending))
 
 
-# receive data from the server
-print (s.recv(1024).decode('ascii') )
 
-msg = 'Thanks for connecting'
-s.send(msg.encode('ascii'))
-print (s.recv(1024).decode('ascii') )
-time.sleep(.00001)
-msg = '1234'
-s.send(msg.encode('ascii'))
-print (s.recv(1024).decode('ascii') )
-time.sleep(.00001)
-msg = '1235'
-s.send(msg.encode('ascii'))
-print (s.recv(1024).decode('ascii') )
-time.sleep(.00001)
-msg = '1236'
-s.send(msg.encode('ascii'))
-print (s.recv(1024).decode('ascii') )
-time.sleep(.00001)
-msg = '1237'
-s.send(msg.encode('ascii'))
-print (s.recv(1024).decode('ascii') )
-time.sleep(2)
-msg = '1238'
-s.send(msg.encode('ascii'))
-print (s.recv(1024).decode('ascii') )
-time.sleep(2)
-msg = '1239'
-s.send(msg.encode('ascii'))
-print (s.recv(1024).decode('ascii') )
+
+
+
+# client rece
+print (sending.recv(1024).decode('ascii') )
+print("here")
+msg = 'Connection Successful..'
+sending.send(msg.encode('ascii'))
+print (sending.recv(1024).decode('ascii') )
+
+
+
 
 time.sleep(2)
 
-# close the connection
-s.close()
+# close the connections
+sending.close()
+receiving.close()
 status.close()
