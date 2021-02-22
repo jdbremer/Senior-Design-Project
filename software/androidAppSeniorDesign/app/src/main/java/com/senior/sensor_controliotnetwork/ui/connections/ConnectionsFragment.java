@@ -172,6 +172,14 @@ public class ConnectionsFragment extends Fragment {
             adapter.notifyDataSetChanged();
         }
 
+        //send notification that device has disconnected
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), "NotificationCH");
+        builder.setContentTitle("Network Disconnection");
+        builder.setContentText(s + " has disconnected");
+        builder.setSmallIcon(R.drawable.ic_menu_send);
+        builder.setAutoCancel(true);
+        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(getContext());
+        managerCompat.notify(1,builder.build());
     }
 
 
@@ -183,9 +191,9 @@ public class ConnectionsFragment extends Fragment {
             adapter.notifyDataSetChanged();
 
             //send notification that device was added
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), "Light Sensor Notification");
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), "NotificationCH");
             builder.setContentTitle("Network Connection");
-            builder.setContentText("Light sensor has connected");
+            builder.setContentText(s + " has connected");
             builder.setSmallIcon(R.drawable.ic_menu_send);
             builder.setAutoCancel(true);
             NotificationManagerCompat managerCompat = NotificationManagerCompat.from(getContext());
