@@ -86,7 +86,7 @@ while True:
     if(inc > 50):
        print(average)
        inc = 0
-       sending.send(average.encode('ascii'))
+       sending.send(str(average).encode('ascii'))
        print (sending.recv(1024).decode('ascii'))
 
 
