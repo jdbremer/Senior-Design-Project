@@ -94,7 +94,7 @@ def clientCloseCheck(statusSocket, addr, recvDataSocket, sendDataSocket):
 
             recvDataSocket.close()
             sendDataSocket.close()
-            dataSocket.close()
+            statusSocketSocket.close()
             break
 
 # next create a socket object
