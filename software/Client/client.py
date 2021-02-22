@@ -1,7 +1,12 @@
 # Import socket module
+import RPi.GPIO as GPIO
 import socket
 import time
 import _thread
+
+import Adafruit_GPIO.SPI as SPI
+import Adafruit_MCP3008
+
 
 def statusSocket(serverSocket,receiveSocket, sendingSocket):
 	print (serverSocket.recv(1024).decode('ascii'))
@@ -34,6 +39,15 @@ _thread.start_new_thread(statusSocket,(status, receiving, sending))
 #_thread.start_new_thread(receivingSocket,(status, receiving, sending))
 
 
+# Hardware SPI configuration:
+SPI_PORT   = 0
+SPI_DEVICE = 0
+mcp = Adafruit_MCP3008.MCP3008(spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE))
+
+
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(18, GPIO.OUT)
+
 
 
 
@@ -44,6 +58,37 @@ print("here")
 msg = 'Connection Successful..'
 sending.send(msg.encode('ascii'))
 print (sending.recv(1024).decode('ascii') )
+
+# when sending data make sure to send then do a receive before doing another send
+
+
+inc = 0
+average = 0
+
+while True:
+    start = time.time()
+    GPIO.output(18, GPIO.HIGH)
+
+    while True:
+       if(mcp.read_adc(0) >= 1000):
+          end = time.time()
+          GPIO.output(18, GPIO.LOW)
+          break
+       else: 
+          continue
+
+    time.sleep(.5)
+    if(average == 0):
+       average = end-start
+    #print(end-start)
+    average = (average+(end-start))/2
+    inc = inc+1
+    if(inc > 50):
+       print(average)
+       inc = 0
+       sending.send(average.encode('ascii'))
+       print (sending.recv(1024).decode('ascii'))
+
 
 
 

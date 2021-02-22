@@ -27,7 +27,7 @@ lock = threading.Lock() #thread lock initialization
 
 connections = {} #global dictionary initialization
 
-def receiveClient(recvDataSocket, addr, statusSocket, sendDataSocket):
+def receiveClient(recvDataSocket, status_add ,addr, statusSocket, sendDataSocket):
     print ('Got connection from recv client.. ', addr )
     thankYouMsg = 'Server :: Thank you for connecting.. '
     recvDataSocket.send(thankYouMsg.encode('ascii'))
@@ -43,6 +43,9 @@ def receiveClient(recvDataSocket, addr, statusSocket, sendDataSocket):
                 statusSocket.close()
                 return
             print(fromClient)
+            
+            database.child("dataFromChild").update({str(connections.get(status_addr[1])) : str(fromClient)})
+
             #print (recvDataSocket.recv(1024).decode('ascii'), addr)
             checkMsg = 'I am here'
             recvDataSocket.send(checkMsg.encode('ascii'))
@@ -137,6 +140,6 @@ while True:
     send_data_accept, send_data_addr = sendData.accept()
     status_accept, status_addr = status.accept()
     _thread.start_new_thread(clientCloseCheck, (status_accept,status_addr,recv_data_accept, send_data_accept))
-    _thread.start_new_thread(receiveClient,(recv_data_accept,recv_data_addr,status_accept, send_data_accept))
+    _thread.start_new_thread(receiveClient,(recv_data_accept,status_address, recv_data_addr,status_accept, send_data_accept))
     # Close the connection with the client
     #c.close()
