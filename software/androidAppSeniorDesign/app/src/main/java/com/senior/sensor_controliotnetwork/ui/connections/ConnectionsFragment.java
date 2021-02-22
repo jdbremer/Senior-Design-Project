@@ -45,7 +45,7 @@ import java.util.Iterator;
 public class ConnectionsFragment extends Fragment {
 
     private ArrayAdapter<String> adapter;
-    public ArrayList<String> arrayList;
+    public ArrayList<String> arrayList = new ArrayList<String>();
 
     public DatabaseReference mDatabase;
     private DatabaseReference mPostReference;
@@ -167,7 +167,7 @@ public class ConnectionsFragment extends Fragment {
 
         if(arrayList.contains(s)){
             arrayList.remove(s);
-            Collections.sort(arrayList);
+            //Collections.sort(arrayList);
 
             adapter.notifyDataSetChanged();
         }
@@ -179,7 +179,7 @@ public class ConnectionsFragment extends Fragment {
 
         if(!arrayList.contains(s)){
             arrayList.add(s);
-            Collections.sort(arrayList);
+            //Collections.sort(arrayList);
             adapter.notifyDataSetChanged();
 
             //send notification that device was added
