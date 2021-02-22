@@ -27,7 +27,7 @@ lock = threading.Lock() #thread lock initialization
 
 connections = {} #global dictionary initialization
 
-def receiveClient(recvDataSocket, status_add ,addr, statusSocket, sendDataSocket):
+def receiveClient(recvDataSocket, status_addr ,addr, statusSocket, sendDataSocket):
     print ('Got connection from recv client.. ', addr )
     thankYouMsg = 'Server :: Thank you for connecting.. '
     recvDataSocket.send(thankYouMsg.encode('ascii'))
