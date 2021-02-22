@@ -92,7 +92,7 @@ def clientCloseCheck(statusSocket, addr, recvDataSocket, sendDataSocket):
             #database.set(data)
             print('Socket has disconnected! ', addr)
 
-            receiveClientSocket.close()
+            recvDataSocket.close()
             sendDataSocket.close()
             dataSocket.close()
             break
