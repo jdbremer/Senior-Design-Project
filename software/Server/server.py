@@ -140,6 +140,6 @@ while True:
     send_data_accept, send_data_addr = sendData.accept()
     status_accept, status_addr = status.accept()
     _thread.start_new_thread(clientCloseCheck, (status_accept,status_addr,recv_data_accept, send_data_accept))
-    _thread.start_new_thread(receiveClient,(recv_data_accept,status_address, recv_data_addr,status_accept, send_data_accept))
+    _thread.start_new_thread(receiveClient,(recv_data_accept,status_addr, recv_data_addr,status_accept, send_data_accept))
     # Close the connection with the client
     #c.close()
