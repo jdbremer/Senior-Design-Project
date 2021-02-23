@@ -4,11 +4,12 @@ import _thread
 import select
 import time
 import threading
+#pyrebase is needed for the firebase connections
 import pyrebase
 import time
 
-
-##DATABASE##
+##DATABASE INIT##
+#firebase database config
 config = {
     "apiKey": "AIzaSyAcaqrqFZYmvcAb0qFCI9N4QiZ6L6OeuZ8",
     "authDomain": "seniordesign-ajr.firebaseapp.com",
@@ -16,41 +17,57 @@ config = {
     "storageBucket": "seniordesign-ajr.appspot.com",
 }
 
+#initialize the pyrebase config instance 
 firebase = pyrebase.initialize_app(config)
 
+#instantiate both the storage and database firebase libraries
 storage = firebase.storage()
 database = firebase.database()
 ##END DATABASE##
 
+#thread lock initialization
+lock = threading.Lock()
 
-lock = threading.Lock() #thread lock initialization
+#global dictionary initialization
+connections = {} 
 
-connections = {} #global dictionary initialization
-
+#thread for the data received from the clients
 def receiveClient(recvDataSocket, status_addr ,addr, statusSocket, sendDataSocket):
+    #print the address of the new connecitons
     print ('Got connection from recv client.. ', addr )
+
+    #client receiving initialization
     thankYouMsg = 'Server :: Thank you for connecting.. '
     recvDataSocket.send(thankYouMsg.encode('ascii'))
     print (recvDataSocket.recv(1024).decode('ascii'))
     checkMsg = 'Connection Successful..'
     recvDataSocket.send(checkMsg.encode('ascii'))
+    #end of the client receiving initialization
+
     while True:
         try:
+            #wait to receive client data
             fromClient = recvDataSocket.recv(1024).decode('ascii')
-
+            
+            #if there is no data, the connection has disconnected
             if(fromClient == ''):
                 recvDataSocket.close()
                 statusSocket.close()
+                #break out of the while loop
                 return
+
+            #print the data that came from the client
             print(fromClient)
             
+            #send the data to the database
             database.child("dataFromChild").update({str(connections.get(status_addr[1])) : str(fromClient)})
 
-            #print (recvDataSocket.recv(1024).decode('ascii'), addr)
+            #send a messsage to the client to keep sync
             checkMsg = 'I am here'
             recvDataSocket.send(checkMsg.encode('ascii'))
+
+        #if the socket has an error, or is disconnected, come into this exception
         except socket.error:
-#            print('Socket has disconnected! ', addr)
             recvDataSocket.close()
             sendDataSocket.close()
             statusSocket.close()
@@ -58,65 +75,63 @@ def receiveClient(recvDataSocket, status_addr ,addr, statusSocket, sendDataSocke
             
 
 
-
+#status socket thread
 def clientCloseCheck(statusSocket, addr, recvDataSocket, sendDataSocket):
+    #lock the thread
     lock.acquire()
+    #client initialization 
     statusSocket.send('connected....'.encode('ascii'))
     sensor = statusSocket.recv(1024).decode('ascii')
+    
     print (sensor)
- #   statusSocket.send('send client ID...'.encode('ascii'))
- #   clientID = statusSocket.recv(1024.decode('ascii'))
- #   print (clientID)
-#    print(clientID[1])
+    #print the address of the server/client status socket connection
     print (addr[1])
+    #add the sensor name and address to the connections dictionary
     connections[addr[1]] = sensor
-
-
-
+    #release the thread lock
     lock.release()
-
+    #update the database to display connected sensor
     database.child("Connections").update({str(sensor) : "1"})
-    #data = {str(sensor) : "1"}
-    #database.set(data)
 
-
+    #keep trying to send data to the client (the client will never accept on purpose)
     while True:
-        #time.sleep(1)
         try:
             checkMsg = 'Are you there?'
             statusSocket.send(checkMsg.encode('ascii'))
-        except socket.error:
-            lock.acquire()
-            valueToPull = connections.get(addr[1])
-            del connections[addr[1]]
-            lock.release()
-            database.child("Connections").update({str(valueToPull) : "0"})
-            #data = {str(valueToPull) : "0"}
-            #database.set(data)
-            print('Socket has disconnected! ', addr)
 
+        #when it trys to send the data, if it recognizes an error or disconnect, come into this exception
+        except socket.error:
+            #lock the thread
+            lock.acquire()
+            #find the sensor name using the socket address via the dictionary
+            valueToPull = connections.get(addr[1])
+            #delete it from the dictionary, showing that it is disconnected
+            del connections[addr[1]]
+            #release the thread
+            lock.release()
+            #update the connections database with the disconnected device
+            database.child("Connections").update({str(valueToPull) : "0"})
+            #display the disconnected sockets address
+            print('Socket has disconnected! ', addr)
+            #close all sockets (for saftey measures)
             recvDataSocket.close()
             sendDataSocket.close()
             statusSocket.close()
             break
 
-# next create a socket object
+# next create a socket object for receiving, sending and status
 recvData = socket.socket()
 sendData = socket.socket()
 status = socket.socket()
 print ("Sockets successfully created")
 
-# reserve a port on your computer in our
-# case it is 12345 but it can be anything
+#ports that are reserved 
 recvPort = 12350
 sendPort = 12351
 statusPort = 12352
 
-# Next bind to the port
-# we have not typed any ip in the ip field
-# instead we have inputted an empty string
-# this makes the server listen to requests
-# coming from other computers on the network
+
+#bind all of the port numbers to the sockets
 recvData.bind(('', recvPort))
 print ("data socket binded to %s" %(recvPort))
 
@@ -126,20 +141,19 @@ print ("data socket binded to %s" %(sendPort))
 status.bind(('',statusPort))
 print ("status socket binded to %s" %(statusPort))
 
-# put the socket into listening mode
+# put the sockets into listening mode
 recvData.listen(5)
 print ("recv data socket is listening")
 sendData.listen(5)
 print ("send data socket is listening")
 status.listen(5)
 print ("status socket is listening")
-# a forever loop until we interrupt it or
-# an error occurs
+
+#a forever loop until we interrupt it or an error occurs
 while True:
     recv_data_accept, recv_data_addr = recvData.accept()
     send_data_accept, send_data_addr = sendData.accept()
     status_accept, status_addr = status.accept()
     _thread.start_new_thread(clientCloseCheck, (status_accept,status_addr,recv_data_accept, send_data_accept))
     _thread.start_new_thread(receiveClient,(recv_data_accept,status_addr, recv_data_addr,status_accept, send_data_accept))
-    # Close the connection with the client
-    #c.close()
+
