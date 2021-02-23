@@ -110,6 +110,35 @@ public class ConnectionsFragment extends Fragment {
 //        });
 
 
+        //SINGLE LISTENER CODE//
+        ValueEventListener singleListener = new ValueEventListener(){
+            @Override
+            public void onDataChange (DataSnapshot dataSnapshot){
+                Iterator<DataSnapshot> iter = dataSnapshot.getChildren().iterator();
+                while (iter.hasNext()){
+                    DataSnapshot snap = iter.next();
+                    String nodId = snap.getKey();
+                    int onOff = Integer.parseInt((String) snap.getValue());
+                    if(onOff == 1){
+                        initializeList(nodId);
+                    }
+                    else{
+                        removeFromList(nodId);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled (@NonNull DatabaseError error){
+                //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                System.out.println("The read failed: " + error.getMessage());
+            }
+        };
+        mPostReference.addListenerForSingleValueEvent(singleListener); //Uncomment this to start the continuous grab of updated data (runs code above, constant listener code)
+        //END SINGLE LISTENER CODE//
+
+
+
         //CONSTANT LISTENER CODE//
         ValueEventListener constantListener = new ValueEventListener(){
             @Override
@@ -119,7 +148,7 @@ public class ConnectionsFragment extends Fragment {
                     DataSnapshot snap = iter.next();
                     String nodId = snap.getKey();
                     int onOff = Integer.parseInt((String) snap.getValue());
-                    if(onOff == 1){
+                    if(onOff == 1 && arrayList.contains(nodId)){
                         addingToList(nodId);
                     }
                     else{
@@ -170,16 +199,19 @@ public class ConnectionsFragment extends Fragment {
             //Collections.sort(arrayList);
 
             adapter.notifyDataSetChanged();
+
+            //send notification that device has disconnected
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), "NotificationCH");
+            builder.setContentTitle("Network Disconnection");
+            builder.setContentText(s + " has disconnected");
+            builder.setSmallIcon(R.drawable.ic_menu_send);
+            builder.setAutoCancel(true);
+            NotificationManagerCompat managerCompat = NotificationManagerCompat.from(getContext());
+            managerCompat.notify(1,builder.build());
+
         }
 
-        //send notification that device has disconnected
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), "NotificationCH");
-        builder.setContentTitle("Network Disconnection");
-        builder.setContentText(s + " has disconnected");
-        builder.setSmallIcon(R.drawable.ic_menu_send);
-        builder.setAutoCancel(true);
-        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(getContext());
-        managerCompat.notify(1,builder.build());
+
     }
 
 
@@ -198,6 +230,14 @@ public class ConnectionsFragment extends Fragment {
             builder.setAutoCancel(true);
             NotificationManagerCompat managerCompat = NotificationManagerCompat.from(getContext());
             managerCompat.notify(1,builder.build());
+        }
+    }
+
+    public void initializeList(String s){
+        if(!arrayList.contains(s)) {
+            arrayList.add(s);
+            //Collections.sort(arrayList);
+            adapter.notifyDataSetChanged();
         }
     }
 }
