@@ -165,21 +165,7 @@ public class ConnectionsFragment extends Fragment {
         };
         mPostReference.addValueEventListener(constantListener);  //Uncomment this to start the continuous grab of updated data (runs code above, constant listener code)
         //END CONSTANT LISTENER CODE//
-
-
-        connectionsFilter.addTextChangedListener(new TextWatcher() {
-            @Override
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                adapter.getFilter().filter(s);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
+        
 
 
         connections.setAdapter(adapter);
