@@ -18,8 +18,8 @@
         tools:layout="@layout/fragment_connections" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.senior.sensor_controliotnetwork.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        android:id="@+id/nav_microphone"
+        android:name="com.senior.sensor_controliotnetwork.ui.microphone.MicrophoneFragment"
+        android:label="@string/menu_microphone"
+        tools:layout="@layout/fragment_microphone" />
 </navigation>
