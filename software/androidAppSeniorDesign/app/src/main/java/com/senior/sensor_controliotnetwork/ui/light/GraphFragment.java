@@ -20,7 +20,10 @@ import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.senior.sensor_controliotnetwork.R;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,7 +40,10 @@ public class GraphFragment extends Fragment {
     private GraphView graph;
     private LineGraphSeries<DataPoint> mSeries1 = new LineGraphSeries<>();
 
-    private double graph2LastXValue = 0d;
+    private ArrayList<DataPoint> mSeries2 = new ArrayList<>();
+
+    private HashMap<String, String> sensorValues = new HashMap<String, String>();
+
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -82,6 +88,7 @@ public class GraphFragment extends Fragment {
 
 
     int inc = 0;
+    int inc2 = 0;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -108,9 +115,25 @@ public class GraphFragment extends Fragment {
 //        });
 //        graph.addSeries(series);
 //        graph.removeSeries(series);
-
-
+//        mSeries2
         mSeries1 = new LineGraphSeries<>();
+        graph.addSeries(mSeries1);
+        graph.getViewport().setXAxisBoundsManual(true);
+        graph.getViewport().setMinX(1);
+        graph.getViewport().setMaxX(10);
+        graph.getViewport().setYAxisBoundsManual(true);
+        graph.getViewport().setMinY(0);
+        graph.getViewport().setMaxY(10);
+//
+//        mSeries1.appendData(new DataPoint(1,1),false,4);
+//        mSeries1.appendData(new DataPoint(2,2),false,4);
+//        mSeries1.appendData(new DataPoint(3,3),false,4);
+//        mSeries1.appendData(new DataPoint(4,4),false,4);
+        //graph.removeAllSeries();
+
+
+
+       // mSeries1 = new LineGraphSeries<>();
         LineGraphSeries<DataPoint> series = new LineGraphSeries<>();
 
 
@@ -135,37 +158,60 @@ public class GraphFragment extends Fragment {
         ValueEventListener constantListener = new ValueEventListener(){
             @Override
             public void onDataChange (DataSnapshot dataSnapshot){
-                graph.getViewport().setMinX(0);
-                graph.getViewport().setMaxX(50);
-                graph.getViewport().setMinY(0);
-                graph.getViewport().setMaxY(10);
-                graph.addSeries(mSeries1);
-                int maxGraphPoints = 5;
-                //double x = inc++;
-//                if(x > maxGraphPoints){
-//                    x = 0;
-//                    inc = 0;
-//                }
-               // double y = 30+inc;
 
 
+                int maxGraphPoints = 3;
 
-
-                 graph2LastXValue += 1d;
-                //double y = 50;
-
-//                mSeries1.appendData(new DataPoint(x,y),true,3);
-//                mSeries1.appendData(new DataPoint(25,50),true,3);
-//                mSeries1.appendData(new DataPoint(28,60),true,3);
-//                mSeries1.appendData(new DataPoint(30,70),true,3);
-//                mSeries1.appendData(new DataPoint(50,80),true,3);
 
                 double y = Double.parseDouble((String) dataSnapshot.getValue());
-                mSeries1.appendData(new DataPoint(graph2LastXValue,y*1000),true, maxGraphPoints);
-//                DataPoint v = new DataPoint(x,y);
-//                values[inc++] = v;
-//                mSeries1 = new LineGraphSeries<>(values);
-//                graph.addSeries(mSeries1);
+
+                //add data to a hash table
+                sensorValues.put(String.valueOf(inc), (String) dataSnapshot.getValue() );
+
+                //if the max number of points was reached
+                if(inc >= maxGraphPoints+1){
+
+                    //shift all the data within the hash table
+                    for ( int i = 0; i < maxGraphPoints+1 ; i++){
+                        if(i == 0){
+
+                            sensorValues.remove(String.valueOf(i));
+                        }
+                        else{
+                            String key = sensorValues.get(String.valueOf(i));
+                            sensorValues.remove(String.valueOf(i));
+                            sensorValues.put(String.valueOf(i-1), key);
+                        }
+                    }
+
+
+                    //trying to remove old data on the graph and add new data
+                    mSeries1.clearReference(graph);
+                    graph.removeSeries(mSeries1);
+                    mSeries1 = new LineGraphSeries<>();
+                    graph.addSeries(mSeries1);
+                    graph.refreshDrawableState();
+                    graph.onDataChanged(true, true);
+
+
+                    //this is here as a test to just continue adding data
+                    mSeries1.appendData(new DataPoint(inc2++,y*1000),false, 10);
+
+                    //iterate through the hash table to then add the shifted data to the series
+                    Iterator iterate = sensorValues.entrySet().iterator();
+                    while(iterate.hasNext()){
+                        iterate.next();
+                       // Map.Entry mapElement = (Map.Entry)iterate.next();
+                       // mSeries1.appendData(new DataPoint((int)mapElement.getKey(),(Double.parseDouble((String) mapElement.getValue()))*1000),false, maxGraphPoints);
+                    }
+
+
+                }
+                //the max number of points hasn't been reached yet
+                else{
+                    mSeries1.appendData(new DataPoint(inc++,y*1000),false, 10);
+                    inc2++;
+                }
 
             }
 
