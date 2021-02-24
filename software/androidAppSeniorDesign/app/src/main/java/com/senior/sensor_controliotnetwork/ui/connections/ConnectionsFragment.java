@@ -165,7 +165,7 @@ public class ConnectionsFragment extends Fragment {
         };
         mPostReference.addValueEventListener(constantListener);  //Uncomment this to start the continuous grab of updated data (runs code above, constant listener code)
         //END CONSTANT LISTENER CODE//
-        
+
 
 
         connections.setAdapter(adapter);
