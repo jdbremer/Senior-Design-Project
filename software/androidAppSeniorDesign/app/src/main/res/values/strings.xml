@@ -9,8 +9,11 @@
 
     <string name="menu_light">Light Sensor</string>
     <string name="menu_connections">Connections</string>
-    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_microphone">Microphone</string>
 
     <string name="lightData">Data</string>
     <string name="lightGraph">Graph</string>
+
+    <string name="microphoneData">Data</string>
+    <string name="microphoneGraph">Graph</string>
 </resources>

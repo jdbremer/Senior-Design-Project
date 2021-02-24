@@ -1,4 +1,4 @@
-package com.senior.sensor_controliotnetwork.ui.light;
+package com.senior.sensor_controliotnetwork.ui.microphone;
 
 import android.graphics.pdf.PdfDocument;
 
@@ -8,12 +8,12 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-public class PagerAdapter extends FragmentPagerAdapter {
+public class MicrophonePagerAdapter extends FragmentPagerAdapter {
 
     private int numOfTabs;
 
 
-    public PagerAdapter(FragmentManager fm, int numOfTabs){
+    public MicrophonePagerAdapter(FragmentManager fm, int numOfTabs){
         //super(fm);
         super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         this.numOfTabs = numOfTabs;
@@ -26,16 +26,16 @@ public class PagerAdapter extends FragmentPagerAdapter {
 
         switch (position){
             case 0:
-                return new DataFragment();
+                return new MicrophoneDataFragment();
 
             case 1:
-                return new GraphFragment();
+                return new MicrophoneGraphFragment();
             default:
                 return null;
         }
 
-    }
 
+    }
 
 
 
