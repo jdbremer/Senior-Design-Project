@@ -42,7 +42,7 @@ public class GraphFragment extends Fragment {
 
     private ArrayList<DataPoint> mSeries2 = new ArrayList<>();
 
-    private HashMap<String, String> sensorValues = new HashMap<String, String>();
+    private Map<String, String> sensorValues = new HashMap<String, String>();
 
 
 
@@ -117,6 +117,7 @@ public class GraphFragment extends Fragment {
 //        graph.removeSeries(series);
 //        mSeries2
         mSeries1 = new LineGraphSeries<>();
+        mSeries1.setThickness(20);
         graph.addSeries(mSeries1);
         graph.getViewport().setXAxisBoundsManual(true);
         graph.getViewport().setMinX(1);
@@ -124,6 +125,10 @@ public class GraphFragment extends Fragment {
         graph.getViewport().setYAxisBoundsManual(true);
         graph.getViewport().setMinY(0);
         graph.getViewport().setMaxY(10);
+        graph.getViewport().setBackgroundColor(getResources().getColor(R.));
+        //graph.setDrawingCacheBackgroundColor(true);
+        //graph.setDrawingCacheBackgroundColor(getResources().getColor(R.color.blue));
+
 //
 //        mSeries1.appendData(new DataPoint(1,1),false,4);
 //        mSeries1.appendData(new DataPoint(2,2),false,4);
@@ -158,9 +163,9 @@ public class GraphFragment extends Fragment {
         ValueEventListener constantListener = new ValueEventListener(){
             @Override
             public void onDataChange (DataSnapshot dataSnapshot){
+                //LineGraphSeries<DataPoint> mSeries3 = new LineGraphSeries<>();
 
-
-                int maxGraphPoints = 3;
+                int maxGraphPoints = 10;
 
 
                 double y = Double.parseDouble((String) dataSnapshot.getValue());
@@ -168,8 +173,9 @@ public class GraphFragment extends Fragment {
                 //add data to a hash table
                 sensorValues.put(String.valueOf(inc), (String) dataSnapshot.getValue() );
 
+
                 //if the max number of points was reached
-                if(inc >= maxGraphPoints+1){
+                if(inc >= maxGraphPoints){
 
                     //shift all the data within the hash table
                     for ( int i = 0; i < maxGraphPoints+1 ; i++){
@@ -189,20 +195,26 @@ public class GraphFragment extends Fragment {
                     mSeries1.clearReference(graph);
                     graph.removeSeries(mSeries1);
                     mSeries1 = new LineGraphSeries<>();
+                    //LineGraphSeries<DataPoint> mSeries1 = new LineGraphSeries<>();
+                    mSeries1.setThickness(20);
                     graph.addSeries(mSeries1);
                     graph.refreshDrawableState();
                     graph.onDataChanged(true, true);
 
 
                     //this is here as a test to just continue adding data
-                    mSeries1.appendData(new DataPoint(inc2++,y*1000),false, 10);
+                    //mSeries1.appendData(new DataPoint(inc2++,y*1000),false, 10);
 
                     //iterate through the hash table to then add the shifted data to the series
-                    Iterator iterate = sensorValues.entrySet().iterator();
-                    while(iterate.hasNext()){
-                        iterate.next();
-                       // Map.Entry mapElement = (Map.Entry)iterate.next();
-                       // mSeries1.appendData(new DataPoint((int)mapElement.getKey(),(Double.parseDouble((String) mapElement.getValue()))*1000),false, maxGraphPoints);
+                    Iterator<Map.Entry<String, String>> itr = sensorValues.entrySet().iterator();
+                    while(itr.hasNext()){
+                        //iterate.next();
+                        Map.Entry<String, String> entry = itr.next();
+                        int x = Integer.parseInt(entry.getKey());
+                        double y2 = (Double.parseDouble((String) entry.getValue()))*1000;
+                        mSeries1.appendData(new DataPoint(x,y2),false, 10);
+                        graph.refreshDrawableState();
+                        graph.onDataChanged(true, true);
                     }
 
 
@@ -210,6 +222,8 @@ public class GraphFragment extends Fragment {
                 //the max number of points hasn't been reached yet
                 else{
                     mSeries1.appendData(new DataPoint(inc++,y*1000),false, 10);
+                    graph.refreshDrawableState();
+                    graph.onDataChanged(true, true);
                     inc2++;
                 }
 
