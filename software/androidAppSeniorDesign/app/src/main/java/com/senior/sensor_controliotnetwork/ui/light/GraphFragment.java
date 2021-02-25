@@ -1,5 +1,6 @@
 package com.senior.sensor_controliotnetwork.ui.light;
 
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
@@ -119,14 +120,15 @@ public class GraphFragment extends Fragment {
 //        graph.removeSeries(series);
 //        mSeries2
         mSeries1 = new LineGraphSeries<>();
-        mSeries1.setThickness(20);
+        mSeries1.setThickness(15);
+        mSeries1.setColor(Color.rgb(210,180,140));
         graph.addSeries(mSeries1);
         graph.getViewport().setXAxisBoundsManual(true);
         graph.getViewport().setMinX(1);
         graph.getViewport().setMaxX(10);
-        graph.getViewport().setYAxisBoundsManual(true);
-        graph.getViewport().setMinY(0);
-        graph.getViewport().setMaxY(10);
+//        graph.getViewport().setYAxisBoundsManual(true);
+//        graph.getViewport().setMinY(0);
+//        graph.getViewport().setMaxY(30);
 
         //graph.setDrawingCacheBackgroundColor(true);
         //graph.setDrawingCacheBackgroundColor(getResources().getColor(R.color.blue));
@@ -167,7 +169,7 @@ public class GraphFragment extends Fragment {
             public void onDataChange (DataSnapshot dataSnapshot){
                 //LineGraphSeries<DataPoint> mSeries3 = new LineGraphSeries<>();
 
-                int maxGraphPoints = 10;
+                int maxGraphPoints = 11;
 
 
                 double y = Double.parseDouble((String) dataSnapshot.getValue());
@@ -198,7 +200,8 @@ public class GraphFragment extends Fragment {
                     graph.removeSeries(mSeries1);
                     mSeries1 = new LineGraphSeries<>();
                     //LineGraphSeries<DataPoint> mSeries1 = new LineGraphSeries<>();
-                    mSeries1.setThickness(20);
+                    mSeries1.setThickness(15);
+                    mSeries1.setColor(Color.rgb(210,180,140));
                     graph.addSeries(mSeries1);
                     graph.refreshDrawableState();
                     graph.onDataChanged(true, true);
