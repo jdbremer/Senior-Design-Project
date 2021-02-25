@@ -22,4 +22,10 @@
         android:name="com.senior.sensor_controliotnetwork.ui.microphone.MicrophoneFragment"
         android:label="@string/menu_microphone"
         tools:layout="@layout/fragment_microphone" />
+
+    <fragment
+        android:id="@+id/nav_controlSwitch"
+        android:name="com.senior.sensor_controliotnetwork.ui.controlSwitch.ControlSwitchFragment"
+        android:label="@string/menu_controlSwitch"
+        tools:layout="@layout/fragment_control_switch" />
 </navigation>

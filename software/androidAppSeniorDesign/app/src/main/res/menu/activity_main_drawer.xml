@@ -16,5 +16,9 @@
             android:id="@+id/nav_microphone"
             android:icon="@drawable/ic_menu_send"
             android:title="@string/menu_microphone" />
+        <item
+            android:id="@+id/nav_controlSwitch"
+            android:icon="@drawable/ic_menu_send"
+            android:title="@string/menu_controlSwitch" />
     </group>
 </menu>

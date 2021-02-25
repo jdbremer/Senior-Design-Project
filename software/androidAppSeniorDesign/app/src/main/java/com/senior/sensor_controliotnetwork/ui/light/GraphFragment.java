@@ -125,7 +125,7 @@ public class GraphFragment extends Fragment {
         graph.getViewport().setYAxisBoundsManual(true);
         graph.getViewport().setMinY(0);
         graph.getViewport().setMaxY(10);
-        graph.getViewport().setBackgroundColor(getResources().getColor(R.));
+//        graph.getViewport().setBackgroundColor(getResources().getColor(R.));
         //graph.setDrawingCacheBackgroundColor(true);
         //graph.setDrawingCacheBackgroundColor(getResources().getColor(R.color.blue));
 
