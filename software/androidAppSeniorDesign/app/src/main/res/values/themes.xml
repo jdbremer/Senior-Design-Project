@@ -21,5 +21,5 @@
 
     <style name="Theme.SensorControlIoTNetwork.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="Theme.SensorControlIoTNetwork.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="Theme.SensorControlIoTNetwork.PopupOverlay" parent="ThemeOverlay.AppCompat.Dark" />
 </resources>
