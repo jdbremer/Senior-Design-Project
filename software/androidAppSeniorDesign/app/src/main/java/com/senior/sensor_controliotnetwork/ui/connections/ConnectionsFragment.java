@@ -54,7 +54,7 @@ public class ConnectionsFragment extends Fragment {
     private ConnectionsViewModel connectionsViewModel;
 
 
-
+    boolean justEntered = false;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         connectionsViewModel =
@@ -110,6 +110,33 @@ public class ConnectionsFragment extends Fragment {
 //        });
 
 
+        //CONSTANT LISTENER CODE//
+        ValueEventListener constantListener = new ValueEventListener(){
+            @Override
+            public void onDataChange (DataSnapshot dataSnapshot){
+                Iterator<DataSnapshot> iter = dataSnapshot.getChildren().iterator();
+                while (iter.hasNext()){
+                    DataSnapshot snap = iter.next();
+                    String nodId = snap.getKey();
+                    int onOff = Integer.parseInt((String) snap.getValue());
+                    if(onOff == 1 && !arrayList.contains(nodId)){
+                        addingToList(nodId);
+                    }
+                    else if(onOff == 0 && arrayList.contains((nodId))){
+                        removeFromList(nodId);
+                    }
+                    justEntered = false;
+                }
+            }
+
+            @Override
+            public void onCancelled (@NonNull DatabaseError error){
+                //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                System.out.println("The read failed: " + error.getMessage());
+            }
+        };
+        //END CONSTANT LISTENER CODE//
+
         //SINGLE LISTENER CODE//
         ValueEventListener singleListener = new ValueEventListener(){
             @Override
@@ -126,6 +153,8 @@ public class ConnectionsFragment extends Fragment {
                         removeFromList(nodId);
                     }
                 }
+                mPostReference.addValueEventListener(constantListener);
+
             }
 
             @Override
@@ -137,34 +166,6 @@ public class ConnectionsFragment extends Fragment {
         mPostReference.addListenerForSingleValueEvent(singleListener); //Uncomment this to start the continuous grab of updated data (runs code above, constant listener code)
         //END SINGLE LISTENER CODE//
 
-
-
-        //CONSTANT LISTENER CODE//
-        ValueEventListener constantListener = new ValueEventListener(){
-            @Override
-            public void onDataChange (DataSnapshot dataSnapshot){
-                Iterator<DataSnapshot> iter = dataSnapshot.getChildren().iterator();
-                while (iter.hasNext()){
-                    DataSnapshot snap = iter.next();
-                    String nodId = snap.getKey();
-                    int onOff = Integer.parseInt((String) snap.getValue());
-                    if(onOff == 1 && arrayList.contains(nodId)){
-                        addingToList(nodId);
-                    }
-                    else{
-                        removeFromList(nodId);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled (@NonNull DatabaseError error){
-                //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                System.out.println("The read failed: " + error.getMessage());
-            }
-        };
-        mPostReference.addValueEventListener(constantListener);  //Uncomment this to start the continuous grab of updated data (runs code above, constant listener code)
-        //END CONSTANT LISTENER CODE//
 
 
 
