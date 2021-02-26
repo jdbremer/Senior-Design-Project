@@ -28,16 +28,18 @@ database = firebase.database()
 #thread lock initialization
 lock = threading.Lock()
 
-#global dictionary initialization
+#global dictionary initialization ~ stores socket address and socket name
 connections = {} 
+#global dictionary initialization ~ stores socket name and socket object 
 connectToSocketLib = {}
 
-
+#used for firebase handler
 firstHandlerEntry = 0
 
 
 
-
+#the firebase handler will run this function to go through the sequence to send 
+#the data from the app to the correct child node
 def sendingClientFromFirebase(data, sensorName):
     if(sensorName in connectToSocketLib.keys()):
         sendSocket = connectToSocketLib.get(sensorName)
@@ -50,6 +52,7 @@ def sendingClientFromFirebase(data, sensorName):
 #firebase listener "dataFromApp"
 def firebaseStreamHandler(event):
     global firstHandlerEntry
+    #if this is the first time in here, the data will be initialization data, which we want to discard
     if(firstHandlerEntry == 0):
         firstHandlerEntry = 1
 
@@ -65,7 +68,6 @@ def firebaseStreamHandler(event):
             
 
         
-
 #initialize the firebase listener
 myStream = database.child("dataFromApp").stream(firebaseStreamHandler, None)
 
@@ -155,6 +157,8 @@ def clientCloseCheck(statusSocket, addr, recvDataSocket, sendDataSocket):
             lock.release()
             #update the connections database with the disconnected device
             database.child("Connections").update({str(valueToPull) : "0"})
+            #update the data coming from child within the database to 0
+            database.child("dataFromChild").update({str(valueToPull)) : "0"})
             #display the disconnected sockets address
             print('Socket has disconnected! ', addr)
             #close all sockets (for saftey measures)
