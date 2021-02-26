@@ -30,6 +30,46 @@ lock = threading.Lock()
 
 #global dictionary initialization
 connections = {} 
+connectToSocketLib = {}
+
+
+firstHandlerEntry = 0
+
+
+
+
+
+
+def sendingClientFromFirebase(data, sensorName):
+    if(sensorName in connectToSocketLib.keys()):
+        sendSocket = connectToSocketLib.get(sensorName)
+        sendSocket.send(data.encode('ascii'))
+        receivedData = sendSocket.recv(1024).decode('ascii')
+
+
+
+#firebase listener "dataFromApp"
+def firebaseStreamHandler(event):
+    if(firstHandlerEntry == 0):
+        firstHandlerEntry  = 1
+
+    else:
+        eventPathString = event["path"]
+        if(len(eventPathString.split('/')) >= 1):
+            #pulls out the sensor name from the event data which is delimited
+            sensorName = eventPathString.split('/')[1]
+            #pulls out the sensor data from the event data, this data is not delimited
+            sensorData = eventPathString = event["data"]
+            print("Received data from.. " + sensorName + " Sensor data.. " + sensorData)
+            sendingClientFromFirebase(sensorData, sensorName)
+            
+
+        
+
+#initialize the firebase listener
+myStream = database.child("dataFromApp").stream(firebaseStreamHandler, None)
+
+
 
 #thread for the data received from the clients
 def receiveClient(recvDataSocket, status_addr ,addr, statusSocket, sendDataSocket):
@@ -52,6 +92,7 @@ def receiveClient(recvDataSocket, status_addr ,addr, statusSocket, sendDataSocke
             #if there is no data, the connection has disconnected
             if(fromClient == ''):
                 recvDataSocket.close()
+                sendDataSocket.close()
                 statusSocket.close()
                 #break out of the while loop
                 return
@@ -88,6 +129,7 @@ def clientCloseCheck(statusSocket, addr, recvDataSocket, sendDataSocket):
     print (addr[1])
     #add the sensor name and address to the connections dictionary
     connections[addr[1]] = sensor
+    connectToSocketLib[sensor] = sendDataSocket
     #release the thread lock
     lock.release()
     #update the database to display connected sensor
@@ -107,6 +149,7 @@ def clientCloseCheck(statusSocket, addr, recvDataSocket, sendDataSocket):
             valueToPull = connections.get(addr[1])
             #delete it from the dictionary, showing that it is disconnected
             del connections[addr[1]]
+            del connectToSocketLib[valueToPull]
             #release the thread
             lock.release()
             #update the connections database with the disconnected device
@@ -148,6 +191,8 @@ sendData.listen(5)
 print ("send data socket is listening")
 status.listen(5)
 print ("status socket is listening")
+
+
 
 #a forever loop until we interrupt it or an error occurs
 while True:
