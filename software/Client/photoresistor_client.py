@@ -24,16 +24,17 @@ def statusSocket(serverSocket,receiveSocket, sendingSocket):
     
 #thread to handle the data that is received from the base node
 def receivingSocket(serverSocket,receiveSocket, sendingSocket):
-    #data that comes from the base node will end up in receivedDAta
-    receivedData = receiveSocket.recv(1024).decode('ascii')
-	print (receivedData)
-    #need to send data back to keep sync
-    receiveSocket.send('Received...'.encode('ascii'))
+    while True:
+        #data that comes from the base node will end up in receivedDAta
+        receivedData = receiveSocket.recv(1024).decode('ascii')
+        print (receivedData)
+        #need to send data back to keep sync
+        receiveSocket.send('Received...'.encode('ascii'))
 
-    #CODE TO DO SOMETHING WITH RECEIVED DATA
+        #CODE TO DO SOMETHING WITH RECEIVED DATA
 
 
-    #END CODE TO DO SOMETHING WITH RECEIVED DATA
+        #END CODE TO DO SOMETHING WITH RECEIVED DATA
 
 
 

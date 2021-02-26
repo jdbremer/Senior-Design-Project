@@ -13,6 +13,7 @@ def sendsSocket(sendingSocket, data):
        sendingSocket.send(str(data).encode('ascii'))
        #received message from server to keep in sync
        msgFromServer = sendingSocket.recv(1024).decode('ascii')
+       print(msgFromServer)
 
 #thread that initiates when the status socket gets initiated
 def statusSocket(serverSocket,receiveSocket, sendingSocket):
@@ -22,23 +23,24 @@ def statusSocket(serverSocket,receiveSocket, sendingSocket):
     
 
 def receivingSocket(serverSocket,receiveSocket, sendingSocket):
-    #data that comes from the base node will end up in receivedDAta
-    receivedData = receiveSocket.recv(1024).decode('ascii')
-    print(receivedData)
-    #need to send data back to keep sync
-    receiveSocket.send('Received...'.encode('ascii'))
+    while True:
+        #data that comes from the base node will end up in receivedDAta
+        receivedData = receiveSocket.recv(1024).decode('ascii')
+        print(receivedData)
+        #need to send data back to keep sync
+        receiveSocket.send('Received...'.encode('ascii'))
 
-    #CODE TO DO SOMETHING WITH RECEIVED DATA
-    print("received data.. " + receivedData)
-    if(int(receivedData) == 0):
-        #GPIO.output(18, GPIO.LOW)
-        sendsSocket(sendingSocket, 0)
-    elif(int(receivedData) == 1):
-        #GPIO.output(18, GPIO.HIGH)
-        sendsSocket(sendingSocket, 1)
+        #CODE TO DO SOMETHING WITH RECEIVED DATA
+        print("received data.. " + receivedData)
+        if(int(receivedData) == 0):
+            #GPIO.output(18, GPIO.LOW)
+            sendsSocket(sendingSocket, 0)
+        elif(int(receivedData) == 1):
+            #GPIO.output(18, GPIO.HIGH)
+            sendsSocket(sendingSocket, 1)
 
 
-    #END CODE TO DO SOMETHING WITH RECEIVED DATA
+        #END CODE TO DO SOMETHING WITH RECEIVED DATA
     
 
 
