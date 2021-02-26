@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="48171d0f-e8cd-4d55-9ef4-fec9045fdb00" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../androidAppSeniorDesign/app/src/main/java/com/senior/sensor_controliotnetwork/ui/controlSwitch/ControlSwitchFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/../androidAppSeniorDesign/app/src/main/java/com/senior/sensor_controliotnetwork/ui/controlSwitch/ControlSwitchFragment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../androidAppSeniorDesign/app/src/main/res/layout/fragment_control_switch.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../androidAppSeniorDesign/app/src/main/res/layout/fragment_control_switch.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/testAndroidApp.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/testAndroidApp.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -35,5 +38,15 @@
       <updated>1612124233713</updated>
     </task>
     <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1614296037792">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/-1440.87.1440.860@0.0.1920.1040" timestamp="1614296037792" />
+    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1614295748593">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040/-1440.87.1440.860@0.0.1920.1040" timestamp="1614295748593" />
   </component>
 </project>
