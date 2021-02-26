@@ -50,8 +50,9 @@ def sendingClientFromFirebase(data, sensorName):
 
 #firebase listener "dataFromApp"
 def firebaseStreamHandler(event):
+    global firstHandlerEntry
     if(firstHandlerEntry == 0):
-        firstHandlerEntry  = 1
+        firstHandlerEntry = 1
 
     else:
         eventPathString = event["path"]
@@ -134,6 +135,11 @@ def clientCloseCheck(statusSocket, addr, recvDataSocket, sendDataSocket):
     lock.release()
     #update the database to display connected sensor
     database.child("Connections").update({str(sensor) : "1"})
+
+    if(sensor in connectToSocketLib.keys()):
+        sendSocket = connectToSocketLib.get(sensor)
+        sendDataSocket.send("HEYYYY".encode('ascii'))
+        receivedData = sendDataSocket.recv(1024).decode('ascii')
 
     #keep trying to send data to the client (the client will never accept on purpose)
     while True:

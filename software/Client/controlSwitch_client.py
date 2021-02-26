@@ -16,7 +16,7 @@ def sendingSocket(sendingSocket, data):
 
 #thread that initiates when the status socket gets initiated
 def statusSocket(serverSocket,receiveSocket, sendingSocket):
-	print (serverSocket.recv(1024).decode('ascii'))
+	print(serverSocket.recv(1024).decode('ascii'))
 	serverSocket.send('LightSensor'.encode('ascii'))
     
     
@@ -24,16 +24,16 @@ def statusSocket(serverSocket,receiveSocket, sendingSocket):
 def receivingSocket(serverSocket,receiveSocket, sendingSocket):
     #data that comes from the base node will end up in receivedDAta
     receivedData = receiveSocket.recv(1024).decode('ascii')
-	print (receivedData)
+    print(receivedData)
     #need to send data back to keep sync
     receiveSocket.send('Received...'.encode('ascii'))
 
     #CODE TO DO SOMETHING WITH RECEIVED DATA
-    print("received data.. " receivedData)
+    print("received data.. " + receivedData)
     if(int(receivedData) == 0):
         #GPIO.output(18, GPIO.LOW)
         sendingSocket(sendingSocket, 0)
-    else if(int(receivedData) == 1):
+    elif(int(receivedData) == 1):
         #GPIO.output(18, GPIO.HIGH)
         sendingSocket(sendingSocket, 1)
 
