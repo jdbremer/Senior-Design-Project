@@ -136,10 +136,10 @@ def clientCloseCheck(statusSocket, addr, recvDataSocket, sendDataSocket):
     #update the database to display connected sensor
     database.child("Connections").update({str(sensor) : "1"})
 
-    if(sensor in connectToSocketLib.keys()):
-        sendSocket = connectToSocketLib.get(sensor)
-        sendDataSocket.send("HEYYYY".encode('ascii'))
-        receivedData = sendDataSocket.recv(1024).decode('ascii')
+    # if(sensor in connectToSocketLib.keys()):
+        # sendSocket = connectToSocketLib.get(sensor)
+        # sendDataSocket.send("HEYYYY".encode('ascii'))
+        # receivedData = sendDataSocket.recv(1024).decode('ascii')
 
     #keep trying to send data to the client (the client will never accept on purpose)
     while True:

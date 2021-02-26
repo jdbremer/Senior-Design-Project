@@ -54,7 +54,7 @@ status.connect(('192.168.1.28', statusPort))
 
 #after connection, start the new status socket thread to handle transmissions
 _thread.start_new_thread(statusSocket,(status, receiving, sending))
-#_thread.start_new_thread(receivingSocket,(status, receiving, sending))
+_thread.start_new_thread(receivingSocket,(status, receiving, sending))
 
 
 #hardware SPI configuration

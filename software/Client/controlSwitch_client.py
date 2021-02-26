@@ -17,7 +17,7 @@ def sendingSocket(sendingSocket, data):
 #thread that initiates when the status socket gets initiated
 def statusSocket(serverSocket,receiveSocket, sendingSocket):
 	print(serverSocket.recv(1024).decode('ascii'))
-	serverSocket.send('LightSensor'.encode('ascii'))
+	serverSocket.send('ControlSwitch'.encode('ascii'))
     
     
 
@@ -63,7 +63,7 @@ status.connect(('192.168.1.28', statusPort))
 
 #after connection, start the new status socket thread to handle transmissions
 _thread.start_new_thread(statusSocket,(status, receiving, sending))
-#_thread.start_new_thread(receivingSocket,(status, receiving, sending))
+_thread.start_new_thread(receivingSocket,(status, receiving, sending))
 
 
 
