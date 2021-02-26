@@ -158,7 +158,7 @@ def clientCloseCheck(statusSocket, addr, recvDataSocket, sendDataSocket):
             #update the connections database with the disconnected device
             database.child("Connections").update({str(valueToPull) : "0"})
             #update the data coming from child within the database to 0
-            database.child("dataFromChild").update({str(valueToPull)) : "0"})
+            database.child("dataFromChild").update({str(valueToPull) : "0"})
             #display the disconnected sockets address
             print('Socket has disconnected! ', addr)
             #close all sockets (for saftey measures)
