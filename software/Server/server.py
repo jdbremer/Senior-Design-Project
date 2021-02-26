@@ -38,13 +38,12 @@ firstHandlerEntry = 0
 
 
 
-
-
 def sendingClientFromFirebase(data, sensorName):
     if(sensorName in connectToSocketLib.keys()):
         sendSocket = connectToSocketLib.get(sensorName)
         sendSocket.send(data.encode('ascii'))
         receivedData = sendSocket.recv(1024).decode('ascii')
+        print(receivedData)
 
 
 
@@ -136,10 +135,6 @@ def clientCloseCheck(statusSocket, addr, recvDataSocket, sendDataSocket):
     #update the database to display connected sensor
     database.child("Connections").update({str(sensor) : "1"})
 
-    # if(sensor in connectToSocketLib.keys()):
-        # sendSocket = connectToSocketLib.get(sensor)
-        # sendDataSocket.send("HEYYYY".encode('ascii'))
-        # receivedData = sendDataSocket.recv(1024).decode('ascii')
 
     #keep trying to send data to the client (the client will never accept on purpose)
     while True:
@@ -167,6 +162,7 @@ def clientCloseCheck(statusSocket, addr, recvDataSocket, sendDataSocket):
             sendDataSocket.close()
             statusSocket.close()
             break
+
 
 # next create a socket object for receiving, sending and status
 recvData = socket.socket()

@@ -8,7 +8,7 @@ import Adafruit_GPIO.SPI as SPI #ADC SPI library
 import Adafruit_MCP3008
 
 #function to send data to the server in a sequence
-def sendingSocket(sendingSocket, data):
+def sendsSocket(sendingSocket, data):
        #send the data to the server
        sendingSocket.send(str(data).encode('ascii'))
        #received message from server to keep in sync
@@ -32,10 +32,10 @@ def receivingSocket(serverSocket,receiveSocket, sendingSocket):
     print("received data.. " + receivedData)
     if(int(receivedData) == 0):
         #GPIO.output(18, GPIO.LOW)
-        sendingSocket(sendingSocket, 0)
+        sendsSocket(sendingSocket, 0)
     elif(int(receivedData) == 1):
         #GPIO.output(18, GPIO.HIGH)
-        sendingSocket(sendingSocket, 1)
+        sendsSocket(sendingSocket, 1)
 
 
     #END CODE TO DO SOMETHING WITH RECEIVED DATA
