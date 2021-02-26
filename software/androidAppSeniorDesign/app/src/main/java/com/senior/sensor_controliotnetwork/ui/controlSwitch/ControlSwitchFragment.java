@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -51,7 +52,6 @@ public class ControlSwitchFragment extends Fragment {
     private ControlSwitchViewModel controlSwitchViewModel;
 
 
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         controlSwitchViewModel =
@@ -59,53 +59,8 @@ public class ControlSwitchFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_control_switch, container, false);
 
 
-
-
 //        mPostReference = FirebaseDatabase.getInstance().getReference().child("Connections");  //LISTENER OBJECT
-//        mDatabase = FirebaseDatabase.getInstance().getReference();  //DATABASE OBJECT
-
-//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-//            NotificationChannel channel = new NotificationChannel("Light Sensor Notification", "Light Sensor Notification", NotificationManager.IMPORTANCE_DEFAULT);
-//            NotificationManager manager = getSystemService(NotificationManager.class);
-//            manager.createNotificationChannel(channel);
-//        }
-
-
-//        ListView connections = root.findViewById(R.id.connectionsList);
-
-//        EditText connectionsFilter = (EditText) root.findViewById(R.id.searchConnections);
-
-//        adapter=new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,arrayList) {
-//            @Override
-//            public View getView(int position, View convertView, ViewGroup parent) {
-//                // Cast the list view each item as text view
-//                TextView item = (TextView) super.getView(position, convertView, parent);
-//
-//
-//                // Set the item text style to bold
-//                item.setTypeface(item.getTypeface(), Typeface.BOLD);
-//
-//                // Change the item text size
-//                item.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 25);
-//
-//                // return the view
-//                return item;
-//            }
-//        };
-
-
-//        Collections.sort(arrayList, new Comparator<AppDetail>() {
-//
-//            /* This comparator will sort AppDetail objects alphabetically. */
-//
-//            @Override
-//            public int compare(AppDetail a1, AppDetail a2) {
-//
-//                // String implements Comparable
-//                return (a1.label.toString()).compareTo(a2.label.toString());
-//            }
-//        });
-
+        mDatabase = FirebaseDatabase.getInstance().getReference();  //DATABASE OBJECT
 
         //SINGLE LISTENER CODE//
 //        ValueEventListener singleListener = new ValueEventListener(){
@@ -133,7 +88,6 @@ public class ControlSwitchFragment extends Fragment {
 //        };
 //        mPostReference.addListenerForSingleValueEvent(singleListener); //Uncomment this to start the continuous grab of updated data (runs code above, constant listener code)
         //END SINGLE LISTENER CODE//
-
 
 
         //CONSTANT LISTENER CODE//
@@ -164,60 +118,26 @@ public class ControlSwitchFragment extends Fragment {
         //END CONSTANT LISTENER CODE//
 
 
-
 //        connections.setAdapter(adapter);
+
+        Button buttonOn = (Button) root.findViewById(R.id.controlSwitchButtonOn);
+
+        buttonOn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Do something in response to button click
+                mDatabase.child("dataFromApp").child("ControlSwitch").setValue("1");    //set ControlSwitch to 1 or "on" in database
+            }
+        });
+
+        Button buttonOff = (Button) root.findViewById(R.id.controlSwitchButtonOff);
+
+        buttonOff.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Do something in response to button click
+                mDatabase.child("dataFromApp").child("ControlSwitch").setValue("0"); //set ControlSwitch to 0 or "off" in database
+            }
+        });
 
         return root;
     }
-
-
-
-//    public void removeFromList(String s){
-//
-//        if(arrayList.contains(s)){
-//            arrayList.remove(s);
-//            //Collections.sort(arrayList);
-//
-//            adapter.notifyDataSetChanged();
-//
-//            //send notification that device has disconnected
-//            NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), "NotificationCH");
-//            builder.setContentTitle("Network Disconnection");
-//            builder.setContentText(s + " has disconnected");
-//            builder.setSmallIcon(R.drawable.ic_menu_send);
-//            builder.setAutoCancel(true);
-//            NotificationManagerCompat managerCompat = NotificationManagerCompat.from(getContext());
-//            managerCompat.notify(1,builder.build());
-//
-//        }
-//
-//
-//    }
-//
-//
-//    public void addingToList(String s){
-//
-//        if(!arrayList.contains(s)){
-//            arrayList.add(s);
-//            //Collections.sort(arrayList);
-//            adapter.notifyDataSetChanged();
-//
-//            //send notification that device was added
-//            NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), "NotificationCH");
-//            builder.setContentTitle("Network Connection");
-//            builder.setContentText(s + " has connected");
-//            builder.setSmallIcon(R.drawable.ic_menu_send);
-//            builder.setAutoCancel(true);
-//            NotificationManagerCompat managerCompat = NotificationManagerCompat.from(getContext());
-//            managerCompat.notify(1,builder.build());
-//        }
-//    }
-//
-//    public void initializeList(String s){
-//        if(!arrayList.contains(s)) {
-//            arrayList.add(s);
-//            //Collections.sort(arrayList);
-//            adapter.notifyDataSetChanged();
-//        }
-//    }
 }
