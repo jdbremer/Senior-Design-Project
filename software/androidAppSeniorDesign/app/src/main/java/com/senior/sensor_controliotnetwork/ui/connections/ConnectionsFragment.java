@@ -68,11 +68,9 @@ public class ConnectionsFragment extends Fragment {
         context = getContext();
 
 
+
         mPostReference = FirebaseDatabase.getInstance().getReference().child("Connections");  //LISTENER OBJECT
         mDatabase = FirebaseDatabase.getInstance().getReference();  //DATABASE OBJECT
-
-
-
 
         ListView connections = root.findViewById(R.id.connectionsList);
 
@@ -125,18 +123,6 @@ public class ConnectionsFragment extends Fragment {
         });
 
 
-//        Collections.sort(arrayList, new Comparator<AppDetail>() {
-//
-//            /* This comparator will sort AppDetail objects alphabetically. */
-//
-//            @Override
-//            public int compare(AppDetail a1, AppDetail a2) {
-//
-//                // String implements Comparable
-//                return (a1.label.toString()).compareTo(a2.label.toString());
-//            }
-//        });
-
 
         //CONSTANT LISTENER CODE//
         ValueEventListener constantListener = new ValueEventListener(){
@@ -152,6 +138,7 @@ public class ConnectionsFragment extends Fragment {
                     }
                     else if(onOff == 0 && arrayList.contains((nodId))){
                         removeFromList(nodId);
+                        mDatabase.child("dataFromApp").child(nodId).setValue("0");
                     }
                     justEntered = false;
                 }
@@ -179,10 +166,9 @@ public class ConnectionsFragment extends Fragment {
                     }
                     else if(onOff == 0 && arrayList.contains(nodId)) {
                         removeFromList(nodId);
+                        mDatabase.child("dataFromApp").child(nodId).setValue("0");
                     }
                 }
-
-
             }
 
             @Override
@@ -207,8 +193,8 @@ public class ConnectionsFragment extends Fragment {
 
     public void removeFromList(String s){
 
-        if(arrayList.contains(s)){
-            arrayList.remove(s);
+        if(this.arrayList.contains(s)){
+            this.arrayList.remove(s);
             //Collections.sort(arrayList);
 
             adapter.notifyDataSetChanged();
@@ -233,8 +219,8 @@ public class ConnectionsFragment extends Fragment {
 
     public void addingToList(String s){
 
-        if(!arrayList.contains(s)){
-            arrayList.add(s);
+        if(!this.arrayList.contains(s)){
+            this.arrayList.add(s);
             //Collections.sort(arrayList);
             adapter.notifyDataSetChanged();
 
@@ -251,8 +237,8 @@ public class ConnectionsFragment extends Fragment {
     }
 
     public void initializeList(String s){
-        if(!arrayList.contains(s)) {
-            arrayList.add(s);
+        if(!this.arrayList.contains(s)) {
+            this.arrayList.add(s);
             //Collections.sort(arrayList);
             adapter.notifyDataSetChanged();
         }

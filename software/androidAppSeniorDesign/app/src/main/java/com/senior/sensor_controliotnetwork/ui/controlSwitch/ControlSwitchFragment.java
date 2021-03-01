@@ -37,6 +37,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import com.senior.sensor_controliotnetwork.MainActivity;
 import com.senior.sensor_controliotnetwork.R;
+import com.senior.sensor_controliotnetwork.ui.connections.ConnectionsFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,8 +47,11 @@ import java.util.Iterator;
 public class ControlSwitchFragment extends Fragment {
 
     public DatabaseReference mDatabase;
-    private DatabaseReference mPostReference;
+    private DatabaseReference mPostReferenceControlSwitchConnectionStatus;
+    private DatabaseReference mPostReferenceControlSwitchStatus;
 
+    boolean onOrOff = false;
+    //ConnectionsFragment connectFrag = new ConnectionsFragment();
 
     private ControlSwitchViewModel controlSwitchViewModel;
 
@@ -59,73 +63,75 @@ public class ControlSwitchFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_control_switch, container, false);
 
 
-//        mPostReference = FirebaseDatabase.getInstance().getReference().child("Connections");  //LISTENER OBJECT
+        mPostReferenceControlSwitchConnectionStatus = FirebaseDatabase.getInstance().getReference().child("Connections").child("ControlSwitch");  //LISTENER OBJECT
+        mPostReferenceControlSwitchStatus = FirebaseDatabase.getInstance().getReference().child("dataFromChild").child("ControlSwitch");  //LISTENER OBJECT
         mDatabase = FirebaseDatabase.getInstance().getReference();  //DATABASE OBJECT
 
-        //SINGLE LISTENER CODE//
-//        ValueEventListener singleListener = new ValueEventListener(){
-//            @Override
-//            public void onDataChange (DataSnapshot dataSnapshot){
-//                Iterator<DataSnapshot> iter = dataSnapshot.getChildren().iterator();
-//                while (iter.hasNext()){
-//                    DataSnapshot snap = iter.next();
-//                    String nodId = snap.getKey();
-//                    int onOff = Integer.parseInt((String) snap.getValue());
-//                    if(onOff == 1){
-//                        initializeList(nodId);
-//                    }
-//                    else{
-//                        removeFromList(nodId);
-//                    }
-//                }
-//            }
 
-//            @Override
-//            public void onCancelled (@NonNull DatabaseError error){
-//                //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-//                System.out.println("The read failed: " + error.getMessage());
-//            }
-//        };
-//        mPostReference.addListenerForSingleValueEvent(singleListener); //Uncomment this to start the continuous grab of updated data (runs code above, constant listener code)
-        //END SINGLE LISTENER CODE//
-
-
+        TextView controlSwitchConnectionText = (TextView) root.findViewById(R.id.textControlSwitchConnectionStatus);
+        Button controlSwitchOnButton = (Button) root.findViewById(R.id.controlSwitchButtonOn);
+        Button controlSwitchOffButton = (Button) root.findViewById(R.id.controlSwitchButtonOff);
         //CONSTANT LISTENER CODE//
-//        ValueEventListener constantListener = new ValueEventListener(){
-//            @Override
-//            public void onDataChange (DataSnapshot dataSnapshot){
-//                Iterator<DataSnapshot> iter = dataSnapshot.getChildren().iterator();
-//                while (iter.hasNext()){
-//                    DataSnapshot snap = iter.next();
-//                    String nodId = snap.getKey();
-//                    int onOff = Integer.parseInt((String) snap.getValue());
-//                    if(onOff == 1 && arrayList.contains(nodId)){
-//                        addingToList(nodId);
-//                    }
-//                    else{
-//                        removeFromList(nodId);
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled (@NonNull DatabaseError error){
-//                //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-//                System.out.println("The read failed: " + error.getMessage());
-//            }
-//        };
-//        mPostReference.addValueEventListener(constantListener);  //Uncomment this to start the continuous grab of updated data (runs code above, constant listener code)
+        ValueEventListener controlSwitchConnectionStatusConstantListener = new ValueEventListener(){
+            @Override
+            public void onDataChange (DataSnapshot dataSnapshot){
+                int onOff = Integer.parseInt((String) dataSnapshot.getValue());
+                if(onOff == 1){
+                    controlSwitchConnectionText.setText("Connected");
+                    onOrOff = true;
+                    controlSwitchOnButton.setEnabled(true);
+                    controlSwitchOffButton.setEnabled(true);
+                }
+                else if(onOff == 0) {
+                    controlSwitchConnectionText.setText("Not Connected");
+                    onOrOff = false;
+                    controlSwitchOnButton.setEnabled(false);
+                    controlSwitchOffButton.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void onCancelled (@NonNull DatabaseError error){
+                //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                System.out.println("The read failed: " + error.getMessage());
+            }
+        };
+        mPostReferenceControlSwitchConnectionStatus.addValueEventListener(controlSwitchConnectionStatusConstantListener);  //Uncomment this to start the continuous grab of updated data (runs code above, constant listener code)
         //END CONSTANT LISTENER CODE//
 
 
-//        connections.setAdapter(adapter);
+        TextView controlSwitchStatusText = (TextView) root.findViewById(R.id.textControlSwitchStatus);
+        //CONSTANT LISTENER CODE//
+        ValueEventListener controlSwitchStatusConstantListener = new ValueEventListener(){
+            @Override
+            public void onDataChange (DataSnapshot dataSnapshot){
+                int onOff = Integer.parseInt((String) dataSnapshot.getValue());
+                if(onOff == 1){
+                    controlSwitchStatusText.setText("ON");
+                }
+                else if(onOff == 0) {
+                    controlSwitchStatusText.setText("OFF");
+                }
+            }
+
+            @Override
+            public void onCancelled (@NonNull DatabaseError error){
+                //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                System.out.println("The read failed: " + error.getMessage());
+            }
+        };
+        mPostReferenceControlSwitchStatus.addValueEventListener(controlSwitchStatusConstantListener);  //Uncomment this to start the continuous grab of updated data (runs code above, constant listener code)
+        //END CONSTANT LISTENER CODE//
+
 
         Button buttonOn = (Button) root.findViewById(R.id.controlSwitchButtonOn);
 
         buttonOn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Do something in response to button click
-                mDatabase.child("dataFromApp").child("ControlSwitch").setValue("1");    //set ControlSwitch to 1 or "on" in database
+                if(onOrOff == true) {
+                    mDatabase.child("dataFromApp").child("ControlSwitch").setValue("1");    //set ControlSwitch to 1 or "on" in database
+                }
             }
         });
 
@@ -134,7 +140,9 @@ public class ControlSwitchFragment extends Fragment {
         buttonOff.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Do something in response to button click
-                mDatabase.child("dataFromApp").child("ControlSwitch").setValue("0"); //set ControlSwitch to 0 or "off" in database
+                if(onOrOff == true) {
+                    mDatabase.child("dataFromApp").child("ControlSwitch").setValue("0"); //set ControlSwitch to 0 or "off" in database
+                }
             }
         });
 
