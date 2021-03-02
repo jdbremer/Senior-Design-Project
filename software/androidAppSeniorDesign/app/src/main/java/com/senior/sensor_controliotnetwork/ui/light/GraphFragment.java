@@ -1,5 +1,6 @@
 package com.senior.sensor_controliotnetwork.ui.light;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -27,6 +28,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+
+import android.app.Service;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -99,7 +103,8 @@ public class GraphFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.fragment_light_graph, container, false);
 
-
+//        Intent intent = new Intent(root.getContext(), lightService.class);
+//        root.getContext().startService(intent);
 
 
 
