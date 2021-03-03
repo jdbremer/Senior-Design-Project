@@ -33,10 +33,10 @@ def receivingSocket(serverSocket,receiveSocket, sendingSocket):
         #CODE TO DO SOMETHING WITH RECEIVED DATA
         print("received data.. " + receivedData)
         if(int(receivedData) == 0):
-            #GPIO.output(18, GPIO.LOW)
+            GPIO.output(18, GPIO.LOW)
             sendsSocket(sendingSocket, 0)
         elif(int(receivedData) == 1):
-            #GPIO.output(18, GPIO.HIGH)
+            GPIO.output(18, GPIO.HIGH)
             sendsSocket(sendingSocket, 1)
 
 
@@ -59,9 +59,9 @@ recvPort = 12351
 statusPort = 12352
 
 #connect the IP and the port # to the sockets
-sending.connect(('192.168.1.28', sendPort))
-receiving.connect(('192.168.1.28', recvPort))
-status.connect(('192.168.1.28', statusPort))
+sending.connect(('192.168.86.31', sendPort))
+receiving.connect(('192.168.86.31', recvPort))
+status.connect(('192.168.86.31', statusPort))
 
 #after connection, start the new status socket thread to handle transmissions
 _thread.start_new_thread(statusSocket,(status, receiving, sending))
@@ -83,11 +83,11 @@ print (sending.recv(1024).decode('ascii') )
 
 
 #set the GPIO to the board layout (used for pin numbers)
-#GPIO.setmode(GPIO.BOARD)
+GPIO.setmode(GPIO.BOARD)
 #set the GPIO pin 18 to output
-#GPIO.setup(18, GPIO.OUT)
+GPIO.setup(18, GPIO.OUT)
 #default the output to LOW
-#GPIO.output(18, GPIO.LOW)
+GPIO.output(18, GPIO.LOW)
 
 
 

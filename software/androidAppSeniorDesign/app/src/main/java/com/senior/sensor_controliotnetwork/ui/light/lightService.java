@@ -33,7 +33,7 @@ public class lightService extends Service {
     private DatabaseReference mPostReference;
     private Map<String, String> sensorValues = new HashMap<String, String>();
     public int inc = 0;
-
+    GraphFragment graph = new GraphFragment();
     // Handler that receives messages from the thread
     private final class ServiceHandler extends Handler {
         public ServiceHandler(Looper looper) {
@@ -77,6 +77,7 @@ public class lightService extends Service {
                         if (GraphFragment.active) {
                             //DO STUFF
                             //GraphFragment.testFunc(sensorValues);
+                            graph.testFunc(sensorValues);
                             inc = inc;
                         }
                         else {
