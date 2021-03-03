@@ -39,7 +39,7 @@ import android.app.Service;
  */
 public class GraphFragment extends Fragment {
 
-
+    public  static boolean active = false;
     private DatabaseReference mPostReference;
 
 
@@ -49,7 +49,7 @@ public class GraphFragment extends Fragment {
 
     private ArrayList<DataPoint> mSeries2 = new ArrayList<>();
 
-    private Map<String, String> sensorValues = new HashMap<String, String>();
+   // private Map<String, String> sensorValues = new HashMap<String, String>();
 
 
 
@@ -83,6 +83,17 @@ public class GraphFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+    @Override
+    public void onStart() {
+        super.onStart();
+        active = true;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        active = false;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -103,8 +114,6 @@ public class GraphFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.fragment_light_graph, container, false);
 
-//        Intent intent = new Intent(root.getContext(), lightService.class);
-//        root.getContext().startService(intent);
 
 
 
@@ -169,83 +178,83 @@ public class GraphFragment extends Fragment {
 
 
         //CONSTANT LISTENER CODE//
-        ValueEventListener constantListener = new ValueEventListener(){
-            @Override
-            public void onDataChange (DataSnapshot dataSnapshot){
-                //LineGraphSeries<DataPoint> mSeries3 = new LineGraphSeries<>();
-
-                int maxGraphPoints = 11;
-
-
-                double y = Double.parseDouble((String) dataSnapshot.getValue());
-
-                //add data to a hash table
-                sensorValues.put(String.valueOf(inc), (String) dataSnapshot.getValue() );
-
-
-                //if the max number of points was reached
-                if(inc >= maxGraphPoints){
-
-                    //shift all the data within the hash table
-                    for ( int i = 0; i < maxGraphPoints+1 ; i++){
-                        if(i == 0){
-
-                            sensorValues.remove(String.valueOf(i));
-                        }
-                        else{
-                            String key = sensorValues.get(String.valueOf(i));
-                            sensorValues.remove(String.valueOf(i));
-                            sensorValues.put(String.valueOf(i-1), key);
-                        }
-                    }
-
-
-                    //trying to remove old data on the graph and add new data
-                    mSeries1.clearReference(graph);
-                    graph.removeSeries(mSeries1);
-                    mSeries1 = new LineGraphSeries<>();
-                    //LineGraphSeries<DataPoint> mSeries1 = new LineGraphSeries<>();
-                    mSeries1.setThickness(15);
-                    mSeries1.setColor(Color.rgb(210,180,140));
-                    graph.addSeries(mSeries1);
-                    graph.refreshDrawableState();
-                    graph.onDataChanged(true, true);
-
-
-                    //this is here as a test to just continue adding data
-                    //mSeries1.appendData(new DataPoint(inc2++,y*1000),false, 10);
-
-                    //iterate through the hash table to then add the shifted data to the series
-                    Iterator<Map.Entry<String, String>> itr = sensorValues.entrySet().iterator();
-                    while(itr.hasNext()){
-                        //iterate.next();
-                        Map.Entry<String, String> entry = itr.next();
-                        int x = Integer.parseInt(entry.getKey());
-                        double y2 = (Double.parseDouble((String) entry.getValue()))*1000;
-                        mSeries1.appendData(new DataPoint(x,y2),false, 10);
-                        graph.refreshDrawableState();
-                        graph.onDataChanged(true, true);
-                    }
-
-
-                }
-                //the max number of points hasn't been reached yet
-                else{
-                    mSeries1.appendData(new DataPoint(inc++,y*1000),false, 10);
-                    graph.refreshDrawableState();
-                    graph.onDataChanged(true, true);
-                    inc2++;
-                }
-
-            }
-
-            @Override
-            public void onCancelled (@NonNull DatabaseError error){
-                //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                System.out.println("The read failed: " + error.getMessage());
-            }
-        };
-        mPostReference.addValueEventListener(constantListener);  //Uncomment this to start the continuous grab of updated data (runs code above, constant listener code)
+//        ValueEventListener constantListener = new ValueEventListener(){
+//            @Override
+//            public void onDataChange (DataSnapshot dataSnapshot){
+//                //LineGraphSeries<DataPoint> mSeries3 = new LineGraphSeries<>();
+//
+//                int maxGraphPoints = 11;
+//
+//
+//                double y = Double.parseDouble((String) dataSnapshot.getValue());
+//
+//                //add data to a hash table
+//                sensorValues.put(String.valueOf(inc), (String) dataSnapshot.getValue() );
+//
+//
+//                //if the max number of points was reached
+//                if(inc >= maxGraphPoints){
+//
+//                    //shift all the data within the hash table
+//                    for ( int i = 0; i < maxGraphPoints+1 ; i++){
+//                        if(i == 0){
+//
+//                            sensorValues.remove(String.valueOf(i));
+//                        }
+//                        else{
+//                            String key = sensorValues.get(String.valueOf(i));
+//                            sensorValues.remove(String.valueOf(i));
+//                            sensorValues.put(String.valueOf(i-1), key);
+//                        }
+//                    }
+//
+//
+//                    //trying to remove old data on the graph and add new data
+//                    mSeries1.clearReference(graph);
+//                    graph.removeSeries(mSeries1);
+//                    mSeries1 = new LineGraphSeries<>();
+//                    //LineGraphSeries<DataPoint> mSeries1 = new LineGraphSeries<>();
+//                    mSeries1.setThickness(15);
+//                    mSeries1.setColor(Color.rgb(210,180,140));
+//                    graph.addSeries(mSeries1);
+//                    graph.refreshDrawableState();
+//                    graph.onDataChanged(true, true);
+//
+//
+//                    //this is here as a test to just continue adding data
+//                    //mSeries1.appendData(new DataPoint(inc2++,y*1000),false, 10);
+//
+//                    //iterate through the hash table to then add the shifted data to the series
+//                    Iterator<Map.Entry<String, String>> itr = sensorValues.entrySet().iterator();
+//                    while(itr.hasNext()){
+//                        //iterate.next();
+//                        Map.Entry<String, String> entry = itr.next();
+//                        int x = Integer.parseInt(entry.getKey());
+//                        double y2 = (Double.parseDouble((String) entry.getValue()))*1000;
+//                        mSeries1.appendData(new DataPoint(x,y2),false, 10);
+//                        graph.refreshDrawableState();
+//                        graph.onDataChanged(true, true);
+//                    }
+//
+//
+//                }
+//                //the max number of points hasn't been reached yet
+//                else{
+//                    mSeries1.appendData(new DataPoint(inc++,y*1000),false, 10);
+//                    graph.refreshDrawableState();
+//                    graph.onDataChanged(true, true);
+//                    inc2++;
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onCancelled (@NonNull DatabaseError error){
+//                //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+//                System.out.println("The read failed: " + error.getMessage());
+//            }
+//        };
+//        mPostReference.addValueEventListener(constantListener);  //Uncomment this to start the continuous grab of updated data (runs code above, constant listener code)
         //END CONSTANT LISTENER CODE//
 
 
@@ -254,6 +263,37 @@ public class GraphFragment extends Fragment {
         return root;
     }
 
+
+    public void testFunc(Map sensorValues){
+
+        //trying to remove old data on the graph and add new data
+        mSeries1.clearReference(graph);
+        graph.removeSeries(mSeries1);
+        mSeries1 = new LineGraphSeries<>();
+        //LineGraphSeries<DataPoint> mSeries1 = new LineGraphSeries<>();
+        mSeries1.setThickness(15);
+        mSeries1.setColor(Color.rgb(210,180,140));
+        graph.addSeries(mSeries1);
+        graph.refreshDrawableState();
+        graph.onDataChanged(true, true);
+
+
+        //this is here as a test to just continue adding data
+        //mSeries1.appendData(new DataPoint(inc2++,y*1000),false, 10);
+
+        //iterate through the hash table to then add the shifted data to the series
+        Iterator<Map.Entry<String, String>> itr = sensorValues.entrySet().iterator();
+        while(itr.hasNext()){
+            //iterate.next();
+            Map.Entry<String, String> entry = itr.next();
+            int x = Integer.parseInt(entry.getKey());
+            double y2 = (Double.parseDouble((String) entry.getValue()))*1000;
+            mSeries1.appendData(new DataPoint(x,y2),false, 10);
+            graph.refreshDrawableState();
+            graph.onDataChanged(true, true);
+        }
+
+    }
 
 
 }

@@ -3,6 +3,7 @@ package com.senior.sensor_controliotnetwork;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +14,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 import com.senior.sensor_controliotnetwork.ui.connections.ConnectionsViewModel;
+import com.senior.sensor_controliotnetwork.ui.light.lightService;
 
 import androidx.core.app.NotificationCompat;
 import androidx.navigation.NavController;
@@ -60,6 +62,12 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+
+
+
+        Intent intent = new Intent(this, lightService.class);
+        this.startService(intent);
     }
 
     @Override

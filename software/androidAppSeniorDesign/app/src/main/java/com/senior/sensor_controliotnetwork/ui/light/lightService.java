@@ -1,7 +1,9 @@
 package com.senior.sensor_controliotnetwork.ui.light;
 
+
 import android.app.Service;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -10,11 +12,27 @@ import android.os.Message;
 import android.widget.Toast;
 import android.os.Process;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class lightService extends Service {
     private Looper serviceLooper;
     private ServiceHandler serviceHandler;
+    private DatabaseReference mPostReference;
+    private Map<String, String> sensorValues = new HashMap<String, String>();
+    public int inc = 0;
 
     // Handler that receives messages from the thread
     private final class ServiceHandler extends Handler {
@@ -23,14 +41,93 @@ public class lightService extends Service {
         }
         @Override
         public void handleMessage(Message msg) {
+
+
+
+            try {
+            //CONSTANT LISTENER CODE//
+            ValueEventListener constantListener = new ValueEventListener(){
+                @Override
+                public void onDataChange (DataSnapshot dataSnapshot){
+                    //LineGraphSeries<DataPoint> mSeries3 = new LineGraphSeries<>();
+
+                    int maxGraphPoints = 11;
+
+                    //add data to a hash table
+                    sensorValues.put(String.valueOf(inc), (String) dataSnapshot.getValue() );
+
+
+                    //if the max number of points was reached
+                    if(inc >= maxGraphPoints){
+
+                        //shift all the data within the hash table
+                        for ( int i = 0; i < maxGraphPoints+1 ; i++){
+                            if(i == 0){
+
+                                sensorValues.remove(String.valueOf(i));
+                            }
+                            else{
+                                String key = sensorValues.get(String.valueOf(i));
+                                sensorValues.remove(String.valueOf(i));
+                                sensorValues.put(String.valueOf(i-1), key);
+                            }
+                        }
+
+
+                        if (GraphFragment.active) {
+                            //DO STUFF
+                            GraphFragment.testFunc(sensorValues);
+                            inc = inc;
+                        }
+                        else {
+                            //Whatever
+
+                        }
+
+
+
+
+                        //this is here as a test to just continue adding data
+                        //mSeries1.appendData(new DataPoint(inc2++,y*1000),false, 10);
+
+                        //iterate through the hash table to then add the shifted data to the series
+
+
+
+                    }
+                    else{
+                        inc++;
+                    }
+                }
+
+                @Override
+                public void onCancelled (@NonNull DatabaseError error){
+                    //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                    System.out.println("The read failed: " + error.getMessage());
+                }
+            };
+            //END CONSTANT LISTENER CODE//
+            mPostReference.addValueEventListener(constantListener);
+
+
             // Normally we would do some work here, like download a file.
             // For our sample, we just sleep for 5 seconds.
-            try {
+
+                while(true)
                 Thread.sleep(5000);
             } catch (InterruptedException e) {
                 // Restore interrupt status.
                 Thread.currentThread().interrupt();
             }
+
+
+
+
+
+
+
+
+
             // Stop the service using the startId, so that we don't stop
             // the service in the middle of handling another job
             stopSelf(msg.arg1);
@@ -43,6 +140,7 @@ public class lightService extends Service {
         // separate thread because the service normally runs in the process's
         // main thread, which we don't want to block. We also make it
         // background priority so CPU-intensive work doesn't disrupt our UI.
+        mPostReference = FirebaseDatabase.getInstance().getReference().child("dataFromChild").child("LightSensor");  //LISTENER OBJECT
         HandlerThread thread = new HandlerThread("ServiceStartArguments",
                 Process.THREAD_PRIORITY_BACKGROUND);
         thread.start();
@@ -61,6 +159,9 @@ public class lightService extends Service {
         Message msg = serviceHandler.obtainMessage();
         msg.arg1 = startId;
         serviceHandler.sendMessage(msg);
+
+        //mPostReference = FirebaseDatabase.getInstance().getReference().child("dataFromChild").child("LightSensor");  //LISTENER OBJECT
+        //GraphFragment test = (GraphFragment) getSupportFragmentManager().findFragmentByTag("testID");
 
         // If we get killed, after returning from here, restart
         return START_STICKY;
