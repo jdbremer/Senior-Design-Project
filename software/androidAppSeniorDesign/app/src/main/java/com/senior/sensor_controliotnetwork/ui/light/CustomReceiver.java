@@ -10,6 +10,6 @@ class CustomReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        String data= intent.getExtras("");
+       // String data= intent.getExtras("");
     }
 }

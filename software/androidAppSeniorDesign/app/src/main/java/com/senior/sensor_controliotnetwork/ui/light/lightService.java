@@ -76,7 +76,7 @@ public class lightService extends Service {
 
                         if (GraphFragment.active) {
                             //DO STUFF
-                            GraphFragment.testFunc(sensorValues);
+                            //GraphFragment.testFunc(sensorValues);
                             inc = inc;
                         }
                         else {
