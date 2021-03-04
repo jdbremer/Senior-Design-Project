@@ -31,13 +31,21 @@ def receivingSocket(serverSocket,receiveSocket, sendingSocket):
         receiveSocket.send('Received...'.encode('ascii'))
 
         #CODE TO DO SOMETHING WITH RECEIVED DATA
-        print("received data.. " + receivedData)
-        if(int(receivedData) == 0):
-            GPIO.output(18, GPIO.LOW)
-            sendsSocket(sendingSocket, 0)
-        elif(int(receivedData) == 1):
-            GPIO.output(18, GPIO.HIGH)
-            sendsSocket(sendingSocket, 1)
+        try:
+            print("received data.. " + receivedData)
+            if(int(receivedData) == 0):
+                GPIO.output(18, GPIO.LOW)
+                sendsSocket(sendingSocket, 0)
+            elif(int(receivedData) == 1):
+                GPIO.output(18, GPIO.HIGH)
+                sendsSocket(sendingSocket, 1)
+        
+        except KeyboardInterrupt:
+            print("keyboard interrupt")
+
+        finally:
+            print("clean up")
+            GPIO.cleanup()
 
 
         #END CODE TO DO SOMETHING WITH RECEIVED DATA
@@ -81,14 +89,20 @@ print (sending.recv(1024).decode('ascii') )
 
 #CODE FOR OPERATIONS#
 
+try:
+    #set the GPIO to the board layout (used for pin numbers)
+    GPIO.setmode(GPIO.BOARD)
+    #set the GPIO pin 18 to output
+    GPIO.setup(18, GPIO.OUT)
+    #default the output to LOW
+    GPIO.output(18, GPIO.LOW)
+    
+except KeyboardInterrupt:
+    print("keyboard interrupt")
 
-#set the GPIO to the board layout (used for pin numbers)
-GPIO.setmode(GPIO.BOARD)
-#set the GPIO pin 18 to output
-GPIO.setup(18, GPIO.OUT)
-#default the output to LOW
-GPIO.output(18, GPIO.LOW)
-
+finally:
+    print("clean up")
+    GPIO.cleanup()
 
 
 

@@ -86,43 +86,50 @@ inc = 0
 average = 0
 numberOfSamples = 10
 
-#photoresistor code
-while True:
-    #grab the start time
-    start = time.time()
-    #set the pin 18 to high
-    GPIO.output(18, GPIO.HIGH)
-    
+
+try:
+    #photoresistor code
     while True:
-       #if the voltage of the capactitor is less than a certain value continue 
-       if(mcp.read_adc(0) >= 1000):
-          #grab the end time
-          end = time.time()
-          #set the pin 18 to low
-          GPIO.output(18, GPIO.LOW)
-          #break out of the loop
-          break
-       else: 
-          continue
+        #grab the start time
+        start = time.time()
+        #set the pin 18 to high
+        GPIO.output(18, GPIO.HIGH)
+        
+        while True:
+           #if the voltage of the capactitor is less than a certain value continue 
+           if(mcp.read_adc(0) >= 1000):
+              #grab the end time
+              end = time.time()
+              #set the pin 18 to low
+              GPIO.output(18, GPIO.LOW)
+              #break out of the loop
+              break
+           else: 
+              continue
 
-    #allow delay for capacitor discharge
-    time.sleep(.5)
-    #if the average var was 0, initialize it
-    if(average == 0):
-       average = end-start
-    #take the average of the value
-    average = (average+(end-start))/2
-    #increment the incrementor
-    inc = inc+1
-    #if the incrementor is greater than 50, enough samples have been taken
-    if(inc > numberOfSamples):
-       #print the average to serial
-       print(average)
-       inc = 0
-       #initiate sending sequence with the average as the data
-       sendingSocket(sending, average)
+        #allow delay for capacitor discharge
+        time.sleep(.5)
+        #if the average var was 0, initialize it
+        if(average == 0):
+           average = end-start
+        #take the average of the value
+        average = (average+(end-start))/2
+        #increment the incrementor
+        inc = inc+1
+        #if the incrementor is greater than 50, enough samples have been taken
+        if(inc > numberOfSamples):
+           #print the average to serial
+           print(average)
+           inc = 0
+           #initiate sending sequence with the average as the data
+           sendingSocket(sending, average)
+           
+except KeyboardInterrupt:
+    print("keyboard interrupt")
 
-
+finally:
+    print("clean up")
+    GPIO.cleanup()
 
 
 
