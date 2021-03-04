@@ -2,6 +2,8 @@ package com.senior.sensor_controliotnetwork.ui.light;
 
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
@@ -31,11 +33,23 @@ public class lightService extends Service {
     private Looper serviceLooper;
     private ServiceHandler serviceHandler;
     private DatabaseReference mPostReference;
-    private Map<String, String> sensorValues = new HashMap<String, String>();
+    private HashMap<String, String> sensorValues = new HashMap<String, String>();
     public int inc = 0;
-    GraphFragment graph = new GraphFragment();
+
+
+
     // Handler that receives messages from the thread
     private final class ServiceHandler extends Handler {
+
+        public void talk() {
+            Intent i = new Intent();
+            i.putExtra("MAPS", sensorValues);
+            i.setAction("SensorMap");
+            sendBroadcast(i);
+        }
+
+
+
         public ServiceHandler(Looper looper) {
             super(looper);
         }
@@ -73,28 +87,14 @@ public class lightService extends Service {
                             }
                         }
 
-
                         if (GraphFragment.active) {
                             //DO STUFF
-                            //GraphFragment.testFunc(sensorValues);
-                            graph.testFunc(sensorValues);
-                            inc = inc;
+                            talk();
                         }
                         else {
                             //Whatever
 
                         }
-
-
-
-
-                        //this is here as a test to just continue adding data
-                        //mSeries1.appendData(new DataPoint(inc2++,y*1000),false, 10);
-
-                        //iterate through the hash table to then add the shifted data to the series
-
-
-
                     }
                     else{
                         inc++;
@@ -114,20 +114,22 @@ public class lightService extends Service {
             // Normally we would do some work here, like download a file.
             // For our sample, we just sleep for 5 seconds.
 
-                while(true)
-                Thread.sleep(5000);
+                while(true) {
+                    Thread.sleep(1000);
+                    if (GraphFragment.active) {
+                        //DO STUFF
+                        talk();
+                    }
+                    else {
+                        //Whatever
+
+                    }
+                }
+
             } catch (InterruptedException e) {
                 // Restore interrupt status.
                 Thread.currentThread().interrupt();
             }
-
-
-
-
-
-
-
-
 
             // Stop the service using the startId, so that we don't stop
             // the service in the middle of handling another job
@@ -153,7 +155,7 @@ public class lightService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, " light service starting", Toast.LENGTH_SHORT).show();
 
         // For each start request, send a message to start a job and deliver the
         // start ID so we know which request we're stopping when we finish the job
@@ -163,6 +165,7 @@ public class lightService extends Service {
 
         //mPostReference = FirebaseDatabase.getInstance().getReference().child("dataFromChild").child("LightSensor");  //LISTENER OBJECT
         //GraphFragment test = (GraphFragment) getSupportFragmentManager().findFragmentByTag("testID");
+
 
         // If we get killed, after returning from here, restart
         return START_STICKY;
@@ -176,6 +179,8 @@ public class lightService extends Service {
 
     @Override
     public void onDestroy() {
-        Toast.makeText(this, "service done", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "light service done", Toast.LENGTH_SHORT).show();
     }
 }
+
+

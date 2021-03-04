@@ -2,7 +2,10 @@ package com.senior.sensor_controliotnetwork.ui.connections;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
@@ -37,12 +40,14 @@ import com.google.firebase.database.ValueEventListener;
 
 import com.senior.sensor_controliotnetwork.MainActivity;
 import com.senior.sensor_controliotnetwork.R;
+import com.senior.sensor_controliotnetwork.ui.light.GraphFragment;
 
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 
 public class ConnectionsFragment extends Fragment {
@@ -58,7 +63,42 @@ public class ConnectionsFragment extends Fragment {
     private ConnectionsViewModel connectionsViewModel;
 
 
-    boolean justEntered = false;
+    ConnectionLevelReceiver receiver;
+    public  static boolean active = false;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        active = true;
+        receiver = new ConnectionLevelReceiver();
+        getActivity().registerReceiver(receiver, new IntentFilter("CONNECTIONS"));  //<----Register
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        active = false;
+        getActivity().unregisterReceiver(receiver);           //<-- Unregister to avoid memoryleak
+    }
+
+
+    class ConnectionLevelReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if(intent.getAction().equals("CONNECTIONS"))
+            {
+                ArrayList<String> connectionList = (ArrayList<String>)intent.getSerializableExtra("connectionsArray");
+                populateUI(connectionList);
+            }
+
+        }
+
+
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         connectionsViewModel =
@@ -98,12 +138,6 @@ public class ConnectionsFragment extends Fragment {
             }
         };
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            NotificationChannel channel = new NotificationChannel("NotificationCH", "NotificationCH", NotificationManager.IMPORTANCE_DEFAULT);
-            NotificationManager manager = getContext().getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(channel);
-        }
-
 
         connectionsFilter.addTextChangedListener(new TextWatcher() {
             @Override
@@ -123,67 +157,6 @@ public class ConnectionsFragment extends Fragment {
         });
 
 
-
-        //CONSTANT LISTENER CODE//
-        ValueEventListener constantListener = new ValueEventListener(){
-            @Override
-            public void onDataChange (DataSnapshot dataSnapshot){
-                Iterator<DataSnapshot> iter = dataSnapshot.getChildren().iterator();
-                while (iter.hasNext()){
-                    DataSnapshot snap = iter.next();
-                    String nodId = snap.getKey();
-                    int onOff = Integer.parseInt((String) snap.getValue());
-                    if(onOff == 1 && !arrayList.contains(nodId)){
-                        addingToList(nodId);
-                    }
-                    else if(onOff == 0 && arrayList.contains((nodId))){
-                        removeFromList(nodId);
-                        mDatabase.child("dataFromApp").child(nodId).setValue("0");
-                    }
-                    justEntered = false;
-                }
-            }
-
-            @Override
-            public void onCancelled (@NonNull DatabaseError error){
-                //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                System.out.println("The read failed: " + error.getMessage());
-            }
-        };
-        //END CONSTANT LISTENER CODE//
-
-        //SINGLE LISTENER CODE//
-        ValueEventListener singleListener = new ValueEventListener(){
-            @Override
-            public void onDataChange (DataSnapshot dataSnapshot){
-                Iterator<DataSnapshot> iter = dataSnapshot.getChildren().iterator();
-                while (iter.hasNext()){
-                    DataSnapshot snap = iter.next();
-                    String nodId = snap.getKey();
-                    int onOff = Integer.parseInt((String) snap.getValue());
-                    if(onOff == 1 && !arrayList.contains(nodId)){
-                        initializeList(nodId);
-                    }
-                    else if(onOff == 0 && arrayList.contains(nodId)) {
-                        removeFromList(nodId);
-                        mDatabase.child("dataFromApp").child(nodId).setValue("0");
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled (@NonNull DatabaseError error){
-                //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                System.out.println("The read failed: " + error.getMessage());
-            }
-        };
-        mPostReference.addListenerForSingleValueEvent(singleListener); //Uncomment this to start the continuous grab of updated data (runs code above, constant listener code)
-        mPostReference.addValueEventListener(constantListener);
-        //END SINGLE LISTENER CODE//
-
-
-
-
         connections.setAdapter(adapter);
 
         return root;
@@ -191,56 +164,38 @@ public class ConnectionsFragment extends Fragment {
 
 
 
-    public void removeFromList(String s){
+    public void populateUI(ArrayList connections){
+        Iterator<String> connects = connections.iterator();
+        while(connects.hasNext()) {
+            String currentVal = connects.next();
+            if(arrayList.contains(currentVal)){
 
-        if(this.arrayList.contains(s)){
-            this.arrayList.remove(s);
-            //Collections.sort(arrayList);
-
-            adapter.notifyDataSetChanged();
-
-            //send notification that device has disconnected
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "NotificationCH");
-            builder.setContentTitle("Network Disconnection");
-            builder.setContentText(s + " has disconnected");
-            builder.setSmallIcon(R.drawable.ic_menu_send);
-            builder.setAutoCancel(true);
-//            if (isAdded()) {
-//                getContext().getSystemService(Context.ALARM_SERVICE);
-//            }
-            NotificationManagerCompat managerCompat = NotificationManagerCompat.from(context);
-            managerCompat.notify(1,builder.build());
-
+            }
+            else{
+                arrayList.add(currentVal);
+            }
         }
 
+        Iterator<String> currentConnects = arrayList.iterator();
+        ArrayList<String> found = new ArrayList<>();
+        while(currentConnects.hasNext()){
+            String currentVal = currentConnects.next();
+            if(connections.contains(currentVal)){
 
-    }
-
-
-    public void addingToList(String s){
-
-        if(!this.arrayList.contains(s)){
-            this.arrayList.add(s);
-            //Collections.sort(arrayList);
-            adapter.notifyDataSetChanged();
-
-            //send notification that device was added
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "NotificationCH");
-            builder.setContentTitle("Network Connection");
-            builder.setContentText(s + " has connected");
-            builder.setSmallIcon(R.drawable.ic_menu_send);
-            builder.setAutoCancel(true);
-
-            NotificationManagerCompat managerCompat = NotificationManagerCompat.from(context);
-            managerCompat.notify(1,builder.build());
+            }
+            else{
+                found.add(currentVal);
+            }
         }
-    }
 
-    public void initializeList(String s){
-        if(!this.arrayList.contains(s)) {
-            this.arrayList.add(s);
-            //Collections.sort(arrayList);
-            adapter.notifyDataSetChanged();
+        Iterator<String> foundElements = found.iterator();
+        while(foundElements.hasNext()){
+            String currentVal = foundElements.next();
+            if(arrayList.contains(currentVal)){
+                arrayList.remove(currentVal);
+            }
         }
+        adapter.notifyDataSetChanged();
+
     }
 }

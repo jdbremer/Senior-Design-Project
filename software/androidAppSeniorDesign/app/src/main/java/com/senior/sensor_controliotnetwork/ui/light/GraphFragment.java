@@ -1,5 +1,7 @@
 package com.senior.sensor_controliotnetwork.ui.light;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -28,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import android.content.IntentFilter;
 
 
 import android.app.Service;
@@ -50,7 +53,7 @@ public class GraphFragment extends Fragment {
     private ArrayList<DataPoint> mSeries2 = new ArrayList<>();
 
    // private Map<String, String> sensorValues = new HashMap<String, String>();
-
+   GraphLevelReceiver receiver;
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -87,12 +90,18 @@ public class GraphFragment extends Fragment {
     public void onStart() {
         super.onStart();
         active = true;
+        getActivity().registerReceiver(receiver, new IntentFilter("SensorMap"));  //<----Register
+
+//        Intent serviceIntent = new Intent(lightService.class.getName());
+//        serviceIntent.setAction("sendSensorMap")
+//        getContext().startService(serviceIntent);
     }
 
     @Override
     public void onStop() {
         super.onStop();
         active = false;
+        getActivity().unregisterReceiver(receiver);           //<-- Unregister to avoid memoryleak
     }
 
     @Override
@@ -102,7 +111,30 @@ public class GraphFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        receiver = new GraphLevelReceiver();
+
     }
+
+
+
+    class GraphLevelReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if(intent.getAction().equals("SensorMap"))
+            {
+                HashMap<String, String> hashMap = (HashMap<String, String>)intent.getSerializableExtra("MAPS");
+                testFunc(hashMap);
+                // Show it in GraphView
+            }
+
+        }
+
+
+    }
+
+
 
 
     int inc = 0;
@@ -264,7 +296,15 @@ public class GraphFragment extends Fragment {
     }
 
 
-    public void testFunc(Map sensorValues){
+
+//    BroadcastReceiver br = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            HashMap<String, String> hashMap = (HashMap<String, String>)intent.getSerializableExtra("MAPS");
+//        }
+//    };
+
+    public void testFunc(HashMap sensorValues){
 
         //trying to remove old data on the graph and add new data
         mSeries1.clearReference(graph);

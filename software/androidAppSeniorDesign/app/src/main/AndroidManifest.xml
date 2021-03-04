@@ -26,6 +26,7 @@
 
 
         <service android:name=".ui.light.lightService" />
+        <service android:name=".ui.connections.connectionsService" />
 
 
     </application>

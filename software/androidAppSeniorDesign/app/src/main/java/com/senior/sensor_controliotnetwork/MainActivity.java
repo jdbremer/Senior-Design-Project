@@ -15,6 +15,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 import com.senior.sensor_controliotnetwork.ui.connections.ConnectionsViewModel;
 import com.senior.sensor_controliotnetwork.ui.light.lightService;
+import com.senior.sensor_controliotnetwork.ui.connections.connectionsService;
 
 import androidx.core.app.NotificationCompat;
 import androidx.navigation.NavController;
@@ -66,8 +67,10 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        Intent intent = new Intent(this, lightService.class);
-        this.startService(intent);
+        Intent lightIntent = new Intent(this, lightService.class);
+        this.startService(lightIntent);
+        Intent connectionIntent = new Intent(this, connectionsService.class);
+        this.startService(connectionIntent);
     }
 
     @Override
