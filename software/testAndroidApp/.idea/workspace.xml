@@ -7,8 +7,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="48171d0f-e8cd-4d55-9ef4-fec9045fdb00" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../androidAppSeniorDesign/app/src/main/java/com/senior/sensor_controliotnetwork/ui/light/Utils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../androidAppSeniorDesign/app/src/main/java/com/senior/sensor_controliotnetwork/ui/light/DataFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/../androidAppSeniorDesign/app/src/main/java/com/senior/sensor_controliotnetwork/ui/light/DataFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../androidAppSeniorDesign/app/src/main/res/layout/fragment_light_data.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../androidAppSeniorDesign/app/src/main/res/layout/fragment_light_data.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

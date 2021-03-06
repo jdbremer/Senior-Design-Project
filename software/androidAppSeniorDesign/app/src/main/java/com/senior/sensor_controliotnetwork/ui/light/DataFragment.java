@@ -96,36 +96,20 @@
 
 package com.senior.sensor_controliotnetwork.ui.light;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.content.Context;
-import android.graphics.Typeface;
-import android.os.Build;
+import android.app.Activity;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -133,14 +117,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 
-import com.senior.sensor_controliotnetwork.MainActivity;
 import com.senior.sensor_controliotnetwork.R;
-import com.senior.sensor_controliotnetwork.ui.connections.ConnectionsFragment;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
 
 public class DataFragment extends Fragment {
 
@@ -231,7 +208,8 @@ public class DataFragment extends Fragment {
                 // Do something in response to button click
                 sensorGrabTime = Integer.parseInt(intervalTxt.getText().toString());        //grabs the value in char form and converts it to an int if button was pressed
                 mDatabase.child("dataFromApp").child("LightSensor").child("LightSampleInterval").setValue(sensorGrabTime);    //set sample interval in database
-
+//                Utils.hideKeyboard(Activity DataFragment.this);
+                Utils.hideKeyboard(getActivity());
             }
         });
 
