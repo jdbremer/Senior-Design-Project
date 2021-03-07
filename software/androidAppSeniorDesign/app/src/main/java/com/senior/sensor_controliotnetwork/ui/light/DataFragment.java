@@ -126,8 +126,9 @@ public class DataFragment extends Fragment {
     private DatabaseReference mPostReferenceLightSampleInterval;
 
     boolean onOrOff = false;    //status of weather or not the light sensor is connected
-    public int sensorGrabTime = 5;  //time in seconds for how often light sensor grabs new data
-    public EditText intervalTxt;
+//    public int sensorGrabTime = 5;  //time in seconds for how often light sensor grabs new data
+    public String sensorGrabTime = "5";  //time in seconds for how often light sensor grabs new data
+    //public EditText intervalTxt;
     //ConnectionsFragment connectFrag = new ConnectionsFragment();
 
     private LightViewModel lightViewModel;
@@ -141,15 +142,17 @@ public class DataFragment extends Fragment {
 
 
         mPostReferenceLightConnectionStatus = FirebaseDatabase.getInstance().getReference().child("Connections").child("LightSensor");  //LISTENER OBJECT
-        mPostReferenceLightSampleInterval = FirebaseDatabase.getInstance().getReference().child("Connections").child("LightSensor").child("LightSampleInterval");  //LISTENER OBJECT
+        mPostReferenceLightSampleInterval = FirebaseDatabase.getInstance().getReference().child("dataFromApp").child("LightSensor");  //LISTENER OBJECT
         mDatabase = FirebaseDatabase.getInstance().getReference();  //DATABASE OBJECT
 
 
         TextView connectionLightText = (TextView) root.findViewById(R.id.textLightConnectionStatus);
-        TextView controlLightText = (TextView) root.findViewById(R.id.textLightDataSampleInterval);
+//        TextView lightIntervalText = (TextView) root.findViewById(R.id.textLightDataSampleInterval);
         Button lightSampleIntervalButton = (Button) root.findViewById(R.id.buttonLightSampleInterval);
+//        intervalTxt = (EditText) root.findViewById(R.id.textLightDataSampleInterval);
+
         //CONSTANT LISTENER CODE//
-        ValueEventListener controlSwitchConnectionStatusConstantListener = new ValueEventListener(){
+        ValueEventListener lightConnectionStatusConstantListener = new ValueEventListener(){
             @Override
             public void onDataChange (DataSnapshot dataSnapshot){
                 int onOff = Integer.parseInt((String) dataSnapshot.getValue());
@@ -171,9 +174,29 @@ public class DataFragment extends Fragment {
                 System.out.println("The read failed: " + error.getMessage());
             }
         };
-        mPostReferenceLightConnectionStatus.addValueEventListener(controlSwitchConnectionStatusConstantListener);  //Uncomment this to start the continuous grab of updated data (runs code above, constant listener code)
+        mPostReferenceLightConnectionStatus.addValueEventListener(lightConnectionStatusConstantListener);  //Uncomment this to start the continuous grab of updated data (runs code above, constant listener code)
+
         //END CONSTANT LISTENER CODE//
 
+        //CONSTANT LISTENER CODE//
+//        TextView lightIntervalText = (TextView) root.findViewById(R.id.textLightDataSampleInterval);
+        EditText lightIntervalText = (EditText) root.findViewById(R.id.textLightDataSampleInterval);
+        ValueEventListener lightIntervalConstantListener = new ValueEventListener(){
+            @Override
+            public void onDataChange (DataSnapshot dataSnapshot){
+//                int interval = Integer.parseInt((String) dataSnapshot.getValue());
+//                lightIntervalText.setText(String.valueOf(interval));
+//                lightIntervalText.setText(interval);
+                lightIntervalText.setText(dataSnapshot.getValue().toString());
+            }
+
+            @Override
+            public void onCancelled (@NonNull DatabaseError error){
+                //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                System.out.println("The read failed: " + error.getMessage());
+            }
+        };
+        mPostReferenceLightSampleInterval.addValueEventListener(lightIntervalConstantListener);  //Uncomment this to start the continuous grab of updated data (runs code above, constant listener code)
 
 //        TextView controlSwitchStatusText = (TextView) root.findViewById(R.id.textControlSwitchStatus);
 //        //CONSTANT LISTENER CODE//
@@ -198,29 +221,23 @@ public class DataFragment extends Fragment {
 //        mPostReferenceControlSwitchStatus.addValueEventListener(controlSwitchStatusConstantListener);  //Uncomment this to start the continuous grab of updated data (runs code above, constant listener code)
         //END CONSTANT LISTENER CODE//
 
-        intervalTxt = (EditText) root.findViewById(R.id.textLightDataSampleInterval);
-        intervalTxt.setText(String.valueOf(sensorGrabTime));        //sets the value in the txt box to the initial value
+//        intervalTxt = (EditText) root.findViewById(R.id.textLightDataSampleInterval);
+//        intervalTxt.setText(String.valueOf(sensorGrabTime));        //sets the value in the txt box to the initial value
 
         Button lightSampleButton = (Button) root.findViewById(R.id.buttonLightSampleInterval);
 
         lightSampleButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Do something in response to button click
-                sensorGrabTime = Integer.parseInt(intervalTxt.getText().toString());        //grabs the value in char form and converts it to an int if button was pressed
-                mDatabase.child("dataFromApp").child("LightSensor").child("LightSampleInterval").setValue(sensorGrabTime);    //set sample interval in database
+//                sensorGrabTime = Integer.parseInt(lightIntervalText.getText().toString());        //grabs the value in char form and converts it to an int if button was pressed FOR INTEGER VERSION, NOT STRING
+                sensorGrabTime = lightIntervalText.getText().toString();
+                mDatabase.child("dataFromApp").child("LightSensor").setValue(sensorGrabTime);    //set sample interval in database
 //                Utils.hideKeyboard(Activity DataFragment.this);
-                Utils.hideKeyboard(getActivity());
+//                mDatabase.child("dataFromApp").child("LightSensor").child("LightSampleInterval").setValue(lightIntervalText);    //set sample interval in database
+                Utils.hideKeyboard(getActivity());  //hide keyboard after button press
             }
         });
 
         return root;
     }
-
-//    private void closeKeyboard(){
-//        View view = this.getCurrentFocus();
-//        if(view != null){   //if a view is open
-//            InputMethodManager inputMM = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-//            inputMM.hideSoftInputFromWindow(view.getWindowToken(), 0);
-//        }
-//    }
 }
