@@ -1,99 +1,3 @@
-//package com.senior.sensor_controliotnetwork.ui.light;
-//
-//import android.os.Bundle;
-//
-//import androidx.fragment.app.Fragment;
-//
-//import android.view.LayoutInflater;
-//import android.view.View;
-//import android.view.ViewGroup;
-//import android.widget.TextView;
-//
-//import com.senior.sensor_controliotnetwork.R;
-//
-///**
-// * A simple {@link Fragment} subclass.
-// * Use the {@link DataFragment#newInstance} factory method to
-// * create an instance of this fragment.
-// */
-//public class DataFragment extends Fragment {
-//
-//    // TODO: Rename parameter arguments, choose names that match
-//    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-//    private static final String ARG_PARAM1 = "param1";
-//    private static final String ARG_PARAM2 = "param2";
-//
-//    // TODO: Rename and change types of parameters
-//    private String mParam1;
-//    private String mParam2;
-//
-//    public DataFragment() {
-//        // Required empty public constructor
-//    }
-//
-//    /**
-//     * Use this factory method to create a new instance of
-//     * this fragment using the provided parameters.
-//     *
-//     * @param param1 Parameter 1.
-//     * @param param2 Parameter 2.
-//     * @return A new instance of fragment DataFragment.
-//     */
-//    // TODO: Rename and change types and number of parameters
-//    public static DataFragment newInstance(String param1, String param2) {
-//        DataFragment fragment = new DataFragment();
-//        Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
-//        fragment.setArguments(args);
-//        return fragment;
-//    }
-//
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
-//        }
-//    }
-//
-//    @Override
-//    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-//                             Bundle savedInstanceState) {
-//        // Inflate the layout for this fragment
-//        return inflater.inflate(R.layout.fragment_light_data, container, false);
-//    }
-//}
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-
-
 package com.senior.sensor_controliotnetwork.ui.light;
 
 import android.app.Activity;
@@ -128,6 +32,7 @@ public class DataFragment extends Fragment {
     boolean onOrOff = false;    //status of weather or not the light sensor is connected
 //    public int sensorGrabTime = 5;  //time in seconds for how often light sensor grabs new data
     public String sensorGrabTime = "5";  //time in seconds for how often light sensor grabs new data
+    public String sampleInterval;
     //public EditText intervalTxt;
     //ConnectionsFragment connectFrag = new ConnectionsFragment();
 
@@ -147,7 +52,6 @@ public class DataFragment extends Fragment {
 
 
         TextView connectionLightText = (TextView) root.findViewById(R.id.textLightConnectionStatus);
-//        TextView lightIntervalText = (TextView) root.findViewById(R.id.textLightDataSampleInterval);
         Button lightSampleIntervalButton = (Button) root.findViewById(R.id.buttonLightSampleInterval);
 //        intervalTxt = (EditText) root.findViewById(R.id.textLightDataSampleInterval);
 
@@ -179,7 +83,6 @@ public class DataFragment extends Fragment {
         //END CONSTANT LISTENER CODE//
 
         //CONSTANT LISTENER CODE//
-//        TextView lightIntervalText = (TextView) root.findViewById(R.id.textLightDataSampleInterval);
         EditText lightIntervalText = (EditText) root.findViewById(R.id.textLightDataSampleInterval);
         ValueEventListener lightIntervalConstantListener = new ValueEventListener(){
             @Override
@@ -188,6 +91,7 @@ public class DataFragment extends Fragment {
 //                lightIntervalText.setText(String.valueOf(interval));
 //                lightIntervalText.setText(interval);
                 lightIntervalText.setText(dataSnapshot.getValue().toString());
+                sampleInterval = dataSnapshot.getValue().toString();
             }
 
             @Override
@@ -197,29 +101,6 @@ public class DataFragment extends Fragment {
             }
         };
         mPostReferenceLightSampleInterval.addValueEventListener(lightIntervalConstantListener);  //Uncomment this to start the continuous grab of updated data (runs code above, constant listener code)
-
-//        TextView controlSwitchStatusText = (TextView) root.findViewById(R.id.textControlSwitchStatus);
-//        //CONSTANT LISTENER CODE//
-//        ValueEventListener controlSwitchStatusConstantListener = new ValueEventListener(){
-//            @Override
-//            public void onDataChange (DataSnapshot dataSnapshot){
-//                int onOff = Integer.parseInt((String) dataSnapshot.getValue());
-//                if(onOff == 1){
-//                    controlSwitchStatusText.setText("ON");
-//                }
-//                else if(onOff == 0) {
-//                    controlSwitchStatusText.setText("OFF");
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled (@NonNull DatabaseError error){
-//                //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-//                System.out.println("The read failed: " + error.getMessage());
-//            }
-//        };
-//        mPostReferenceControlSwitchStatus.addValueEventListener(controlSwitchStatusConstantListener);  //Uncomment this to start the continuous grab of updated data (runs code above, constant listener code)
-        //END CONSTANT LISTENER CODE//
 
 //        intervalTxt = (EditText) root.findViewById(R.id.textLightDataSampleInterval);
 //        intervalTxt.setText(String.valueOf(sensorGrabTime));        //sets the value in the txt box to the initial value
@@ -231,7 +112,13 @@ public class DataFragment extends Fragment {
                 // Do something in response to button click
 //                sensorGrabTime = Integer.parseInt(lightIntervalText.getText().toString());        //grabs the value in char form and converts it to an int if button was pressed FOR INTEGER VERSION, NOT STRING
                 sensorGrabTime = lightIntervalText.getText().toString();
-                mDatabase.child("dataFromApp").child("LightSensor").setValue(sensorGrabTime);    //set sample interval in database
+                if(isNumeric(sensorGrabTime) && !"0".equals(sensorGrabTime))   //check if non zero integer was entered
+                    mDatabase.child("dataFromApp").child("LightSensor").setValue(sensorGrabTime);    //set sample interval in database
+                else    //invalid entry
+                    lightIntervalText.setText(sampleInterval);      //sets the value in the txt box to the initial value
+//                    lightIntervalText.setText("34");      //sets the value in the txt box to the initial value
+//                    lightIntervalText.setText(mDatabase.child("dataFromApp").child("LightSensor"));      //sets the value in the txt box to the initial value
+
 //                Utils.hideKeyboard(Activity DataFragment.this);
 //                mDatabase.child("dataFromApp").child("LightSensor").child("LightSampleInterval").setValue(lightIntervalText);    //set sample interval in database
                 Utils.hideKeyboard(getActivity());  //hide keyboard after button press
@@ -239,5 +126,17 @@ public class DataFragment extends Fragment {
         });
 
         return root;
+    }
+
+    public static boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            int i = Integer.parseInt(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
     }
 }
