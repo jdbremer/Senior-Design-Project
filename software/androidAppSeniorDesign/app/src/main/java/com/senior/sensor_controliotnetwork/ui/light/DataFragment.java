@@ -33,8 +33,6 @@ public class DataFragment extends Fragment {
 //    public int sensorGrabTime = 5;  //time in seconds for how often light sensor grabs new data
     public String sensorGrabTime = "5";  //time in seconds for how often light sensor grabs new data
     public String sampleInterval;
-    //public EditText intervalTxt;
-    //ConnectionsFragment connectFrag = new ConnectionsFragment();
 
     private LightViewModel lightViewModel;
 
@@ -53,7 +51,6 @@ public class DataFragment extends Fragment {
 
         TextView connectionLightText = (TextView) root.findViewById(R.id.textLightConnectionStatus);
         Button lightSampleIntervalButton = (Button) root.findViewById(R.id.buttonLightSampleInterval);
-//        intervalTxt = (EditText) root.findViewById(R.id.textLightDataSampleInterval);
 
         //CONSTANT LISTENER CODE//
         ValueEventListener lightConnectionStatusConstantListener = new ValueEventListener(){
@@ -87,9 +84,6 @@ public class DataFragment extends Fragment {
         ValueEventListener lightIntervalConstantListener = new ValueEventListener(){
             @Override
             public void onDataChange (DataSnapshot dataSnapshot){
-//                int interval = Integer.parseInt((String) dataSnapshot.getValue());
-//                lightIntervalText.setText(String.valueOf(interval));
-//                lightIntervalText.setText(interval);
                 lightIntervalText.setText(dataSnapshot.getValue().toString());
                 sampleInterval = dataSnapshot.getValue().toString();
             }
@@ -102,8 +96,6 @@ public class DataFragment extends Fragment {
         };
         mPostReferenceLightSampleInterval.addValueEventListener(lightIntervalConstantListener);  //Uncomment this to start the continuous grab of updated data (runs code above, constant listener code)
 
-//        intervalTxt = (EditText) root.findViewById(R.id.textLightDataSampleInterval);
-//        intervalTxt.setText(String.valueOf(sensorGrabTime));        //sets the value in the txt box to the initial value
 
         Button lightSampleButton = (Button) root.findViewById(R.id.buttonLightSampleInterval);
 
@@ -116,11 +108,7 @@ public class DataFragment extends Fragment {
                     mDatabase.child("dataFromApp").child("LightSensor").setValue(sensorGrabTime);    //set sample interval in database
                 else    //invalid entry
                     lightIntervalText.setText(sampleInterval);      //sets the value in the txt box to the initial value
-//                    lightIntervalText.setText("34");      //sets the value in the txt box to the initial value
-//                    lightIntervalText.setText(mDatabase.child("dataFromApp").child("LightSensor"));      //sets the value in the txt box to the initial value
 
-//                Utils.hideKeyboard(Activity DataFragment.this);
-//                mDatabase.child("dataFromApp").child("LightSensor").child("LightSampleInterval").setValue(lightIntervalText);    //set sample interval in database
                 Utils.hideKeyboard(getActivity());  //hide keyboard after button press
             }
         });
@@ -128,7 +116,7 @@ public class DataFragment extends Fragment {
         return root;
     }
 
-    public static boolean isNumeric(String strNum) {
+    public static boolean isNumeric(String strNum) {    //check if a string is a number
         if (strNum == null) {
             return false;
         }
