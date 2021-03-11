@@ -33,12 +33,20 @@ def receivingSocket(serverSocket,receiveSocket, sendingSocket):
         #CODE TO DO SOMETHING WITH RECEIVED DATA
         try:
             print("received data.. " + receivedData)
-            if(int(receivedData) == 0):
+            relay1 = receivedData.split('~')[0]
+            relay2 = receivedData.split('~')[1]
+            if(int(relay1) == 0):
                 GPIO.output(18, GPIO.LOW)
-                sendsSocket(sendingSocket, 0)
-            elif(int(receivedData) == 1):
+            elif(int(relay1) == 1):
                 GPIO.output(18, GPIO.HIGH)
-                sendsSocket(sendingSocket, 1)
+                
+                
+            if(int(relay2) == 0):
+                GPIO.output(18, GPIO.LOW)
+            elif(int(relay2) == 1):
+                GPIO.output(18, GPIO.HIGH)
+                
+            sendsSocket(sendingSocket, receivedData)
         
         except KeyboardInterrupt:
             print("keyboard interrupt")
