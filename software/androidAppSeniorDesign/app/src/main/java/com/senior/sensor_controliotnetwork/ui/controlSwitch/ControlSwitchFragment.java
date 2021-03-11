@@ -105,11 +105,14 @@ public class ControlSwitchFragment extends Fragment {
         ValueEventListener controlSwitchStatusConstantListener = new ValueEventListener(){
             @Override
             public void onDataChange (DataSnapshot dataSnapshot){
-                int onOff = Integer.parseInt((String) dataSnapshot.getValue());
-                if(onOff == 1){
+                String onOffString = (String) dataSnapshot.getValue();
+                String[] onOff = onOffString.split("~");
+                int onOff1 = Integer.parseInt(onOff[0]);
+                int onOff0 = Integer.parseInt(onOff[1]);
+                if(onOff1 == 1){
                     controlSwitchStatusText.setText("ON");
                 }
-                else if(onOff == 0) {
+                else if(onOff1 == 0) {
                     controlSwitchStatusText.setText("OFF");
                 }
             }
