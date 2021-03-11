@@ -51,6 +51,8 @@ public class ControlSwitchFragment extends Fragment {
     private DatabaseReference mPostReferenceControlSwitchStatus;
 
     boolean onOrOff = false;
+    int relay1_onOff = 0;
+    int relay2_onOff = 0;
     //ConnectionsFragment connectFrag = new ConnectionsFragment();
 
     private ControlSwitchViewModel controlSwitchViewModel;
@@ -69,8 +71,10 @@ public class ControlSwitchFragment extends Fragment {
 
 
         TextView controlSwitchConnectionText = (TextView) root.findViewById(R.id.textControlSwitchConnectionStatus);
-        Button controlSwitchOnButton = (Button) root.findViewById(R.id.controlSwitchButtonOn);
-        Button controlSwitchOffButton = (Button) root.findViewById(R.id.controlSwitchButtonOff);
+        Button controlSwitch1OnButton = (Button) root.findViewById(R.id.controlSwitch1ButtonOn);
+        Button controlSwitch1OffButton = (Button) root.findViewById(R.id.controlSwitch1ButtonOff);
+        Button controlSwitch2OnButton = (Button) root.findViewById(R.id.controlSwitch2ButtonOn);
+        Button controlSwitch2OffButton = (Button) root.findViewById(R.id.controlSwitch2ButtonOff);
         //CONSTANT LISTENER CODE//
         ValueEventListener controlSwitchConnectionStatusConstantListener = new ValueEventListener(){
             @Override
@@ -79,14 +83,18 @@ public class ControlSwitchFragment extends Fragment {
                 if(onOff == 1){
                     controlSwitchConnectionText.setText("Connected");
                     onOrOff = true;
-                    controlSwitchOnButton.setEnabled(true);
-                    controlSwitchOffButton.setEnabled(true);
+                    controlSwitch1OnButton.setEnabled(true);
+                    controlSwitch1OffButton.setEnabled(true);
+                    controlSwitch2OnButton.setEnabled(true);
+                    controlSwitch2OffButton.setEnabled(true);
                 }
                 else if(onOff == 0) {
                     controlSwitchConnectionText.setText("Not Connected");
                     onOrOff = false;
-                    controlSwitchOnButton.setEnabled(false);
-                    controlSwitchOffButton.setEnabled(false);
+                    controlSwitch1OnButton.setEnabled(false);
+                    controlSwitch1OffButton.setEnabled(false);
+                    controlSwitch2OnButton.setEnabled(false);
+                    controlSwitch2OffButton.setEnabled(false);
                 }
             }
 
@@ -100,7 +108,8 @@ public class ControlSwitchFragment extends Fragment {
         //END CONSTANT LISTENER CODE//
 
 
-        TextView controlSwitchStatusText = (TextView) root.findViewById(R.id.textControlSwitchStatus);
+        TextView controlSwitch1StatusText = (TextView) root.findViewById(R.id.textControlSwitch1Status);
+        TextView controlSwitch2StatusText = (TextView) root.findViewById(R.id.textControlSwitch2Status);
         //CONSTANT LISTENER CODE//
         ValueEventListener controlSwitchStatusConstantListener = new ValueEventListener(){
             @Override
@@ -108,12 +117,19 @@ public class ControlSwitchFragment extends Fragment {
                 String onOffString = (String) dataSnapshot.getValue();
                 String[] onOff = onOffString.split("~");
                 int onOff1 = Integer.parseInt(onOff[0]);
-                int onOff0 = Integer.parseInt(onOff[1]);
+                int onOff2 = Integer.parseInt(onOff[1]);
                 if(onOff1 == 1){
-                    controlSwitchStatusText.setText("ON");
+                    controlSwitch1StatusText.setText("ON");
                 }
                 else if(onOff1 == 0) {
-                    controlSwitchStatusText.setText("OFF");
+                    controlSwitch1StatusText.setText("OFF");
+                }
+
+                if(onOff2 == 1){
+                    controlSwitch2StatusText.setText("ON");
+                }
+                else if(onOff2 == 0) {
+                    controlSwitch2StatusText.setText("OFF");
                 }
             }
 
@@ -127,24 +143,56 @@ public class ControlSwitchFragment extends Fragment {
         //END CONSTANT LISTENER CODE//
 
 
-        Button buttonOn = (Button) root.findViewById(R.id.controlSwitchButtonOn);
+        Button switch1ButtonOn = (Button) root.findViewById(R.id.controlSwitch1ButtonOn);
 
-        buttonOn.setOnClickListener(new View.OnClickListener() {
+        switch1ButtonOn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Do something in response to button click
                 if(onOrOff == true) {
-                    mDatabase.child("dataFromApp").child("ControlSwitch").setValue("1");    //set ControlSwitch to 1 or "on" in database
+                    relay1_onOff = 1;
+                    String sending_msg  = relay1_onOff + "~" + relay2_onOff;
+                    mDatabase.child("dataFromApp").child("ControlSwitch").setValue(sending_msg);    //set ControlSwitch to 1 or "on" in database
                 }
             }
         });
 
-        Button buttonOff = (Button) root.findViewById(R.id.controlSwitchButtonOff);
+        Button switch1ButtonOff = (Button) root.findViewById(R.id.controlSwitch1ButtonOff);
 
-        buttonOff.setOnClickListener(new View.OnClickListener() {
+        switch1ButtonOff.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Do something in response to button click
                 if(onOrOff == true) {
-                    mDatabase.child("dataFromApp").child("ControlSwitch").setValue("0"); //set ControlSwitch to 0 or "off" in database
+                    relay1_onOff = 0;
+                    String sending_msg  = relay1_onOff + "~" + relay2_onOff;
+                    mDatabase.child("dataFromApp").child("ControlSwitch").setValue(sending_msg); //set ControlSwitch to 0 or "off" in database
+                }
+            }
+        });
+
+
+        Button switch2ButtonOn = (Button) root.findViewById(R.id.controlSwitch2ButtonOn);
+
+        switch2ButtonOn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Do something in response to button click
+                if(onOrOff == true) {
+                    relay2_onOff = 1;
+                    String sending_msg  = relay1_onOff + "~" + relay2_onOff;
+                    mDatabase.child("dataFromApp").child("ControlSwitch").setValue(sending_msg);    //set ControlSwitch to 1 or "on" in database
+                }
+            }
+        });
+
+
+        Button switch2ButtonOff = (Button) root.findViewById(R.id.controlSwitch2ButtonOff);
+
+        switch2ButtonOff.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Do something in response to button click
+                if(onOrOff == true) {
+                    relay2_onOff = 0;
+                    String sending_msg  = relay1_onOff + "~" + relay2_onOff;
+                    mDatabase.child("dataFromApp").child("ControlSwitch").setValue(sending_msg); //set ControlSwitch to 0 or "off" in database
                 }
             }
         });

@@ -7,7 +7,55 @@
     android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/controlSwitchButtonOn"
+        android:id="@+id/controlSwitch2ButtonOff"
+        android:layout_width="152dp"
+        android:layout_height="50dp"
+        android:text="Off"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.061"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.619" />
+
+    <Button
+        android:id="@+id/controlSwitch2ButtonOn"
+        android:layout_width="152dp"
+        android:layout_height="50dp"
+        android:text="On"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.061"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.519" />
+
+    <TextView
+        android:id="@+id/textSwitchStatus6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Control Switch2 Status:"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.026"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.411" />
+
+    <TextView
+        android:id="@+id/textSwitchStatus3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Control Switch1 Status:"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.025"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.105" />
+
+    <Button
+        android:id="@+id/controlSwitch1ButtonOn"
         android:layout_width="152dp"
         android:layout_height="50dp"
         android:text="On"
@@ -19,7 +67,7 @@
         app:layout_constraintVertical_bias="0.201" />
 
     <Button
-        android:id="@+id/controlSwitchButtonOff"
+        android:id="@+id/controlSwitch1ButtonOff"
         android:layout_width="152dp"
         android:layout_height="50dp"
         android:text="Off"
@@ -34,7 +82,7 @@
         android:id="@+id/textSwitchStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Control Switch Status:"
+        android:text="Control Switch1 Status:"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.025"
@@ -68,19 +116,30 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/textControlSwitchStatus"
+        android:id="@+id/textControlSwitch1Status"
         android:layout_width="114dp"
         android:layout_height="22dp"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
+        android:layout_marginTop="36dp"
         android:layout_marginEnd="133dp"
         android:layout_marginRight="133dp"
-        android:layout_marginBottom="40dp"
-        app:layout_constraintBottom_toTopOf="@+id/controlSwitchButtonOn"
+        app:layout_constraintBottom_toTopOf="@+id/controlSwitch1ButtonOn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/textSwitchStatus"
         app:layout_constraintTop_toBottomOf="@+id/textControlSwitchConnectionStatus"
-        app:layout_constraintVertical_bias="0.923" />
+        app:layout_constraintVertical_bias="0.069" />
+
+    <TextView
+        android:id="@+id/textControlSwitch2Status"
+        android:layout_width="106dp"
+        android:layout_height="22dp"
+        app:layout_constraintBottom_toTopOf="@+id/controlSwitch2ButtonOn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.078"
+        app:layout_constraintStart_toEndOf="@+id/textSwitchStatus6"
+        app:layout_constraintTop_toBottomOf="@+id/controlSwitch1ButtonOff"
+        app:layout_constraintVertical_bias="0.493" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
