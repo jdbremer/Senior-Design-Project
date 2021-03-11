@@ -51,10 +51,6 @@ def receivingSocket(serverSocket,receiveSocket, sendingSocket):
         except KeyboardInterrupt:
             print("keyboard interrupt")
 
-        finally:
-            print("clean up")
-            GPIO.cleanup()
-
 
         #END CODE TO DO SOMETHING WITH RECEIVED DATA
     
