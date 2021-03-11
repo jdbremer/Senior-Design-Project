@@ -104,14 +104,10 @@ try:
     GPIO.setup(18, GPIO.OUT)
     #default the output to LOW
     GPIO.output(18, GPIO.LOW)
-    
-
-
-
-
-#for testing...
-while True:
-    continue
+   
+    #for testing...
+    while True:
+        continue
     
 except KeyboardInterrupt:
     print("keyboard interrupt")
