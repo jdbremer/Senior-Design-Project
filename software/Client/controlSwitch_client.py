@@ -42,9 +42,9 @@ def receivingSocket(serverSocket,receiveSocket, sendingSocket):
                 
                 
             if(int(relay2) == 0):
-                GPIO.output(18, GPIO.LOW)
+                GPIO.output(16, GPIO.LOW)
             elif(int(relay2) == 1):
-                GPIO.output(18, GPIO.HIGH)
+                GPIO.output(16, GPIO.HIGH)
                 
             sendsSocket(sendingSocket, receivedData)
         
@@ -104,6 +104,11 @@ try:
     GPIO.setup(18, GPIO.OUT)
     #default the output to LOW
     GPIO.output(18, GPIO.LOW)
+    
+    #set the GPIO pin 16 to output
+    GPIO.setup(16, GPIO.OUT)
+    #default the output to LOW
+    GPIO.output(16, GPIO.LOW)
    
     #for testing...
     while True:
