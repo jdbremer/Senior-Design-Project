@@ -53,6 +53,8 @@ public class ControlSwitchFragment extends Fragment {
     boolean onOrOff = false;
     int relay1_onOff = 0;
     int relay2_onOff = 0;
+    int onOff1 = 0;
+    int onOff2 = 0;
     //ConnectionsFragment connectFrag = new ConnectionsFragment();
 
     private ControlSwitchViewModel controlSwitchViewModel;
@@ -116,8 +118,13 @@ public class ControlSwitchFragment extends Fragment {
             public void onDataChange (DataSnapshot dataSnapshot){
                 String onOffString = (String) dataSnapshot.getValue();
                 String[] onOff = onOffString.split("~");
-                int onOff1 = Integer.parseInt(onOff[0]);
-                int onOff2 = Integer.parseInt(onOff[1]);
+                onOff1 = Integer.parseInt(onOff[0]);
+                if(onOff.length > 1) {
+                    onOff2 = Integer.parseInt(onOff[1]);
+                }
+                else{
+                    onOff2 = 0;
+                }
                 if(onOff1 == 1){
                     controlSwitch1StatusText.setText("ON");
                 }

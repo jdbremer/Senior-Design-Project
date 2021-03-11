@@ -105,18 +105,20 @@ try:
     #default the output to LOW
     GPIO.output(18, GPIO.LOW)
     
-except KeyboardInterrupt:
-    print("keyboard interrupt")
 
-finally:
-    print("clean up")
-    GPIO.cleanup()
 
 
 
 #for testing...
 while True:
     continue
+    
+except KeyboardInterrupt:
+    print("keyboard interrupt")
+
+finally:
+    print("clean up")
+    GPIO.cleanup()
 
 
 
