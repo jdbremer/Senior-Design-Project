@@ -97,6 +97,10 @@ public class ControlSwitchFragment extends Fragment {
                     controlSwitch1OffButton.setEnabled(false);
                     controlSwitch2OnButton.setEnabled(false);
                     controlSwitch2OffButton.setEnabled(false);
+                    relay1_onOff = 0;
+                    relay2_onOff = 0;
+                    String sending_msg  = relay1_onOff + "~" + relay2_onOff;
+                    mDatabase.child("dataFromApp").child("ControlSwitch").setValue(sending_msg);    //set ControlSwitch to 1 or "on" in database
                 }
             }
 
