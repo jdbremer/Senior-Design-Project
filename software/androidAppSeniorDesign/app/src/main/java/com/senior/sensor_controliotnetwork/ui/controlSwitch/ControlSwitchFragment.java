@@ -73,8 +73,10 @@ public class ControlSwitchFragment extends Fragment {
 
 
         TextView controlSwitchConnectionText = (TextView) root.findViewById(R.id.textControlSwitchConnectionStatus);
+        //Relay1 on off buttons
         Button controlSwitch1OnButton = (Button) root.findViewById(R.id.controlSwitch1ButtonOn);
         Button controlSwitch1OffButton = (Button) root.findViewById(R.id.controlSwitch1ButtonOff);
+        //Relay2 on off buttons
         Button controlSwitch2OnButton = (Button) root.findViewById(R.id.controlSwitch2ButtonOn);
         Button controlSwitch2OffButton = (Button) root.findViewById(R.id.controlSwitch2ButtonOff);
         //CONSTANT LISTENER CODE//
@@ -82,25 +84,28 @@ public class ControlSwitchFragment extends Fragment {
             @Override
             public void onDataChange (DataSnapshot dataSnapshot){
                 int onOff = Integer.parseInt((String) dataSnapshot.getValue());
-                if(onOff == 1){
-                    controlSwitchConnectionText.setText("Connected");
-                    onOrOff = true;
+                if(onOff == 1){ //if the connection was set to active within the database
+                    controlSwitchConnectionText.setText("Connected");   //set the text to connected
+                    onOrOff = true; //set the onOrOff bool to true, this is a global var that can be used elsewhere
+                    //enable all the buttons (make the button active)
                     controlSwitch1OnButton.setEnabled(true);
                     controlSwitch1OffButton.setEnabled(true);
                     controlSwitch2OnButton.setEnabled(true);
                     controlSwitch2OffButton.setEnabled(true);
                 }
-                else if(onOff == 0) {
-                    controlSwitchConnectionText.setText("Not Connected");
-                    onOrOff = false;
+                else if(onOff == 0) { //if the connection was set to not active within the database
+                    controlSwitchConnectionText.setText("Not Connected"); //set the text to not connected
+                    onOrOff = false;    //set the onOrOff bool to false, this is a global var that can be used elsewhere
+                    //disable all the buttons (grey them out and make them not active)
                     controlSwitch1OnButton.setEnabled(false);
                     controlSwitch1OffButton.setEnabled(false);
                     controlSwitch2OnButton.setEnabled(false);
                     controlSwitch2OffButton.setEnabled(false);
+                    //set both relays off, these are used to generate the sending string to the database, these are global
                     relay1_onOff = 0;
                     relay2_onOff = 0;
-                    String sending_msg  = relay1_onOff + "~" + relay2_onOff;
-                    mDatabase.child("dataFromApp").child("ControlSwitch").setValue(sending_msg);    //set ControlSwitch to 1 or "on" in database
+                    String sending_msg  = relay1_onOff + "~" + relay2_onOff; //create the string to send the default val to the database
+                    mDatabase.child("dataFromApp").child("ControlSwitch").setValue(sending_msg);    //send the value to the control switch database child
                 }
             }
 
@@ -121,14 +126,15 @@ public class ControlSwitchFragment extends Fragment {
             @Override
             public void onDataChange (DataSnapshot dataSnapshot){
                 String onOffString = (String) dataSnapshot.getValue();
-                String[] onOff = onOffString.split("~");
-                onOff1 = Integer.parseInt(onOff[0]);
-                if(onOff.length > 1) {
+                String[] onOff = onOffString.split("~"); //the value in the database is in this form -> 0~0, 1~0, 0~1, 1~1.. so we need to split the two values at the delimiter
+                onOff1 = Integer.parseInt(onOff[0]); //grab the first val in the array
+                if(onOff.length > 1) {  //if the length of the array is greater than 1, then two relays are found, so parse the second val
                     onOff2 = Integer.parseInt(onOff[1]);
                 }
                 else{
-                    onOff2 = 0;
+                    onOff2 = 0; //if the second relay is not found, keep it OFF
                 }
+                //if the relays are found to be on/off set the proper text
                 if(onOff1 == 1){
                     controlSwitch1StatusText.setText("ON");
                 }
@@ -160,9 +166,9 @@ public class ControlSwitchFragment extends Fragment {
             public void onClick(View v) {
                 // Do something in response to button click
                 if(onOrOff == true) {
-                    relay1_onOff = 1;
-                    String sending_msg  = relay1_onOff + "~" + relay2_onOff;
-                    mDatabase.child("dataFromApp").child("ControlSwitch").setValue(sending_msg);    //set ControlSwitch to 1 or "on" in database
+                    relay1_onOff = 1;   //set relay1 to ON
+                    String sending_msg  = relay1_onOff + "~" + relay2_onOff; //generate string relay1~relay2
+                    mDatabase.child("dataFromApp").child("ControlSwitch").setValue(sending_msg);  //send value to database
                 }
             }
         });
@@ -173,9 +179,9 @@ public class ControlSwitchFragment extends Fragment {
             public void onClick(View v) {
                 // Do something in response to button click
                 if(onOrOff == true) {
-                    relay1_onOff = 0;
-                    String sending_msg  = relay1_onOff + "~" + relay2_onOff;
-                    mDatabase.child("dataFromApp").child("ControlSwitch").setValue(sending_msg); //set ControlSwitch to 0 or "off" in database
+                    relay1_onOff = 0; //set relay1 to OFF
+                    String sending_msg  = relay1_onOff + "~" + relay2_onOff; //generate string relay1~relay2
+                    mDatabase.child("dataFromApp").child("ControlSwitch").setValue(sending_msg); //send value to database
                 }
             }
         });
@@ -187,9 +193,9 @@ public class ControlSwitchFragment extends Fragment {
             public void onClick(View v) {
                 // Do something in response to button click
                 if(onOrOff == true) {
-                    relay2_onOff = 1;
-                    String sending_msg  = relay1_onOff + "~" + relay2_onOff;
-                    mDatabase.child("dataFromApp").child("ControlSwitch").setValue(sending_msg);    //set ControlSwitch to 1 or "on" in database
+                    relay2_onOff = 1; //set relay2 to ON
+                    String sending_msg  = relay1_onOff + "~" + relay2_onOff; //generate string relay1~relay2
+                    mDatabase.child("dataFromApp").child("ControlSwitch").setValue(sending_msg);  //send value to database
                 }
             }
         });
@@ -201,9 +207,9 @@ public class ControlSwitchFragment extends Fragment {
             public void onClick(View v) {
                 // Do something in response to button click
                 if(onOrOff == true) {
-                    relay2_onOff = 0;
-                    String sending_msg  = relay1_onOff + "~" + relay2_onOff;
-                    mDatabase.child("dataFromApp").child("ControlSwitch").setValue(sending_msg); //set ControlSwitch to 0 or "off" in database
+                    relay2_onOff = 0; //set relay2 to OFF
+                    String sending_msg  = relay1_onOff + "~" + relay2_onOff;  //generate string relay1~relay2
+                    mDatabase.child("dataFromApp").child("ControlSwitch").setValue(sending_msg); //send value to database
                 }
             }
         });

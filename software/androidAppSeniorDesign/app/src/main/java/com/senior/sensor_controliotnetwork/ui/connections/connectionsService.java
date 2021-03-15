@@ -210,9 +210,6 @@ public class connectionsService extends Service {
             builder.setContentText(s + " has disconnected");
             builder.setSmallIcon(R.drawable.ic_menu_send);
             builder.setAutoCancel(true);
-//            if (isAdded()) {
-//                getContext().getSystemService(Context.ALARM_SERVICE);
-//            }
             NotificationManagerCompat managerCompat = NotificationManagerCompat.from(this);
             managerCompat.notify(1,builder.build());
 

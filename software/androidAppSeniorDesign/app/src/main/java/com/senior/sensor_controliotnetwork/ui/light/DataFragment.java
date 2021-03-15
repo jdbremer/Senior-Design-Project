@@ -33,6 +33,7 @@ public class DataFragment extends Fragment {
 //    public int sensorGrabTime = 5;  //time in seconds for how often light sensor grabs new data
     public String sensorGrabTime = "5";  //time in seconds for how often light sensor grabs new data
     public String sampleInterval;
+    public static String threshold;
 
     private LightViewModel lightViewModel;
 
@@ -110,6 +111,38 @@ public class DataFragment extends Fragment {
                     lightIntervalText.setText(sampleInterval);      //sets the value in the txt box to the initial value
 
                 Utils.hideKeyboard(getActivity());  //hide keyboard after button press
+            }
+        });
+
+
+        Button setThresholdButton = (Button) root.findViewById(R.id.setThreshold);
+        EditText lightThresholdText = (EditText) root.findViewById(R.id.LightThresholdText);
+
+
+
+        setThresholdButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String tempThreshold;
+                tempThreshold = lightThresholdText.getText().toString();
+                if(isNumeric(tempThreshold) && !"0".equals(tempThreshold))   //check if non zero integer was entered
+                    threshold = tempThreshold;
+                    //mDatabase.child("dataFromApp").child("LightSensor").setValue(sensorGrabTime);    //set sample interval in database
+                else    //invalid entry
+                    //lightIntervalText.setText(sampleInterval);      //sets the value in the txt box to the initial value
+
+
+                Utils.hideKeyboard(getActivity());  //hide keyboard after button press
+            }
+        });
+
+
+        Button thresholdONOFF = (Button) root.findViewById(R.id.thresholdOnOff);
+
+        thresholdONOFF.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
 
