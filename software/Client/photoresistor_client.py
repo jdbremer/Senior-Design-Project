@@ -12,31 +12,31 @@ interval = 5  #default of 5 seconds
 
 #function to send data to the server in a sequence
 def sendingSocket(sendingSocket, data):
-       #send the data to the server
-       sendingSocket.send(str(data).encode('ascii'))
-       #received message from server to keep in sync
-       msgFromServer = sendingSocket.recv(1024).decode('ascii')
+	   #send the data to the server
+	   sendingSocket.send(str(data).encode('ascii'))
+	   #received message from server to keep in sync
+	   msgFromServer = sendingSocket.recv(1024).decode('ascii')
 
 
 #thread that initiates when the status socket gets initiated
 def statusSocket(serverSocket,receiveSocket, sendingSocket):
 	print (serverSocket.recv(1024).decode('ascii'))
 	serverSocket.send('LightSensor'.encode('ascii'))
-    
-    
+	
+	
 #thread to handle the data that is received from the base node
 def receivingSocket(serverSocket,receiveSocket, sendingSocket):
-    while True:
-        #data that comes from the base node will end up in receivedDAta
-        receivedData = receiveSocket.recv(1024).decode('ascii')
-        print (receivedData)
-        #need to send data back to keep sync
-        receiveSocket.send('Received...'.encode('ascii'))
+	while True:
+		#data that comes from the base node will end up in receivedDAta
+		receivedData = receiveSocket.recv(1024).decode('ascii')
+		print (receivedData)
+		#need to send data back to keep sync
+		receiveSocket.send('Received...'.encode('ascii'))
 
-        #CODE TO DO SOMETHING WITH RECEIVED DATA
-        interval = int(receivedData)
+		#CODE TO DO SOMETHING WITH RECEIVED DATA
+		interval = int(receivedData)
 
-        #END CODE TO DO SOMETHING WITH RECEIVED DATA
+		#END CODE TO DO SOMETHING WITH RECEIVED DATA
 
 
 
@@ -103,30 +103,30 @@ while True:
 
 	while True:
 		print("reached the inner while loop")
-	 	sensorTotal += mcp.read_adc(0) #read adc value of channel 0
-	    #take the average of the value
-	    #increment the incrementor
-	    inc = inc+1
-	    #if the incrementor is greater than 50, enough samples have been taken
+		sensorTotal += mcp.read_adc(0) #read adc value of channel 0
+		#take the average of the value
+		#increment the incrementor
+		inc = inc+1
+		#if the incrementor is greater than 50, enough samples have been taken
 		if(inc > numberOfSamples):
-	        #print the average to serial
-	        print("inside if statement")
-	        average = sensorTotal / 100
-	        print(average)
-	        inc = 0
-	        sensorTotal = 0
-	        delayTime = interval * 10
-	        #initiate sending sequence with the average as the data
-	        sendingSocket(sending, average)
-	  	else:
-	    	time.sleep(delayTime)
-           
+			#print the average to serial
+			print("inside if statement")
+			average = sensorTotal / 100
+			print(average)
+			inc = 0
+			sensorTotal = 0
+			delayTime = interval * 10
+			#initiate sending sequence with the average as the data
+			sendingSocket(sending, average)
+		else:
+			time.sleep(delayTime)
+		   
 except KeyboardInterrupt:
-    print("keyboard interrupt")
+	print("keyboard interrupt")
 
 finally:
-    print("clean up")
-    GPIO.cleanup()
+	print("clean up")
+	GPIO.cleanup()
 
 
 
