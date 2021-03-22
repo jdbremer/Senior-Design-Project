@@ -136,7 +136,7 @@ while True:
             # print("inside if statement")
             temp = sensorTotal / numberOfSamples
             average = (( Vcc * R )/( temp )) - R #https://learn.adafruit.com/photocells/using-a-photocell
-            average_lux = (math.sqrt((76.278^1000)/(average^1000)))^(1/827) #the table data was put into excel, it was plotted then a linear fit line and  
+            average_lux = (math.sqrt((76.278**1000)/(average**1000)))**(1/827) #the table data was put into excel, it was plotted then a linear fit line and  
                                                                             #equation were created
             # print('average: ' + average)
             inc = 0
