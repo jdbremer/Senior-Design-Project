@@ -105,6 +105,10 @@ inc = 0
 average = 0
 numberOfSamples = 500
 sensorTotal = 0
+temp = 0
+Vcc = 5
+R = 10000
+
 #sensor code
 while True:
 	print("inside outter while loop")
@@ -127,7 +131,9 @@ while True:
 		if(inc > numberOfSamples):
 			#print the average to serial
 			# print("inside if statement")
-			average = sensorTotal / numberOfSamples
+			temp = sensorTotal / numberOfSamples
+            average = (( Vcc * R )/( temp )) - R #https://learn.adafruit.com/photocells/using-a-photocell
+         
 			# print('average: ' + average)
 			inc = 0
 			sensorTotal = 0
