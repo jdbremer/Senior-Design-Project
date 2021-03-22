@@ -7,7 +7,7 @@ import _thread
 import Adafruit_GPIO.SPI as SPI #ADC SPI library
 import Adafruit_MCP3008
 
-int interval = 5  #default of 5 seconds
+interval = 5  #default of 5 seconds
 
 
 #function to send data to the server in a sequence
