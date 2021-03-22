@@ -9,13 +9,13 @@ import Adafruit_MCP3008
 
 import nexmo
 
-client = nexmo.Client(key='77d3ed4c', secret='SjSjkdsIgYw1AHce')
+# client = nexmo.Client(key='77d3ed4c', secret='SjSjkdsIgYw1AHce')
 
-client.send_message({
-    'from': '18553182827',
-    'to': '19522327269',
-    'text': 'Hello from Vonage SMS API',
-})
+# client.send_message({
+#     'from': '18553182827',
+#     'to': '19522327269',
+#     'text': 'Hello from Vonage SMS API',
+# })
 
 
 interval = 5  #default of 5 seconds
@@ -53,6 +53,7 @@ def receivingSocket(serverSocket,receiveSocket, sendingSocket):
 def sampleThread(sendSocket,receive):
     while True:
         time.sleep(interval)
+        print('average: ' + average)
         sendingSocket(sendSocket, average)
 
 
@@ -83,9 +84,9 @@ SPI_DEVICE = 0
 mcp = Adafruit_MCP3008.MCP3008(spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE))
 
 #set the GPIO to the board layout (used for pin numbers)
-GPIO.setmode(GPIO.BOARD)
+# GPIO.setmode(GPIO.BOARD)
 #set the GPIO pin 18 to output
-GPIO.setup(18, GPIO.OUT)
+# GPIO.setup(18, GPIO.OUT)
 
 
 
@@ -125,9 +126,9 @@ while True:
 		#if the incrementor is greater than 50, enough samples have been taken
 		if(inc > numberOfSamples):
 			#print the average to serial
-			print("inside if statement")
+			# print("inside if statement")
 			average = sensorTotal / numberOfSamples
-			print(average)
+			# print('average: ' + average)
 			inc = 0
 			sensorTotal = 0
 
