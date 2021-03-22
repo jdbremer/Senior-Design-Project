@@ -3,6 +3,7 @@ import RPi.GPIO as GPIO #pulls in the GPIO pin numbers
 import socket
 import time
 import _thread
+import math
 
 import Adafruit_GPIO.SPI as SPI #ADC SPI library
 import Adafruit_MCP3008
@@ -20,6 +21,7 @@ import nexmo
 
 interval = 5  #default of 5 seconds
 average = 0
+average_lux = 0
 
 
 #function to send data to the server in a sequence
@@ -53,8 +55,8 @@ def receivingSocket(serverSocket,receiveSocket, sendingSocket):
 def sampleThread(sendSocket,receive):
     while True:
         time.sleep(interval)
-        print('average: ' + average)
-        sendingSocket(sendSocket, average)
+        print('average: ' + average_lux)
+        sendingSocket(sendSocket, average_lux)
 
 
 #create a socket object for the receiving, sending, and status sockets
@@ -103,6 +105,7 @@ print (sending.recv(1024).decode('ascii') )
 
 inc = 0
 average = 0
+average_lux
 numberOfSamples = 500
 sensorTotal = 0
 temp = 0
@@ -133,7 +136,9 @@ while True:
 			# print("inside if statement")
 			temp = sensorTotal / numberOfSamples
             average = (( Vcc * R )/( temp )) - R #https://learn.adafruit.com/photocells/using-a-photocell
-         
+            average_lux = (math.sqrt((76.278^1000)/(average^1000)))^(1/827) #the table data was put into excel, it was plotted then a linear fit line and  
+                                                                            #equation were created
+            
 			# print('average: ' + average)
 			inc = 0
 			sensorTotal = 0
