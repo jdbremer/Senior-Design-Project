@@ -119,6 +119,7 @@ while True:
 			#initiate sending sequence with the average as the data
 			sendingSocket(sending, average)
 		else:
+			print(delayTime)
 			time.sleep(delayTime)
 		   
 # except KeyboardInterrupt:
