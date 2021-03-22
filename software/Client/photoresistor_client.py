@@ -39,7 +39,7 @@ def receivingSocket(serverSocket,receiveSocket, sendingSocket):
 
 		#END CODE TO DO SOMETHING WITH RECEIVED DATA
         
-def sampleThread(sendSocket):
+def sampleThread(sendSocket,receive):
     while True:
         time.sleep(interval)
         sendingSocket(sendSocket, average)
@@ -105,7 +105,7 @@ while True:
 	sensorTotal = 0 #reset sensorTotal for next group of samples
 	inc = 0
     
-    _thread.start_new_thread(sampleThread, (sending))
+	_thread.start_new_thread(sampleThread,(sending,receiving))
 	while True:
 		sensorTotal += mcp.read_adc(0) #read adc value of channel 0
 		#take the average of the value
