@@ -116,7 +116,6 @@ while True:
 			print(average)
 			inc = 0
 			sensorTotal = 0
-			delayTime = interval * 10
 			#initiate sending sequence with the average as the data
 			sendingSocket(sending, average)
 		else:
