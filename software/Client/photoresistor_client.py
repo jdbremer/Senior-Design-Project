@@ -55,8 +55,12 @@ def receivingSocket(serverSocket,receiveSocket, sendingSocket):
 def sampleThread(sendSocket,receive):
     while True:
         time.sleep(interval)
-        print('average: ')
+        print('average_lux: ')
         print(average_lux)
+        print('average: ')
+        print(average)
+        print('temp: ')
+        print(temp)
         sendingSocket(sendSocket, average_lux)
 
 
