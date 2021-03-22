@@ -8,6 +8,7 @@ import Adafruit_GPIO.SPI as SPI #ADC SPI library
 import Adafruit_MCP3008
 
 interval = 5  #default of 5 seconds
+average = 0
 
 
 #function to send data to the server in a sequence
@@ -35,17 +36,13 @@ def receivingSocket(serverSocket,receiveSocket, sendingSocket):
 
 		#CODE TO DO SOMETHING WITH RECEIVED DATA
 		interval = int(receivedData)
-		#delayTime = interval/100
-		global delayTime
-		delayTime = interval/100
-		#setDelayTime(delayTime)
+
 		#END CODE TO DO SOMETHING WITH RECEIVED DATA
-
-# def setDelayTime(oldDelay, newDelay)
-# 	print("entered setDelayTime function")
-# 	newDelay = oldDelay;
-# 	return oldDelay;
-
+        
+def sampleThread(sendSocket):
+    while True:
+        time.sleep(interval)
+        sendingSocket(sendSocket, average)
 
 
 #create a socket object for the receiving, sending, and status sockets
@@ -94,7 +91,7 @@ print (sending.recv(1024).decode('ascii') )
 
 inc = 0
 average = 0
-numberOfSamples = 100
+numberOfSamples = 500
 sensorTotal = 0
 #sensor code
 while True:
@@ -104,11 +101,11 @@ while True:
 	#set the pin 18 to high
 	# GPIO.output(18, GPIO.HIGH)
 
-	delayTime = interval/100  #delay in ms between each sample to evenly space out 100 samples
+	
 	sensorTotal = 0 #reset sensorTotal for next group of samples
 	inc = 0
-	print(delayTime)
-
+    
+    _thread.start_new_thread(sampleThread, (sending))
 	while True:
 		sensorTotal += mcp.read_adc(0) #read adc value of channel 0
 		#take the average of the value
@@ -118,16 +115,11 @@ while True:
 		if(inc > numberOfSamples):
 			#print the average to serial
 			print("inside if statement")
-			average = sensorTotal / 100
+			average = sensorTotal / numberOfSamples
 			print(average)
 			inc = 0
 			sensorTotal = 0
-			#initiate sending sequence with the average as the data
-			sendingSocket(sending, average)
-			print("current delayTime: ")
-			print(delayTime)
-		else:
-			time.sleep(delayTime)
+
 		   
 # except KeyboardInterrupt:
 # 	print("keyboard interrupt")
