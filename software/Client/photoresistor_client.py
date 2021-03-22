@@ -103,7 +103,6 @@ while True:
 	print(delayTime)
 
 	while True:
-		print("reached the inner while loop")
 		sensorTotal += mcp.read_adc(0) #read adc value of channel 0
 		#take the average of the value
 		#increment the incrementor
