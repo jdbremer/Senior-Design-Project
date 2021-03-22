@@ -91,35 +91,35 @@ delayCounter = 0
 sensorTotal = 0
 #sensor code
 while True:
-print("inside outter while loop")
-#grab the start time
-#start = time.time()
-#set the pin 18 to high
-# GPIO.output(18, GPIO.HIGH)
+	print("inside outter while loop")
+	#grab the start time
+	#start = time.time()
+	#set the pin 18 to high
+	# GPIO.output(18, GPIO.HIGH)
 
-delayTime = interval * 10  #delay in ms between each sample to evenly space out 100 samples
-sensorTotal = 0 #reset sensorTotal for next group of samples
-inc = 0
+	delayTime = interval * 10  #delay in ms between each sample to evenly space out 100 samples
+	sensorTotal = 0 #reset sensorTotal for next group of samples
+	inc = 0
 
-while True:
-	print("reached the inner while loop")
- 	sensorTotal += mcp.read_adc(0) #read adc value of channel 0
-    #take the average of the value
-    #increment the incrementor
-    inc = inc+1
-    #if the incrementor is greater than 50, enough samples have been taken
-	if(inc > numberOfSamples):
-        #print the average to serial
-        print("inside if statement")
-        average = sensorTotal / 100
-        print(average)
-        inc = 0
-        sensorTotal = 0
-        delayTime = interval * 10
-        #initiate sending sequence with the average as the data
-        sendingSocket(sending, average)
-  	else:
-    	time.sleep(delayTime)
+	while True:
+		print("reached the inner while loop")
+	 	sensorTotal += mcp.read_adc(0) #read adc value of channel 0
+	    #take the average of the value
+	    #increment the incrementor
+	    inc = inc+1
+	    #if the incrementor is greater than 50, enough samples have been taken
+		if(inc > numberOfSamples):
+	        #print the average to serial
+	        print("inside if statement")
+	        average = sensorTotal / 100
+	        print(average)
+	        inc = 0
+	        sensorTotal = 0
+	        delayTime = interval * 10
+	        #initiate sending sequence with the average as the data
+	        sendingSocket(sending, average)
+	  	else:
+	    	time.sleep(delayTime)
            
 except KeyboardInterrupt:
     print("keyboard interrupt")
