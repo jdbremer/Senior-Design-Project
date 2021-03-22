@@ -1,6 +1,10 @@
 package com.senior.sensor_controliotnetwork.ui.light;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +27,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import com.senior.sensor_controliotnetwork.R;
 
+import java.util.HashMap;
+
 public class DataFragment extends Fragment {
 
     public DatabaseReference mDatabase;
@@ -36,6 +42,52 @@ public class DataFragment extends Fragment {
     public static String threshold;
 
     private LightViewModel lightViewModel;
+
+    public static boolean active = false;
+
+    DataLevelReceiver receiver;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        active = true;
+        getActivity().registerReceiver(receiver, new IntentFilter("sensorVal"));  //<----Register
+
+//        Intent serviceIntent = new Intent(lightService.class.getName());
+//        serviceIntent.setAction("sendSensorMap")
+//        getContext().startService(serviceIntent);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        active = false;
+        getActivity().unregisterReceiver(receiver);           //<-- Unregister to avoid memoryleak
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        receiver = new DataLevelReceiver();
+
+    }
+
+
+    class DataLevelReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if(intent.getAction().equals("sensorVal"))
+            {
+                String lightSensorData = (String)intent.getSerializableExtra("SENSOR");
+//                setSensorTxtBox(lightSensorData);
+                TextView sensorValueTxt = (TextView) getActivity().findViewById(R.id.lightSensorDataTxt);
+                sensorValueTxt.setText(lightSensorData);
+            }
+        }
+    }
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -148,6 +200,10 @@ public class DataFragment extends Fragment {
 
         return root;
     }
+
+//    public void setSensorTxtBox(String value){
+//        TextView sensorValueTxt = (TextView) getActivity().findViewById(R.id.textLightConnectionStatus);
+//    }
 
     public static boolean isNumeric(String strNum) {    //check if a string is a number
         if (strNum == null) {

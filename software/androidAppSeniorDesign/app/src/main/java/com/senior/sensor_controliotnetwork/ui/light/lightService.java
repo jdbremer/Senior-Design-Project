@@ -35,16 +35,24 @@ public class lightService extends Service {
     private DatabaseReference mPostReference;
     private HashMap<String, String> sensorValues = new HashMap<String, String>();
     public int inc = 0;
+    public String value = "";
 
 
 
     // Handler that receives messages from the thread
     private final class ServiceHandler extends Handler {
 
-        public void talk() {
+        public void talkToGraph() {
             Intent i = new Intent();
             i.putExtra("MAPS", sensorValues);
             i.setAction("SensorMap");
+            sendBroadcast(i);
+        }
+
+        public void talkToData() {
+            Intent i = new Intent();
+            i.putExtra("SENSOR", value);
+            i.setAction("sensorVal");
             sendBroadcast(i);
         }
 
@@ -66,9 +74,9 @@ public class lightService extends Service {
                     //LineGraphSeries<DataPoint> mSeries3 = new LineGraphSeries<>();
 
                     int maxGraphPoints = 11;
-
+                    value = (String) dataSnapshot.getValue();
                     //add data to a hash table
-                    sensorValues.put(String.valueOf(inc), (String) dataSnapshot.getValue() );
+                    sensorValues.put(String.valueOf(inc), value );
 
 
                     //if the max number of points was reached
@@ -89,11 +97,11 @@ public class lightService extends Service {
 
                         if (GraphFragment.active) {
                             //DO STUFF
-                            talk();
+                            talkToGraph();
                         }
-                        else {
-                            //Whatever
-
+                        if (DataFragment.active) {
+                            //DO STUFF
+                            talkToData();
                         }
                     }
                     else{
@@ -118,11 +126,11 @@ public class lightService extends Service {
                     Thread.sleep(1000);
                     if (GraphFragment.active) {
                         //DO STUFF
-                        talk();
+                        talkToGraph();
                     }
-                    else {
-                        //Whatever
-
+                    if (DataFragment.active) {
+                        //DO STUFF
+                        talkToData();
                     }
                 }
 
@@ -180,6 +188,18 @@ public class lightService extends Service {
     @Override
     public void onDestroy() {
         Toast.makeText(this, "light service done", Toast.LENGTH_SHORT).show();
+    }
+
+    public static boolean isNumeric(String strNum) {    //check if a string is a number
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            int i = Integer.parseInt(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
     }
 }
 

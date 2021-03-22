@@ -136,16 +136,20 @@ public class ControlSwitchFragment extends Fragment {
                 }
                 //if the relays are found to be on/off set the proper text
                 if(onOff1 == 1){
+                    relay1_onOff = 1;
                     controlSwitch1StatusText.setText("ON");
                 }
                 else if(onOff1 == 0) {
+                    relay1_onOff = 0;
                     controlSwitch1StatusText.setText("OFF");
                 }
 
                 if(onOff2 == 1){
+                    relay2_onOff = 1;
                     controlSwitch2StatusText.setText("ON");
                 }
                 else if(onOff2 == 0) {
+                    relay2_onOff = 0;
                     controlSwitch2StatusText.setText("OFF");
                 }
             }
