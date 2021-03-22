@@ -26,31 +26,31 @@ average_lux = 0
 
 #function to send data to the server in a sequence
 def sendingSocket(sendingSocket, data):
-	   #send the data to the server
-	   sendingSocket.send(str(data).encode('ascii'))
-	   #received message from server to keep in sync
-	   msgFromServer = sendingSocket.recv(1024).decode('ascii')
+       #send the data to the server
+       sendingSocket.send(str(data).encode('ascii'))
+       #received message from server to keep in sync
+       msgFromServer = sendingSocket.recv(1024).decode('ascii')
 
 
 #thread that initiates when the status socket gets initiated
 def statusSocket(serverSocket,receiveSocket, sendingSocket):
-	print (serverSocket.recv(1024).decode('ascii'))
-	serverSocket.send('LightSensor'.encode('ascii'))
-	
-	
+    print (serverSocket.recv(1024).decode('ascii'))
+    serverSocket.send('LightSensor'.encode('ascii'))
+    
+    
 #thread to handle the data that is received from the base node
 def receivingSocket(serverSocket,receiveSocket, sendingSocket):
-	while True:
-		#data that comes from the base node will end up in receivedDAta
-		receivedData = receiveSocket.recv(1024).decode('ascii')
-		print (receivedData)
-		#need to send data back to keep sync
-		receiveSocket.send('Received...'.encode('ascii'))
+    while True:
+        #data that comes from the base node will end up in receivedDAta
+        receivedData = receiveSocket.recv(1024).decode('ascii')
+        print (receivedData)
+        #need to send data back to keep sync
+        receiveSocket.send('Received...'.encode('ascii'))
 
-		#CODE TO DO SOMETHING WITH RECEIVED DATA
-		interval = int(receivedData)
+        #CODE TO DO SOMETHING WITH RECEIVED DATA
+        interval = int(receivedData)
 
-		#END CODE TO DO SOMETHING WITH RECEIVED DATA
+        #END CODE TO DO SOMETHING WITH RECEIVED DATA
         
 def sampleThread(sendSocket,receive):
     while True:
@@ -114,42 +114,41 @@ R = 10000
 
 #sensor code
 while True:
-	print("inside outter while loop")
-	#grab the start time
-	#start = time.time()
-	#set the pin 18 to high
-	# GPIO.output(18, GPIO.HIGH)
+    print("inside outter while loop")
+    #grab the start time
+    #start = time.time()
+    #set the pin 18 to high
+    # GPIO.output(18, GPIO.HIGH)
 
-	
-	sensorTotal = 0 #reset sensorTotal for next group of samples
-	inc = 0
     
-	_thread.start_new_thread(sampleThread,(sending,receiving))
-	while True:
-		sensorTotal += mcp.read_adc(0) #read adc value of channel 0
-		#take the average of the value
-		#increment the incrementor
-		inc = inc+1
-		#if the incrementor is greater than 50, enough samples have been taken
-		if(inc > numberOfSamples):
-			#print the average to serial
-			# print("inside if statement")
-			temp = sensorTotal / numberOfSamples
+    sensorTotal = 0 #reset sensorTotal for next group of samples
+    inc = 0
+    
+    _thread.start_new_thread(sampleThread,(sending,receiving))
+    while True:
+        sensorTotal += mcp.read_adc(0) #read adc value of channel 0
+        #take the average of the value
+        #increment the incrementor
+        inc = inc+1
+        #if the incrementor is greater than 50, enough samples have been taken
+        if(inc > numberOfSamples):
+            #print the average to serial
+            # print("inside if statement")
+            temp = sensorTotal / numberOfSamples
             average = (( Vcc * R )/( temp )) - R #https://learn.adafruit.com/photocells/using-a-photocell
             average_lux = (math.sqrt((76.278^1000)/(average^1000)))^(1/827) #the table data was put into excel, it was plotted then a linear fit line and  
                                                                             #equation were created
-            
-			# print('average: ' + average)
-			inc = 0
-			sensorTotal = 0
+            # print('average: ' + average)
+            inc = 0
+            sensorTotal = 0
 
-		   
+           
 # except KeyboardInterrupt:
-# 	print("keyboard interrupt")
+#   print("keyboard interrupt")
 
 # finally:
-# 	print("clean up")
-# 	GPIO.cleanup()
+#   print("clean up")
+#   GPIO.cleanup()
 
 
 
