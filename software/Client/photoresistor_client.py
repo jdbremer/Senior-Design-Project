@@ -104,7 +104,7 @@ try:
         inc = 0
         
         while True:
-        	print('reached the while loop')
+        	print("reached the while loop")
          	sensorTotal += mcp.read_adc(0) #read adc value of channel 0
 	        #take the average of the value
 	        #increment the incrementor
@@ -112,7 +112,7 @@ try:
 	        #if the incrementor is greater than 50, enough samples have been taken
         	if(inc > numberOfSamples):
 	            #print the average to serial
-	            print('inside if statement')
+	            print("inside if statement")
 	            average = sensorTotal / 100
 	            print(average)
 	            inc = 0
