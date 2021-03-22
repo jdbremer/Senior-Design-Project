@@ -35,6 +35,7 @@ def receivingSocket(serverSocket,receiveSocket, sendingSocket):
 
 		#CODE TO DO SOMETHING WITH RECEIVED DATA
 		interval = int(receivedData)
+		delayTime = interval/100
 
 		#END CODE TO DO SOMETHING WITH RECEIVED DATA
 
@@ -87,7 +88,6 @@ print (sending.recv(1024).decode('ascii') )
 inc = 0
 average = 0
 numberOfSamples = 100
-delayCounter = 0
 sensorTotal = 0
 #sensor code
 while True:
