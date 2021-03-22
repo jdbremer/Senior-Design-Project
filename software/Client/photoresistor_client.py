@@ -104,22 +104,22 @@ try:
         inc = 0
         
         while True:
-          sensorTotal += mcp.read_adc(0) #read adc value of channel 0
-          #take the average of the value
-          #increment the incrementor
-          inc = inc+1
-          #if the incrementor is greater than 50, enough samples have been taken
-          if(inc > numberOfSamples):
-            #print the average to serial
-            average = sensorTotal / 100
-            print(average)
-            inc = 0
-            sensorTotal = 0
-            delayTime = interval * 10
-            #initiate sending sequence with the average as the data
-            sendingSocket(sending, average)
-          else
-            time.sleep(delayTime)
+         	sensorTotal += mcp.read_adc(0) #read adc value of channel 0
+	        #take the average of the value
+	        #increment the incrementor
+	        inc = inc+1
+	        #if the incrementor is greater than 50, enough samples have been taken
+        	if(inc > numberOfSamples):
+	            #print the average to serial
+	            average = sensorTotal / 100
+	            print(average)
+	            inc = 0
+	            sensorTotal = 0
+	            delayTime = interval * 10
+	            #initiate sending sequence with the average as the data
+	            sendingSocket(sending, average)
+          	else
+            	time.sleep(delayTime)
            
 except KeyboardInterrupt:
     print("keyboard interrupt")
