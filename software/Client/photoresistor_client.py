@@ -121,12 +121,12 @@ while True:
 		else:
 			time.sleep(delayTime)
 		   
-except KeyboardInterrupt:
-	print("keyboard interrupt")
+# except KeyboardInterrupt:
+# 	print("keyboard interrupt")
 
-finally:
-	print("clean up")
-	GPIO.cleanup()
+# finally:
+# 	print("clean up")
+# 	GPIO.cleanup()
 
 
 
