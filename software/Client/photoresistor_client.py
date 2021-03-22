@@ -35,9 +35,16 @@ def receivingSocket(serverSocket,receiveSocket, sendingSocket):
 
 		#CODE TO DO SOMETHING WITH RECEIVED DATA
 		interval = int(receivedData)
+		#delayTime = interval/100
+		global delayTime
 		delayTime = interval/100
-
+		#setDelayTime(delayTime)
 		#END CODE TO DO SOMETHING WITH RECEIVED DATA
+
+# def setDelayTime(oldDelay, newDelay)
+# 	print("entered setDelayTime function")
+# 	newDelay = oldDelay;
+# 	return oldDelay;
 
 
 
@@ -117,6 +124,8 @@ while True:
 			sensorTotal = 0
 			#initiate sending sequence with the average as the data
 			sendingSocket(sending, average)
+			print("current delayTime: ")
+			print(delayTime)
 		else:
 			time.sleep(delayTime)
 		   
