@@ -97,9 +97,10 @@ while True:
 	#set the pin 18 to high
 	# GPIO.output(18, GPIO.HIGH)
 
-	delayTime = interval * 10  #delay in ms between each sample to evenly space out 100 samples
+	delayTime = interval/100  #delay in ms between each sample to evenly space out 100 samples
 	sensorTotal = 0 #reset sensorTotal for next group of samples
 	inc = 0
+	print(delayTime)
 
 	while True:
 		print("reached the inner while loop")
@@ -119,7 +120,6 @@ while True:
 			#initiate sending sequence with the average as the data
 			sendingSocket(sending, average)
 		else:
-			print(delayTime)
 			time.sleep(delayTime)
 		   
 # except KeyboardInterrupt:
