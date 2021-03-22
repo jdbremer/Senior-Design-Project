@@ -7,6 +7,17 @@ import _thread
 import Adafruit_GPIO.SPI as SPI #ADC SPI library
 import Adafruit_MCP3008
 
+import nexmo
+
+client = nexmo.Client(key='77d3ed4c', secret='SjSjkdsIgYw1AHce')
+
+client.send_message({
+    'from': '18553182827',
+    'to': '19522327269',
+    'text': 'Hello from Vonage SMS API',
+})
+
+
 interval = 5  #default of 5 seconds
 average = 0
 
