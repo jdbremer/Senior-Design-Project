@@ -113,9 +113,7 @@ average = 0
 average_lux
 numberOfSamples = 500
 sensorTotal = 0
-temp = 0
-Vcc = 5
-R = 10000
+voltage = 0
 
 #sensor code
 while True:
@@ -139,12 +137,13 @@ while True:
         if(inc > numberOfSamples):
             #print the average to serial
             # print("inside if statement")
-            temp = sensorTotal / numberOfSamples
-            average = (( Vcc * R )/( temp )) - R #https://learn.adafruit.com/photocells/using-a-photocell
+            voltage  = sensorTotal / numberOfSamples
+            #average = (( Vcc * R )/( temp )) - R #https://learn.adafruit.com/photocells/using-a-photocell
             #average_lux = (math.sqrt((76.278**1000)/(average**1000)))**(1/827) #the table data was put into excel, it was plotted then a linear fit line and  
                                                                           #equation were created
                                                                           
-            average_lux = (math.sqrt(((76.278)/(average))**1000))**(1/827)
+            #average_lux = (math.sqrt(((76.278)/(average))**1000))**(1/827)
+            average_lux = math.e**(((100*voltage)-23529)/(11996))
             # print('average: ' + average)
             inc = 0
             sensorTotal = 0
