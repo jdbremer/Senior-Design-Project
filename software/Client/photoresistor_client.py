@@ -46,21 +46,18 @@ def receivingSocket(serverSocket,receiveSocket, sendingSocket):
         print (receivedData)
         #need to send data back to keep sync
         receiveSocket.send('Received...'.encode('ascii'))
-
+        global interval
         #CODE TO DO SOMETHING WITH RECEIVED DATA
         interval = int(receivedData)
 
         #END CODE TO DO SOMETHING WITH RECEIVED DATA
         
 def sampleThread(sendSocket,receive):
+    global interval
     while True:
         time.sleep(interval)
         print('average_lux: ')
         print(average_lux)
-        print('average: ')
-        print(average)
-        print('temp: ')
-        print(temp)
         sendingSocket(sendSocket, average_lux)
 
 
