@@ -57,10 +57,6 @@ def sampleThread(sendSocket,receive):
         time.sleep(interval)
         print('average_lux: ')
         print(average_lux)
-        print('average: ')
-        print(average)
-        print('temp: ')
-        print(temp)
         sendingSocket(sendSocket, average_lux)
 
 
@@ -114,7 +110,7 @@ average_lux
 numberOfSamples = 500
 sensorTotal = 0
 temp = 0
-Vcc = 5
+Vcc = 1023
 R = 10000
 
 #sensor code

@@ -1,11 +1,14 @@
 package com.senior.sensor_controliotnetwork.ui.light;
 
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -16,6 +19,8 @@ import android.os.Process;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
+import com.senior.sensor_controliotnetwork.R;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -31,11 +37,16 @@ import java.util.Map;
 
 public class lightService extends Service {
     private Looper serviceLooper;
+    private String threshold;
+    private Float thresholdFloat = 0.0f;
     private ServiceHandler serviceHandler;
     private DatabaseReference mPostReference;
+    private DatabaseReference mPostReferenceLightThreshold;
     private HashMap<String, String> sensorValues = new HashMap<String, String>();
     public int inc = 0;
     public String value = "";
+    public String thresholdMetValue = "";
+
 
 
 
@@ -67,6 +78,7 @@ public class lightService extends Service {
 
 
             try {
+                mPostReferenceLightThreshold.setValue("0");
             //CONSTANT LISTENER CODE//
             ValueEventListener constantListener = new ValueEventListener(){
                 @Override
@@ -75,6 +87,14 @@ public class lightService extends Service {
 
                     int maxGraphPoints = 11;
                     value = (String) dataSnapshot.getValue();
+
+                    //send notification that the light data is over the threshold value
+                    float valueFloat = Float.parseFloat(value);
+                    if(thresholdFloat < valueFloat && thresholdFloat != 0.0){
+                        thresholdMetValue = value;
+                        sendNotification(thresholdMetValue);
+                    }
+
                     //add data to a hash table
                     sensorValues.put(String.valueOf(inc), value );
 
@@ -119,6 +139,26 @@ public class lightService extends Service {
             mPostReference.addValueEventListener(constantListener);
 
 
+            //CONSTANT LISTENER CODE//
+            ValueEventListener thresholdListener = new ValueEventListener(){
+                @Override
+                public void onDataChange (DataSnapshot dataSnapshot){
+
+                    threshold = (String) dataSnapshot.getValue();
+                    thresholdFloat = Float.parseFloat(threshold);
+
+                }
+
+                @Override
+                public void onCancelled (@NonNull DatabaseError error){
+                    //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                    System.out.println("The read failed: " + error.getMessage());
+                }
+            };
+            //END CONSTANT LISTENER CODE//
+            mPostReferenceLightThreshold.addValueEventListener(thresholdListener);
+
+
             // Normally we would do some work here, like download a file.
             // For our sample, we just sleep for 5 seconds.
 
@@ -152,9 +192,16 @@ public class lightService extends Service {
         // main thread, which we don't want to block. We also make it
         // background priority so CPU-intensive work doesn't disrupt our UI.
         mPostReference = FirebaseDatabase.getInstance().getReference().child("dataFromChild").child("LightSensor");  //LISTENER OBJECT
+        mPostReferenceLightThreshold = FirebaseDatabase.getInstance().getReference().child("internalAppData").child("thresholds").child("LightSensor");  //LISTENER OBJECT
         HandlerThread thread = new HandlerThread("ServiceStartArguments",
                 Process.THREAD_PRIORITY_BACKGROUND);
         thread.start();
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            NotificationChannel channel = new NotificationChannel("NotificationLightThreshold", "NotificationLightThreshold", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+        }
 
         // Get the HandlerThread's Looper and use it for our Handler
         serviceLooper = thread.getLooper();
@@ -200,6 +247,17 @@ public class lightService extends Service {
             return false;
         }
         return true;
+    }
+
+    public void sendNotification(String lightData){
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "NotificationLightThreshold");
+        builder.setContentTitle("Light Threshold Met");
+        String temp = String.format("%.2f", Float.parseFloat(thresholdMetValue));
+        builder.setContentText("Threshold Value: " + thresholdFloat + " Light Value: " + temp);
+        builder.setSmallIcon(R.drawable.ic_menu_send);
+        builder.setAutoCancel(true);
+        NotificationManagerCompat managerCompat = NotificationManagerCompat.from(this);
+        managerCompat.notify(1,builder.build());
     }
 }
 

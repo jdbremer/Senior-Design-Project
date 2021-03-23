@@ -157,6 +157,8 @@ public class ConnectionsFragment extends Fragment {
         });
 
 
+
+
         connections.setAdapter(adapter);
 
         return root;
