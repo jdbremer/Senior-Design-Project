@@ -133,7 +133,7 @@ def clientCloseCheck(statusSocket, addr, recvDataSocket, sendDataSocket):
         sensor = sensor + "_1"
         i = 1
         while sensor in connectToSocketLib:
-            i++
+            i += 1
             sensor = sensor[:-1]
             sensor = sensor + i
         print("New Sensor Name: " + sensor)
