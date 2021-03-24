@@ -30,6 +30,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeMap;
+
 import android.content.IntentFilter;
 
 
@@ -44,6 +46,8 @@ public class GraphFragment extends Fragment {
 
     public  static boolean active = false;
     private DatabaseReference mPostReference;
+
+    private int maxDataPoints = 25;
 
 
     private DataPoint[] values = new DataPoint[50];
@@ -124,7 +128,7 @@ public class GraphFragment extends Fragment {
 
             if(intent.getAction().equals("SensorMap"))
             {
-                HashMap<String, String> hashMap = (HashMap<String, String>)intent.getSerializableExtra("MAPS");
+                HashMap<Integer, String> hashMap = (HashMap<Integer, String>)intent.getSerializableExtra("MAPS");
                 testFunc(hashMap);
                 // Show it in GraphView
             }
@@ -156,7 +160,7 @@ public class GraphFragment extends Fragment {
         graph.addSeries(mSeries1);
         graph.getViewport().setXAxisBoundsManual(true);
         graph.getViewport().setMinX(1);
-        graph.getViewport().setMaxX(25);
+        graph.getViewport().setMaxX(maxDataPoints);
         graph.getViewport().setYAxisBoundsManual(true);
         graph.getViewport().setMinY(0);
         graph.getViewport().setMaxY(1000);
@@ -199,14 +203,16 @@ public class GraphFragment extends Fragment {
         //this is here as a test to just continue adding data
         //mSeries1.appendData(new DataPoint(inc2++,y*1000),false, 10);
 
+
+        TreeMap<Integer,String> sortedSensorValues = new TreeMap<Integer,String>(sensorValues); //convert the hashmaps (which aren't sorted) to treemaps (which are sorted)
         //iterate through the hash table to then add the shifted data to the series
-        Iterator<Map.Entry<String, String>> itr = sensorValues.entrySet().iterator();
+        Iterator<TreeMap.Entry<Integer, String>> itr = sortedSensorValues.entrySet().iterator();
         while(itr.hasNext()){
             //iterate.next();
-            Map.Entry<String, String> entry = itr.next();
-            int x = Integer.parseInt(entry.getKey());
+            TreeMap.Entry<Integer, String> entry = itr.next();
+            int x = entry.getKey();
             double y2 = (Double.parseDouble((String) entry.getValue()));
-            mSeries1.appendData(new DataPoint(x,y2),false, 10);
+            mSeries1.appendData(new DataPoint(x,y2),false, maxDataPoints);
             graph.refreshDrawableState();
             graph.onDataChanged(true, true);
         }

@@ -42,7 +42,7 @@ public class lightService extends Service {
     private ServiceHandler serviceHandler;
     private DatabaseReference mPostReference;
     private DatabaseReference mPostReferenceLightThreshold;
-    private HashMap<String, String> sensorValues = new HashMap<String, String>();
+    private HashMap<Integer, String> sensorValues = new HashMap<Integer, String>();
     public int inc = 0;
     public String value = "";
     public String thresholdMetValue = "";
@@ -96,7 +96,7 @@ public class lightService extends Service {
                     }
 
                     //add data to a hash table
-                    sensorValues.put(String.valueOf(inc), value );
+                    sensorValues.put(inc, value );
 
 
                     //if the max number of points was reached
@@ -106,12 +106,12 @@ public class lightService extends Service {
                         for ( int i = 0; i < maxGraphPoints+1 ; i++){
                             if(i == 0){
 
-                                sensorValues.remove(String.valueOf(i));
+                                sensorValues.remove(i);
                             }
                             else{
-                                String key = sensorValues.get(String.valueOf(i));
-                                sensorValues.remove(String.valueOf(i));
-                                sensorValues.put(String.valueOf(i-1), key);
+                                String key = sensorValues.get(i);
+                                sensorValues.remove(i);
+                                sensorValues.put(i-1, key);
                             }
                         }
 
