@@ -127,6 +127,17 @@ def clientCloseCheck(statusSocket, addr, recvDataSocket, sendDataSocket):
     sensor = statusSocket.recv(1024).decode('ascii')
     
     print (sensor)
+    
+    #if a sensor already exists, increment it by 1
+    if sensor in connectToSocketLib:
+        sensor = sensor + "_1"
+        i = 1
+        while sensor in connectToSocketLib:
+            i++
+            sensor = sensor[:-1]
+            sensor = sensor + i
+        print("New Sensor Name: " + sensor)
+    
     #print the address of the server/client status socket connection
     print (addr[1])
     #add the sensor name and address to the connections dictionary
