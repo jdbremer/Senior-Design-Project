@@ -78,7 +78,7 @@ exports.addConnectionToDB = functions.database
 
 // onDelete deletes all of the data associated with that connection
 
-exports.addConnectionToDB = functions.database
+exports.deleteConnectionToDB = functions.database
     .ref("/Connections/{connection}")
     .onDelete((snapshot, context) => {
       const sensorControl = context.params.connection;

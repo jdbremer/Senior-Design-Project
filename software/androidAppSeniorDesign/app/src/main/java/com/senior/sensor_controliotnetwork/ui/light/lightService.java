@@ -85,7 +85,7 @@ public class lightService extends Service {
                 public void onDataChange (DataSnapshot dataSnapshot){
                     //LineGraphSeries<DataPoint> mSeries3 = new LineGraphSeries<>();
 
-                    int maxGraphPoints = 11;
+                    int maxGraphPoints = 26;
                     value = (String) dataSnapshot.getValue();
 
                     //send notification that the light data is over the threshold value
