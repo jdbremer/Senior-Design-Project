@@ -30,6 +30,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeMap;
+
 import android.content.IntentFilter;
 
 
@@ -44,6 +46,8 @@ public class GraphFragment extends Fragment {
 
     public  static boolean active = false;
     private DatabaseReference mPostReference;
+
+    private int maxDataPoints = 25;
 
 
     private DataPoint[] values = new DataPoint[50];
@@ -124,7 +128,7 @@ public class GraphFragment extends Fragment {
 
             if(intent.getAction().equals("SensorMap"))
             {
-                HashMap<String, String> hashMap = (HashMap<String, String>)intent.getSerializableExtra("MAPS");
+                HashMap<Integer, String> hashMap = (HashMap<Integer, String>)intent.getSerializableExtra("MAPS");
                 testFunc(hashMap);
                 // Show it in GraphView
             }
@@ -146,148 +150,26 @@ public class GraphFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.fragment_light_graph, container, false);
 
-
-
-
         mPostReference = FirebaseDatabase.getInstance().getReference().child("dataFromChild").child("LightSensor");  //LISTENER OBJECT
 
-
-
-
         graph = (GraphView) root.findViewById(R.id.graph);
-//        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
-//                new DataPoint(0, 1),
-//                new DataPoint(1, 5),
-//                new DataPoint(2, 3),
-//                new DataPoint(3, 2),
-//                new DataPoint(4, 6)
-//        });
-//        graph.addSeries(series);
-//        graph.removeSeries(series);
-//        mSeries2
+
         mSeries1 = new LineGraphSeries<>();
         mSeries1.setThickness(15);
         mSeries1.setColor(Color.rgb(210,180,140));
         graph.addSeries(mSeries1);
         graph.getViewport().setXAxisBoundsManual(true);
         graph.getViewport().setMinX(1);
-        graph.getViewport().setMaxX(10);
+        graph.getViewport().setMaxX(maxDataPoints);
         graph.getViewport().setYAxisBoundsManual(true);
         graph.getViewport().setMinY(0);
-        graph.getViewport().setMaxY(30);
-
-        //graph.setDrawingCacheBackgroundColor(true);
-        //graph.setDrawingCacheBackgroundColor(getResources().getColor(R.color.blue));
-
-//
-//        mSeries1.appendData(new DataPoint(1,1),false,4);
-//        mSeries1.appendData(new DataPoint(2,2),false,4);
-//        mSeries1.appendData(new DataPoint(3,3),false,4);
-//        mSeries1.appendData(new DataPoint(4,4),false,4);
-        //graph.removeAllSeries();
-
-
+        graph.getViewport().setMaxY(1000);
 
        // mSeries1 = new LineGraphSeries<>();
         LineGraphSeries<DataPoint> series = new LineGraphSeries<>();
 
 
         double x = 20;
-
-
-        //double y = 50;
-        //DataPoint v = new DataPoint(x,y);
-        //values[inc++] = v;
-        //mSeries1 = new LineGraphSeries<>();
-//        graph.addSeries(mSeries1);
-//        mSeries1.appendData(new DataPoint(x,y),true,3);
-//        mSeries1.appendData(new DataPoint(25,50),true,3);
-//        mSeries1.appendData(new DataPoint(28,60),true,3);
-//        mSeries1.appendData(new DataPoint(30,70),true,3);
-//        mSeries1.appendData(new DataPoint(50,80),true,3);
-
-
-
-
-        //CONSTANT LISTENER CODE//
-//        ValueEventListener constantListener = new ValueEventListener(){
-//            @Override
-//            public void onDataChange (DataSnapshot dataSnapshot){
-//                //LineGraphSeries<DataPoint> mSeries3 = new LineGraphSeries<>();
-//
-//                int maxGraphPoints = 11;
-//
-//
-//                double y = Double.parseDouble((String) dataSnapshot.getValue());
-//
-//                //add data to a hash table
-//                sensorValues.put(String.valueOf(inc), (String) dataSnapshot.getValue() );
-//
-//
-//                //if the max number of points was reached
-//                if(inc >= maxGraphPoints){
-//
-//                    //shift all the data within the hash table
-//                    for ( int i = 0; i < maxGraphPoints+1 ; i++){
-//                        if(i == 0){
-//
-//                            sensorValues.remove(String.valueOf(i));
-//                        }
-//                        else{
-//                            String key = sensorValues.get(String.valueOf(i));
-//                            sensorValues.remove(String.valueOf(i));
-//                            sensorValues.put(String.valueOf(i-1), key);
-//                        }
-//                    }
-//
-//
-//                    //trying to remove old data on the graph and add new data
-//                    mSeries1.clearReference(graph);
-//                    graph.removeSeries(mSeries1);
-//                    mSeries1 = new LineGraphSeries<>();
-//                    //LineGraphSeries<DataPoint> mSeries1 = new LineGraphSeries<>();
-//                    mSeries1.setThickness(15);
-//                    mSeries1.setColor(Color.rgb(210,180,140));
-//                    graph.addSeries(mSeries1);
-//                    graph.refreshDrawableState();
-//                    graph.onDataChanged(true, true);
-//
-//
-//                    //this is here as a test to just continue adding data
-//                    //mSeries1.appendData(new DataPoint(inc2++,y*1000),false, 10);
-//
-//                    //iterate through the hash table to then add the shifted data to the series
-//                    Iterator<Map.Entry<String, String>> itr = sensorValues.entrySet().iterator();
-//                    while(itr.hasNext()){
-//                        //iterate.next();
-//                        Map.Entry<String, String> entry = itr.next();
-//                        int x = Integer.parseInt(entry.getKey());
-//                        double y2 = (Double.parseDouble((String) entry.getValue()))*1000;
-//                        mSeries1.appendData(new DataPoint(x,y2),false, 10);
-//                        graph.refreshDrawableState();
-//                        graph.onDataChanged(true, true);
-//                    }
-//
-//
-//                }
-//                //the max number of points hasn't been reached yet
-//                else{
-//                    mSeries1.appendData(new DataPoint(inc++,y*1000),false, 10);
-//                    graph.refreshDrawableState();
-//                    graph.onDataChanged(true, true);
-//                    inc2++;
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onCancelled (@NonNull DatabaseError error){
-//                //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-//                System.out.println("The read failed: " + error.getMessage());
-//            }
-//        };
-//        mPostReference.addValueEventListener(constantListener);  //Uncomment this to start the continuous grab of updated data (runs code above, constant listener code)
-        //END CONSTANT LISTENER CODE//
 
 
 
@@ -321,14 +203,16 @@ public class GraphFragment extends Fragment {
         //this is here as a test to just continue adding data
         //mSeries1.appendData(new DataPoint(inc2++,y*1000),false, 10);
 
+
+        TreeMap<Integer,String> sortedSensorValues = new TreeMap<Integer,String>(sensorValues); //convert the hashmaps (which aren't sorted) to treemaps (which are sorted)
         //iterate through the hash table to then add the shifted data to the series
-        Iterator<Map.Entry<String, String>> itr = sensorValues.entrySet().iterator();
+        Iterator<TreeMap.Entry<Integer, String>> itr = sortedSensorValues.entrySet().iterator();
         while(itr.hasNext()){
             //iterate.next();
-            Map.Entry<String, String> entry = itr.next();
-            int x = Integer.parseInt(entry.getKey());
-            double y2 = (Double.parseDouble((String) entry.getValue()))*1000;
-            mSeries1.appendData(new DataPoint(x,y2),false, 10);
+            TreeMap.Entry<Integer, String> entry = itr.next();
+            int x = entry.getKey();
+            double y2 = (Double.parseDouble((String) entry.getValue()));
+            mSeries1.appendData(new DataPoint(x,y2),false, maxDataPoints);
             graph.refreshDrawableState();
             graph.onDataChanged(true, true);
         }
