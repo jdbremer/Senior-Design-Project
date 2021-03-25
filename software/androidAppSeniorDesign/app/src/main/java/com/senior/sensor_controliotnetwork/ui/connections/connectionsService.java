@@ -51,6 +51,13 @@ public class connectionsService extends Service {
             sendBroadcast(i);
         }
 
+        public void talkToMainActivity() {
+            Intent i = new Intent();
+            i.putExtra("connectionsArrayForMain", arrayList);
+            i.setAction("CONNECTIONS2MAIN");
+            sendBroadcast(i);
+        }
+
 
 
         public ServiceHandler(Looper looper) {
@@ -82,6 +89,7 @@ public class connectionsService extends Service {
                             }
                             //justEntered = false;
                         }
+                        talkToMainActivity();
                     }
 
                     @Override
@@ -109,6 +117,7 @@ public class connectionsService extends Service {
                                 //mDatabase.child("dataFromApp").child(nodId).setValue("0");
                             }
                         }
+                        talkToMainActivity();
                     }
 
                     @Override

@@ -1,5 +1,6 @@
 package com.senior.sensor_controliotnetwork.ui.connections;
 
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
@@ -7,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Typeface;
+import android.view.Menu;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -14,6 +16,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -30,6 +34,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -55,6 +60,8 @@ public class ConnectionsFragment extends Fragment {
     private ArrayAdapter<String> adapter;
     public ArrayList<String> arrayList = new ArrayList<String>();
 
+    public MainActivity main = new MainActivity();
+    public NavigationView navigationView;
     public DatabaseReference mDatabase;
     private DatabaseReference mPostReference;
 
@@ -82,7 +89,6 @@ public class ConnectionsFragment extends Fragment {
         getActivity().unregisterReceiver(receiver);           //<-- Unregister to avoid memoryleak
     }
 
-
     class ConnectionLevelReceiver extends BroadcastReceiver {
 
         @Override
@@ -99,6 +105,7 @@ public class ConnectionsFragment extends Fragment {
 
     }
 
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         connectionsViewModel =
@@ -106,8 +113,6 @@ public class ConnectionsFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_connections, container, false);
 
         context = getContext();
-
-
 
         mPostReference = FirebaseDatabase.getInstance().getReference().child("Connections");  //LISTENER OBJECT
         mDatabase = FirebaseDatabase.getInstance().getReference();  //DATABASE OBJECT
@@ -122,22 +127,16 @@ public class ConnectionsFragment extends Fragment {
                 // Cast the list view each item as text view
                 TextView item = (TextView) super.getView(position, convertView, parent);
 
-
                 // Set the item text style to bold
                 item.setTypeface(item.getTypeface(), Typeface.BOLD);
 
                 // Change the item text size
                 item.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 25);
 
-
-
-
-
                 // return the view
                 return item;
             }
         };
-
 
         connectionsFilter.addTextChangedListener(new TextWatcher() {
             @Override
@@ -156,13 +155,11 @@ public class ConnectionsFragment extends Fragment {
             }
         });
 
-
-
-
         connections.setAdapter(adapter);
 
         return root;
     }
+
 
 
 
