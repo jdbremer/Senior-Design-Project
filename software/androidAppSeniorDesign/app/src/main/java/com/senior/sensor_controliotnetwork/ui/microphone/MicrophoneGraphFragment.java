@@ -147,7 +147,7 @@ public class MicrophoneGraphFragment extends Fragment {
 
         mSeries1 = new LineGraphSeries<>();
         mSeries1.setThickness(15);
-        mSeries1.setColor(Color.rgb(210,180,140));
+        mSeries1.setColor(Color.rgb(0,0,240));
         graph.addSeries(mSeries1);
         graph.getViewport().setXAxisBoundsManual(true);
         graph.getViewport().setMinX(1);
@@ -179,7 +179,7 @@ public class MicrophoneGraphFragment extends Fragment {
         mSeries1 = new LineGraphSeries<>();
         //LineGraphSeries<DataPoint> mSeries1 = new LineGraphSeries<>();
         mSeries1.setThickness(15);
-        mSeries1.setColor(Color.rgb(210,180,140));
+        mSeries1.setColor(Color.rgb(0,0,240));
         graph.addSeries(mSeries1);
         graph.refreshDrawableState();
         graph.onDataChanged(true, true);
