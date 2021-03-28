@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Typeface;
+import android.service.controls.Control;
 import android.view.Menu;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,10 +21,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -45,7 +51,10 @@ import com.google.firebase.database.ValueEventListener;
 
 import com.senior.sensor_controliotnetwork.MainActivity;
 import com.senior.sensor_controliotnetwork.R;
+import com.senior.sensor_controliotnetwork.ui.controlSwitch.ControlSwitchFragment;
 import com.senior.sensor_controliotnetwork.ui.light.GraphFragment;
+import com.senior.sensor_controliotnetwork.ui.light.LightFragment;
+import com.senior.sensor_controliotnetwork.ui.microphone.MicrophoneDataFragment;
 
 import org.w3c.dom.Text;
 
@@ -64,7 +73,7 @@ public class ConnectionsFragment extends Fragment {
     public NavigationView navigationView;
     public DatabaseReference mDatabase;
     private DatabaseReference mPostReference;
-
+    public DrawerLayout mDrawer;
     private static Context context;
 
     private ConnectionsViewModel connectionsViewModel;
@@ -154,6 +163,24 @@ public class ConnectionsFragment extends Fragment {
 
             }
         });
+
+
+//code for using the connections list to change the fragment
+//        connections.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                position = position;
+//                String newtest = arrayList.get(position);
+////               // Menu menu = navigationView.getMenu();
+////                navigationView.setCheckedItem(R.id.nav_microphone);
+////                onNavigationItemSelected(navigationView.getMenu().findItem(R.id.nav_microphone));
+////                //navigationView.getMenu().getItem(0).setChecked(false);
+//                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+//                LightFragment newGamefragment = new LightFragment();
+//                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+//                fragmentTransaction.replace(R.id.connectionFrag, newGamefragment).commit();
+//            }
+//        });
 
         connections.setAdapter(adapter);
 
