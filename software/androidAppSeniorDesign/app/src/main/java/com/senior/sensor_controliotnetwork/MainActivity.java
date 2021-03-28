@@ -27,6 +27,11 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.senior.sensor_controliotnetwork.ui.connections.ConnectionsFragment;
 import com.senior.sensor_controliotnetwork.ui.connections.ConnectionsViewModel;
 import com.senior.sensor_controliotnetwork.ui.light.lightService;
@@ -42,10 +47,19 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+import static kotlin.jvm.internal.Reflection.function;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -62,12 +76,8 @@ public class MainActivity extends AppCompatActivity {
     public ArrayList<String> currentConnectionList = new ArrayList<String>();
     private static final int RC_SIGN_IN = 123;
     private ConnectionListReceiver connectionListReceiver;
-
+    private String contents;
     private boolean initialize = false;
-
-
-
-
 
 
     @Override
@@ -101,14 +111,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
-//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-//            NotificationChannel channel = new NotificationChannel("NotificationCH", "NotificationCH", NotificationManager.IMPORTANCE_DEFAULT);
-//            NotificationManager manager = getSystemService(NotificationManager.class);
-//            manager.createNotificationChannel(channel);
-//        }
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -144,12 +152,13 @@ public class MainActivity extends AppCompatActivity {
         this.startService(connectionIntent);
 
 
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
 
-        createSignInIntent();
+        } else {
+            createSignInIntent(); //initiate the sign on screen
+        }
     }
-
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -207,12 +216,9 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                // ...
+
             } else {
-                // Sign in failed. If response is null the user canceled the
-                // sign-in flow using the back button. Otherwise check
-                // response.getError().getErrorCode() and handle the error.
-                // ...
+                // Sign in failed
             }
         }
     }
@@ -221,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.sign_Out:
+            case R.id.sign_Out: //if the user clicks the sign out button, do something
                 signOutIntent();
                 return true;
             default:
@@ -245,7 +251,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void createSignInIntent() {
+    public void createSignInIntent() { //firebase sign on intent, this will open a new screen and allow the user to sign in
+
         // Choose authentication providers
         List<AuthUI.IdpConfig> providers = Arrays.asList(
                 new AuthUI.IdpConfig.EmailBuilder().build());
@@ -260,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void signOutIntent() {
+    public void signOutIntent() { //firebase sign out intent, this will open the login screen again since the user signed out
         AuthUI.getInstance()
                 .signOut(this)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
