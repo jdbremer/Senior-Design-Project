@@ -1,4 +1,4 @@
-package com.senior.sensor_controliotnetwork.ui.light;
+package com.senior.sensor_controliotnetwork.ui.microphone;
 
 
 import android.app.NotificationChannel;
@@ -35,13 +35,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class lightService extends Service {
+import static com.senior.sensor_controliotnetwork.ui.microphone.MicrophoneDataFragment.active;
+
+public class microphoneService extends Service {
     private Looper serviceLooper;
     private String threshold;
     private Float thresholdFloat = 0.0f;
     private ServiceHandler serviceHandler;
     private DatabaseReference mPostReference;
-    private DatabaseReference mPostReferenceLightThreshold;
+    private DatabaseReference mPostReferenceMicThreshold;
     private HashMap<Integer, String> sensorValues = new HashMap<Integer, String>();
     public int inc = 0;
     public String value = "";
@@ -78,97 +80,95 @@ public class lightService extends Service {
 
 
             try {
-                mPostReferenceLightThreshold.setValue("0");
-            //CONSTANT LISTENER CODE//
-            ValueEventListener constantListener = new ValueEventListener(){
-                @Override
-                public void onDataChange (DataSnapshot dataSnapshot){
-                    //LineGraphSeries<DataPoint> mSeries3 = new LineGraphSeries<>();
+                mPostReferenceMicThreshold.setValue("0");
+                //CONSTANT LISTENER CODE//
+                ValueEventListener constantListener = new ValueEventListener(){
+                    @Override
+                    public void onDataChange (DataSnapshot dataSnapshot){
+                        //LineGraphSeries<DataPoint> mSeries3 = new LineGraphSeries<>();
 
-                    int maxGraphPoints = 26;
-                    value = (String) dataSnapshot.getValue();
+                        int maxGraphPoints = 26;
+                        value = (String) dataSnapshot.getValue();
 
-                    //send notification that the light data is over the threshold value
-                    float valueFloat = Float.parseFloat(value);
-                    if(thresholdFloat < valueFloat && thresholdFloat != 0.0){
-                        thresholdMetValue = value;
-                        sendNotification(thresholdMetValue);
-                    }
+                        //send notification that the light data is over the threshold value
+                        float valueFloat = Float.parseFloat(value);
+                        if(thresholdFloat < valueFloat && thresholdFloat != 0.0){
+                            thresholdMetValue = value;
+                            sendNotification(thresholdMetValue);
+                        }
 
-                    //add data to a hash table
-                    sensorValues.put(inc, value );
+                        //add data to a hash table
+                        sensorValues.put(inc, value );
 
 
-                    //if the max number of points was reached
-                    if(inc >= maxGraphPoints){
+                        //if the max number of points was reached
+                        if(inc >= maxGraphPoints){
 
-                        //shift all the data within the hash table
-                        for ( int i = 0; i < maxGraphPoints+1 ; i++){
-                            if(i == 0){
-
-                                sensorValues.remove(i);
+                            //shift all the data within the hash table
+                            for ( int i = 0; i < maxGraphPoints+1 ; i++){
+                                if(i == 0){
+                                    sensorValues.remove(i);
+                                }
+                                else{
+                                    String key = sensorValues.get(i);
+                                    sensorValues.remove(i);
+                                    sensorValues.put(i-1, key);
+                                }
                             }
-                            else{
-                                String key = sensorValues.get(i);
-                                sensorValues.remove(i);
-                                sensorValues.put(i-1, key);
+
+                            if (MicrophoneGraphFragment.active) {
+                                //DO STUFF
+                                talkToGraph();
+                            }
+                            if (active) {
+                                //DO STUFF
+                                talkToData();
                             }
                         }
-
-                        if (GraphFragment.active) {
-                            //DO STUFF
-                            talkToGraph();
-                        }
-                        if (DataFragment.active) {
-                            //DO STUFF
-                            talkToData();
+                        else{
+                            inc++;
                         }
                     }
-                    else{
-                        inc++;
+
+                    @Override
+                    public void onCancelled (@NonNull DatabaseError error){
+                        //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                        System.out.println("The read failed: " + error.getMessage());
                     }
-                }
-
-                @Override
-                public void onCancelled (@NonNull DatabaseError error){
-                    //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                    System.out.println("The read failed: " + error.getMessage());
-                }
-            };
-            //END CONSTANT LISTENER CODE//
-            mPostReference.addValueEventListener(constantListener);
+                };
+                //END CONSTANT LISTENER CODE//
+                mPostReference.addValueEventListener(constantListener);
 
 
-            //CONSTANT LISTENER CODE//
-            ValueEventListener thresholdListener = new ValueEventListener(){
-                @Override
-                public void onDataChange (DataSnapshot dataSnapshot){
+                //CONSTANT LISTENER CODE//
+                ValueEventListener thresholdListener = new ValueEventListener(){
+                    @Override
+                    public void onDataChange (DataSnapshot dataSnapshot){
 
-                    threshold = (String) dataSnapshot.getValue();
-                    thresholdFloat = Float.parseFloat(threshold);
+                        threshold = (String) dataSnapshot.getValue();
+                        thresholdFloat = Float.parseFloat(threshold);
+                    }
 
-                }
-
-                @Override
-                public void onCancelled (@NonNull DatabaseError error){
-                    //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                    System.out.println("The read failed: " + error.getMessage());
-                }
-            };
-            //END CONSTANT LISTENER CODE//
-            mPostReferenceLightThreshold.addValueEventListener(thresholdListener);
+                    @Override
+                    public void onCancelled (@NonNull DatabaseError error){
+                        //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                        System.out.println("The read failed: " + error.getMessage());
+                    }
+                };
+                //END CONSTANT LISTENER CODE//
+                mPostReferenceMicThreshold.addValueEventListener(thresholdListener);
 
 
-            // Normally we would do some work here, like download a file.
-            // For our sample, we just sleep for 5 seconds.
+                // Normally we would do some work here, like download a file.
+                // For our sample, we just sleep for 5 seconds.
 
                 while(true) {
                     Thread.sleep(1000);
-                    if (GraphFragment.active) {
+                    if (MicrophoneGraphFragment.active) {
                         //DO STUFF
                         talkToGraph();
                     }
-                    if (DataFragment.active) {
+                    if (active) {
                         //DO STUFF
                         talkToData();
                     }
@@ -191,14 +191,14 @@ public class lightService extends Service {
         // separate thread because the service normally runs in the process's
         // main thread, which we don't want to block. We also make it
         // background priority so CPU-intensive work doesn't disrupt our UI.
-        mPostReference = FirebaseDatabase.getInstance().getReference().child("dataFromChild").child("LightSensor");  //LISTENER OBJECT
-        mPostReferenceLightThreshold = FirebaseDatabase.getInstance().getReference().child("internalAppData").child("thresholds").child("LightSensor");  //LISTENER OBJECT
+        mPostReference = FirebaseDatabase.getInstance().getReference().child("dataFromChild").child("dBMeter");  //LISTENER OBJECT
+        mPostReferenceMicThreshold = FirebaseDatabase.getInstance().getReference().child("internalAppData").child("thresholds").child("dBMeter");  //LISTENER OBJECT
         HandlerThread thread = new HandlerThread("ServiceStartArguments",
                 Process.THREAD_PRIORITY_BACKGROUND);
         thread.start();
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            NotificationChannel channel = new NotificationChannel("NotificationLightThreshold", "NotificationLightThreshold", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel channel = new NotificationChannel("NotificationMicThreshold", "NotificationMicThreshold", NotificationManager.IMPORTANCE_DEFAULT);
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(channel);
         }
@@ -210,7 +210,7 @@ public class lightService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(this, "light service starting", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "dbMeter service starting", Toast.LENGTH_SHORT).show();
 
         // For each start request, send a message to start a job and deliver the
         // start ID so we know which request we're stopping when we finish the job
@@ -234,7 +234,7 @@ public class lightService extends Service {
 
     @Override
     public void onDestroy() {
-        Toast.makeText(this, "light service done", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "dBMeter service done", Toast.LENGTH_SHORT).show();
     }
 
     public static boolean isNumeric(String strNum) {    //check if a string is a number
@@ -250,10 +250,10 @@ public class lightService extends Service {
     }
 
     public void sendNotification(String lightData){
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "NotificationLightThreshold");
-        builder.setContentTitle("Light Threshold Met");
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "NotificationMicThreshold");
+        builder.setContentTitle("dBMeter Threshold Met");
         String temp = String.format("%.2f", Float.parseFloat(thresholdMetValue));
-        builder.setContentText("Threshold Value: " + thresholdFloat + " Light Value: " + temp);
+        builder.setContentText("Threshold Value: " + thresholdFloat + " dBMeter Value: " + temp);
         builder.setSmallIcon(R.drawable.ic_menu_send);
         builder.setAutoCancel(true);
         NotificationManagerCompat managerCompat = NotificationManagerCompat.from(this);
