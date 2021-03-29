@@ -276,7 +276,7 @@ public class MicrophoneDataFragment extends Fragment {
 //                sensorGrabTime = Integer.parseInt(lightIntervalText.getText().toString());        //grabs the value in char form and converts it to an int if button was pressed FOR INTEGER VERSION, NOT STRING
                 sensorGrabTime = micIntervalText.getText().toString();
                 if(isNumeric(sensorGrabTime) && !"0".equals(sensorGrabTime))   //check if non zero integer was entered
-                    mDatabase.child("dataFromApp").child("dBMeter").setValue(sensorGrabTime);    //set sample interval in database
+                    mDatabase.child(userId).child("dataFromApp").child("dBMeter").setValue(sensorGrabTime);    //set sample interval in database
                 else    //invalid entry
                     micIntervalText.setText(sampleInterval);      //sets the value in the txt box to the initial value
 

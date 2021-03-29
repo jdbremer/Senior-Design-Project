@@ -31,6 +31,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -47,6 +48,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.IdpResponse;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 
 import com.senior.sensor_controliotnetwork.MainActivity;
@@ -68,6 +79,9 @@ public class ConnectionsFragment extends Fragment {
 
     private ArrayAdapter<String> adapter;
     public ArrayList<String> arrayList = new ArrayList<String>();
+
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    String userId = user.getUid();  //assign userId the token for the user
 
     public MainActivity main = new MainActivity();
     public NavigationView navigationView;
@@ -123,7 +137,7 @@ public class ConnectionsFragment extends Fragment {
 
         context = getContext();
 
-        mPostReference = FirebaseDatabase.getInstance().getReference().child("Connections");  //LISTENER OBJECT
+        mPostReference = FirebaseDatabase.getInstance().getReference().child(userId).child("Connections");  //LISTENER OBJECT
         mDatabase = FirebaseDatabase.getInstance().getReference();  //DATABASE OBJECT
 
         ListView connections = root.findViewById(R.id.connectionsList);

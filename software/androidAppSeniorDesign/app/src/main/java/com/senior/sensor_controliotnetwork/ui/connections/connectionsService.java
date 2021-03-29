@@ -25,6 +25,16 @@ import com.google.firebase.database.ValueEventListener;
 import com.senior.sensor_controliotnetwork.R;
 import com.senior.sensor_controliotnetwork.ui.light.GraphFragment;
 import com.senior.sensor_controliotnetwork.ui.light.lightService;
+import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.IdpResponse;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +44,8 @@ public class connectionsService extends Service {
     private Looper serviceLooper;
     private ServiceHandler serviceHandler;
     private DatabaseReference mPostReference;
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    String userId = user.getUid();  //assign userId the token for the user
 
     public ArrayList<String> arrayList = new ArrayList<String>();
 
@@ -85,7 +97,7 @@ public class connectionsService extends Service {
                             }
                             else if(onOff == 0 && arrayList.contains((nodId))){
                                 removeFromList(nodId);
-                                //mDatabase.child("dataFromApp").child(nodId).setValue("0");
+                                //mDatabase.child(userId).child("dataFromApp").child(nodId).setValue("0");
                             }
                             //justEntered = false;
                         }
@@ -114,7 +126,7 @@ public class connectionsService extends Service {
                             }
                             else if(onOff == 0 && arrayList.contains(nodId)) {
                                 removeFromList(nodId);
-                                //mDatabase.child("dataFromApp").child(nodId).setValue("0");
+                                //mDatabase.child(userId).child("dataFromApp").child(nodId).setValue("0");
                             }
                         }
                         talkToMainActivity();
@@ -163,8 +175,8 @@ public class connectionsService extends Service {
         // separate thread because the service normally runs in the process's
         // main thread, which we don't want to block. We also make it
         // background priority so CPU-intensive work doesn't disrupt our UI.
-        //mPostReference = FirebaseDatabase.getInstance().getReference().child("dataFromChild").child("LightSensor");  //LISTENER OBJECT
-        mPostReference = FirebaseDatabase.getInstance().getReference().child("Connections");  //LISTENER OBJECT
+        //mPostReference = FirebaseDatabase.getInstance().getReference().child(userId).child("dataFromChild").child("LightSensor");  //LISTENER OBJECT
+        mPostReference = FirebaseDatabase.getInstance().getReference().child(userId).child("Connections");  //LISTENER OBJECT
         HandlerThread thread = new HandlerThread("ServiceStartArguments",
                 Process.THREAD_PRIORITY_BACKGROUND);
         thread.start();
