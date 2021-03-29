@@ -38,7 +38,6 @@ connectToSocketLib = {}
 firstHandlerEntry = 0
 
 
-
 #the firebase handler will run this function to go through the sequence to send 
 #the data from the app to the correct child node
 def sendingClientFromFirebase(data, sensorName):
@@ -211,7 +210,7 @@ print ("send data socket is listening")
 status.listen(5)
 print ("status socket is listening")
 
-
+#while loop for firebase token
 
 #a forever loop until we interrupt it or an error occurs
 while True:
