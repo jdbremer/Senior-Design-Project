@@ -152,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
         this.startService(connectionIntent);
 
 
+        //check to see if the user was already signed in
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
 
@@ -216,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
+                String userId = user.getUid();
             } else {
                 // Sign in failed
             }
@@ -230,9 +231,15 @@ public class MainActivity extends AppCompatActivity {
             case R.id.sign_Out: //if the user clicks the sign out button, do something
                 signOutIntent();
                 return true;
+            case R.id.alexa_Linking:
+                doApptoApp();
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void doApptoApp() {
+        
     }
 
     @Override

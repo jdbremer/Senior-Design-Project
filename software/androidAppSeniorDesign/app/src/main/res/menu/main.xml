@@ -11,4 +11,9 @@
         android:orderInCategory="100"
         android:title="Sign Out"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/alexa_Linking"
+        android:orderInCategory="100"
+        android:title="Alexa Linking"
+        app:showAsAction="never" />
 </menu>
