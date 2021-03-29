@@ -18,12 +18,22 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
+import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.IdpResponse;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import com.senior.sensor_controliotnetwork.R;
 
@@ -36,12 +46,16 @@ public class DataFragment extends Fragment {
     private DatabaseReference mPostReferenceLightSampleInterval;
     private DatabaseReference mPostReferenceLightThreshold;
 
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    String userId = user.getUid();  //assign userId the token for the user
+
     boolean onOrOff = false;    //status of weather or not the light sensor is connected
 //    public int sensorGrabTime = 5;  //time in seconds for how often light sensor grabs new data
     public String sensorGrabTime = "5";  //time in seconds for how often light sensor grabs new data
     public String sampleInterval;
     public static String threshold;
     boolean setThreshold = false;
+
 
 
     private LightViewModel lightViewModel;
@@ -100,14 +114,14 @@ public class DataFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_light_data, container, false);
 
 
-        mPostReferenceLightConnectionStatus = FirebaseDatabase.getInstance().getReference().child("Connections").child("LightSensor");  //LISTENER OBJECT
-        mPostReferenceLightSampleInterval = FirebaseDatabase.getInstance().getReference().child("dataFromApp").child("LightSensor");  //LISTENER OBJECT
-        mPostReferenceLightThreshold = FirebaseDatabase.getInstance().getReference().child("internalAppData").child("thresholds").child("LightSensor");  //LISTENER OBJECT
+        mPostReferenceLightConnectionStatus = FirebaseDatabase.getInstance().getReference().child(userId).child("Connections").child("LightSensor");  //LISTENER OBJECT
+        mPostReferenceLightSampleInterval = FirebaseDatabase.getInstance().getReference().child(userId).child("dataFromApp").child("LightSensor");  //LISTENER OBJECT
+        mPostReferenceLightThreshold = FirebaseDatabase.getInstance().getReference().child(userId).child("internalAppData").child("thresholds").child("LightSensor");  //LISTENER OBJECT
 
         mDatabase = FirebaseDatabase.getInstance().getReference();  //DATABASE OBJECT
 
-        mDatabase.child("internalAppData").child("thresholds").child("LightSensor").setValue("0");
-        mDatabase.child("dataFromApp").child("LightSensor").setValue("5");    //set sample interval in database
+        mDatabase.child(userId).child("internalAppData").child("thresholds").child("LightSensor").setValue("0");
+        mDatabase.child(userId).child("dataFromApp").child("LightSensor").setValue("5");    //set sample interval in database
 
         Button setThresholdButton = (Button) root.findViewById(R.id.setThreshold);
         setThresholdButton.setEnabled(false);
@@ -188,7 +202,7 @@ public class DataFragment extends Fragment {
 //                sensorGrabTime = Integer.parseInt(lightIntervalText.getText().toString());        //grabs the value in char form and converts it to an int if button was pressed FOR INTEGER VERSION, NOT STRING
                 sensorGrabTime = lightIntervalText.getText().toString();
                 if(isNumeric(sensorGrabTime) && !"0".equals(sensorGrabTime))   //check if non zero integer was entered
-                    mDatabase.child("dataFromApp").child("LightSensor").setValue(sensorGrabTime);    //set sample interval in database
+                    mDatabase.child(userId).child("dataFromApp").child("LightSensor").setValue(sensorGrabTime);    //set sample interval in database
                 else    //invalid entry
                     lightIntervalText.setText(sampleInterval);      //sets the value in the txt box to the initial value
 
@@ -209,9 +223,9 @@ public class DataFragment extends Fragment {
                 tempThreshold = lightThresholdText.getText().toString();
                 if(isNumeric(tempThreshold) && !"0".equals(tempThreshold)) {   //check if non zero integer was entered
                     threshold = tempThreshold;
-                    mDatabase.child("internalAppData").child("thresholds").child("LightSensor").setValue(threshold);
+                    mDatabase.child(userId).child("internalAppData").child("thresholds").child("LightSensor").setValue(threshold);
                 }
-                    //mDatabase.child("dataFromApp").child("LightSensor").setValue(sensorGrabTime);    //set sample interval in database
+                    //mDatabase.child(userId).child("dataFromApp").child("LightSensor").setValue(sensorGrabTime);    //set sample interval in database
                 else {
                     lightThresholdText.setText(threshold);
                 }   //invalid entry
@@ -231,11 +245,11 @@ public class DataFragment extends Fragment {
                 setThreshold = !setThreshold;
                 if(setThreshold == true){
                     setThresholdButton.setEnabled(true);
-                    mDatabase.child("internalAppData").child("thresholds").child("LightSensor").setValue("0");
+                    mDatabase.child(userId).child("internalAppData").child("thresholds").child("LightSensor").setValue("0");
                 }
                 else{
                     setThresholdButton.setEnabled(false);
-                    mDatabase.child("internalAppData").child("thresholds").child("LightSensor").setValue("0");
+                    mDatabase.child(userId).child("internalAppData").child("thresholds").child("LightSensor").setValue("0");
                 }
             }
         });
