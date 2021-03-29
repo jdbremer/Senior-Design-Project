@@ -23,6 +23,7 @@ firebase = pyrebase.initialize_app(config)
 #instantiate both the storage and database firebase libraries
 storage = firebase.storage()
 database = firebase.database()
+auth = firebase.auth()
 ##END DATABASE##
 
 #thread lock initialization
