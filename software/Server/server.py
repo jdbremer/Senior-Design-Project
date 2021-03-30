@@ -217,7 +217,6 @@ while True:
     print("entered the token checking code")
     if(path.exists("token.txt")): #check if the token txt file exists
         print("the file exists!")
-        return
     print("file does NOT exist!")
     return
 
