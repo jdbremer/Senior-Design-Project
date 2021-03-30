@@ -16,4 +16,9 @@
         android:orderInCategory="100"
         android:title="Alexa Linking"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/child_Connect"
+        android:orderInCategory="100"
+        android:title="Connect"
+        app:showAsAction="never" />
 </menu>

@@ -39,6 +39,9 @@ import com.senior.sensor_controliotnetwork.ui.connections.connectionsService;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -107,11 +110,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -146,16 +150,14 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        Intent lightIntent = new Intent(this, lightService.class);
-        this.startService(lightIntent);
-        Intent connectionIntent = new Intent(this, connectionsService.class);
-        this.startService(connectionIntent);
-
 
         //check to see if the user was already signed in
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-
+            Intent lightIntent = new Intent(this, lightService.class);
+            this.startService(lightIntent);
+            Intent connectionIntent = new Intent(this, connectionsService.class);
+            this.startService(connectionIntent);
         } else {
             createSignInIntent(); //initiate the sign on screen
         }
@@ -218,6 +220,10 @@ public class MainActivity extends AppCompatActivity {
                 // Successfully signed in
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 String userId = user.getUid();
+                Intent lightIntent = new Intent(this, lightService.class);
+                this.startService(lightIntent);
+                Intent connectionIntent = new Intent(this, connectionsService.class);
+                this.startService(connectionIntent);
             } else {
                 // Sign in failed
             }
@@ -233,6 +239,12 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.alexa_Linking:
                 doApptoApp();
+            case R.id.child_Connect:
+                Fragment someFragment = new ChildConnect();
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.child_connect, someFragment ); // give your fragment container id in first parameter
+                transaction.addToBackStack(null);  // if written, this transaction will be added to backstack
+                transaction.commit();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -271,7 +283,6 @@ public class MainActivity extends AppCompatActivity {
                         .setAvailableProviders(providers)
                         .build(),
                 RC_SIGN_IN);
-
     }
 
     public void signOutIntent() { //firebase sign out intent, this will open the login screen again since the user signed out

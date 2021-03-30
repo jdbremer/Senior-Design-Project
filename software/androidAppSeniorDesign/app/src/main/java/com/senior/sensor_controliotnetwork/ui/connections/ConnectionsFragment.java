@@ -80,8 +80,8 @@ public class ConnectionsFragment extends Fragment {
     private ArrayAdapter<String> adapter;
     public ArrayList<String> arrayList = new ArrayList<String>();
 
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    String userId = user.getUid();  //assign userId the token for the user
+    FirebaseUser user;
+    String userId;
 
     public MainActivity main = new MainActivity();
     public NavigationView navigationView;
@@ -136,9 +136,17 @@ public class ConnectionsFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_connections, container, false);
 
         context = getContext();
-
-        mPostReference = FirebaseDatabase.getInstance().getReference().child(userId).child("Connections");  //LISTENER OBJECT
-        mDatabase = FirebaseDatabase.getInstance().getReference();  //DATABASE OBJECT
+        //check to see if the user was already signed in
+        FirebaseUser user_loggedIn = FirebaseAuth.getInstance().getCurrentUser();
+        if (user_loggedIn != null) {
+            user = FirebaseAuth.getInstance().getCurrentUser();
+            userId = user.getUid();  //assign userId the token for the user
+            mPostReference = FirebaseDatabase.getInstance().getReference().child(userId).child("Connections");  //LISTENER OBJECT
+            mDatabase = FirebaseDatabase.getInstance().getReference();  //DATABASE OBJECT
+        } else {
+        }
+//        mPostReference = FirebaseDatabase.getInstance().getReference().child(userId).child("Connections");  //LISTENER OBJECT
+//        mDatabase = FirebaseDatabase.getInstance().getReference();  //DATABASE OBJECT
 
         ListView connections = root.findViewById(R.id.connectionsList);
 
