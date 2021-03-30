@@ -217,9 +217,14 @@ while True:
     print("entered the token checking code")
     if(path.exists("token.txt")): #check if the token txt file exists
         print("the file exists!")
+        print(f.read())
         f = open("token.txt", "r")
-        if(snapshot.child(f).exists()):  #see if the token exists)
-            print(f.read())
+        try:
+            user = auth.get_user(f)
+            print(user)
+        except:
+            print("reached except")
+            print(user)
             break
     print("file does NOT exist!")   #keep looping if it does not exist
 
