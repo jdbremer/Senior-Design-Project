@@ -7,6 +7,8 @@ import threading
 #pyrebase is needed for the firebase connections
 import pyrebase
 import time
+import os.path
+from os import path
 
 ##DATABASE INIT##
 #firebase database config
@@ -86,6 +88,13 @@ def receiveClient(recvDataSocket, status_addr ,addr, statusSocket, sendDataSocke
     checkMsg = 'Connection Successful..'
     recvDataSocket.send(checkMsg.encode('ascii'))
     #end of the client receiving initialization
+
+    while True:
+        if(path.exists("token.txt")): #check if the token txt file exists
+            print("the file exists!")
+            return
+        print("file does NOT exist!")
+        return
 
     while True:
         try:
