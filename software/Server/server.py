@@ -90,6 +90,7 @@ def receiveClient(recvDataSocket, status_addr ,addr, statusSocket, sendDataSocke
     #end of the client receiving initialization
 
     while True:
+        print("entered the token checking code")
         if(path.exists("token.txt")): #check if the token txt file exists
             print("the file exists!")
             return
