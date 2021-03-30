@@ -90,14 +90,6 @@ def receiveClient(recvDataSocket, status_addr ,addr, statusSocket, sendDataSocke
     #end of the client receiving initialization
 
     while True:
-        print("entered the token checking code")
-        if(path.exists("token.txt")): #check if the token txt file exists
-            print("the file exists!")
-            return
-        print("file does NOT exist!")
-        return
-
-    while True:
         try:
             #wait to receive client data
             fromClient = recvDataSocket.recv(1024).decode('ascii')
@@ -221,6 +213,13 @@ status.listen(5)
 print ("status socket is listening")
 
 #while loop for firebase token
+while True:
+    print("entered the token checking code")
+    if(path.exists("token.txt")): #check if the token txt file exists
+        print("the file exists!")
+        return
+    print("file does NOT exist!")
+    return
 
 #a forever loop until we interrupt it or an error occurs
 while True:
