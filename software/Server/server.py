@@ -218,7 +218,7 @@ while True:
     if(path.exists("token.txt")): #check if the token txt file exists
         print("the file exists!")
         f = open("token.txt", "r")
-        user = auth.get_account_info(user[f])
+        user = auth.get_account_info(user['X4KVbWNlW8XhHE6b1NfcxCMUkGc2'])
         print(user)
         # try:
         #     user = auth.get_user(f)
