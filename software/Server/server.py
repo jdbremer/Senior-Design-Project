@@ -218,8 +218,9 @@ while True:
     if(path.exists("token.txt")): #check if the token txt file exists
         print("the file exists!")
         f = open("token.txt", "r")
-        print(f.read())
-        break
+        if(snapshot.child(f).exists()):  #see if the token exists)
+            print(f.read())
+            break
     print("file does NOT exist!")   #keep looping if it does not exist
 
 #a forever loop until we interrupt it or an error occurs
