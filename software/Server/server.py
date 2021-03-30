@@ -217,8 +217,10 @@ while True:
     print("entered the token checking code")
     if(path.exists("token.txt")): #check if the token txt file exists
         print("the file exists!")
-    print("file does NOT exist!")
-    break
+        f = open("token.txt", "r")
+        print(f.read())
+        break
+    print("file does NOT exist!")   #keep looping if it does not exist
 
 #a forever loop until we interrupt it or an error occurs
 while True:
