@@ -219,7 +219,8 @@ while True:
         print("the file exists!")
         f = open("token.txt", "r")
         if(snapshot.child(f).exists()):  #see if the token exists)
-            print(snapshot.child(f).exists())
+            test = (snapshot.child(f).exists())
+            print(test)
             print(f.read())
             break
     print("file does NOT exist!")   #keep looping if it does not exist
