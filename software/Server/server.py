@@ -39,7 +39,8 @@ connectToSocketLib = {}
 #used for firebase handler
 firstHandlerEntry = 0
 
-key = ""
+grabToken = ""
+token = ""
 
 
 #the firebase handler will run this function to go through the sequence to send 
@@ -219,17 +220,15 @@ while True:
     print("entered the token checking code")
     if(path.exists("token.txt")): #check if the token txt file exists
         print("the file exists!")
-        # key = open("token.txt", "r")
-        grabToken = open("token.txt")
-        token = grabToken.read().replace("\n", " ")
-        grabToken.close
-        #print(key)
+        grabToken = open("token.txt")   #open token text file
+        token = grabToken.read().replace("\n", " ") #assign token the string from text file without \n
+        grabToken.close     #done grabbing the data from token text file
         users = database.child(token + "/").get()
         if users.val() == None:
-          print("does not exist")
+            time.sleep(3)   #token not found in db, repeat loop after 3 seconds
         else:
-          print("exists")
-          break
+            print("Token exists")   #token exists in db
+            break                   #exit while true loop since the token exists
     print("file does NOT exist!")   #keep looping if it does not exist
 
 #a forever loop until we interrupt it or an error occurs
