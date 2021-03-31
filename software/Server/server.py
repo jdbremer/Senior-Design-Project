@@ -1,3 +1,4 @@
+
 # first of all import the socket library
 import socket
 import _thread
@@ -18,51 +19,65 @@ import RPi.GPIO as GPIO #pulls in the GPIO pin numbers
 
 
 
+
+
 #setup the GPIO for the bluetooth module power
 #set the GPIO to the board layout (used for pin numbers)
-GPIO.setmode(GPIO.BOARD)
+#GPIO.setmode(GPIO.BOARD)
 #set the GPIO pin 18 to output
-GPIO.setup(18, GPIO.OUT)
+#GPIO.setup(18, GPIO.OUT)
 #default the output to LOW
-GPIO.output(18, GPIO.LOW)
+#GPIO.output(18, GPIO.LOW)
 
 #setup the bluetooth config.. this does not include timeout
 serialPort = serial.Serial("/dev/serial0", baudrate=115200)
 
 appValues = {}
 
-startMsg = "start"
-endMsg = "stop"
-
-dataStart = False
-dataStop = True
+line = []
+fullString = ""
 
 
 
 def runReadSequence():
+    global line
+    global fullString
+    startMsg = "start"
+    endMsg = "stop"
+    ssid = "ssid"
+    ssid_pswd = "password"
+    uid = "uid"
+    dataStart = False
+    dataStop = False
     while True:
         for c in serialPort.read().decode():
-        line.append(c)
-        if c == '\n':
-            fullString = ''.join(line)
-            if startMsg in fullString:
-                dataStart = True
-                dataStop = False
-            elif endMsg in fullString:
-                dataStart = False
-                dataStop = True
-            elif dataStart = True and dataStop = False:
-                try:
-                    valName = eventPathString.split(':')[0]
-                    valData = eventPathString.split(':')[1]
-                    appValues[valName] = valData
-                except:
-                    print("invalid data")
-                    
-            print(fullString)
-                
-            line = []
-            break
+            line.append(c)
+            if c == '\n':
+                print("newString")
+                fullString = ''.join(line).replace("\n"," ")
+                print(fullString)
+                line = []
+
+                if startMsg in fullString:
+                    dataStart = True
+                    dataStop = False
+                    print("start")
+                elif endMsg in fullString:
+                    dataStart = False
+                    dataStop = True
+                    print("end")
+                    return
+                elif dataStart == True and dataStop == False:
+                    if ssid in fullString or ssid_pswd in fullString or uid in fullString:
+                        try:
+                            valName = fullString.split(':')[0]
+                            print(valName)
+                            valData = fullString.split(':')[1]
+                            print(valData)
+                            appValues[valName] = valData
+                        except:
+                            print("invalid data")
+                            return
 
 
 
@@ -71,6 +86,7 @@ def RestartWifi():
   os.system('sudo systemctl daemon-reload')
   time.sleep(1)
   os.system('sudo systemctl restart dhcpcd')
+  time.sleep(10)
 
 
 def modifyWPAFile():
@@ -95,7 +111,7 @@ def modifyWPAFile():
     
     
 def modifyTOKENFile():
-    tokenConfig = open("/home/pi/Desktop/Senior-Design-Project/software/Server", "r+")
+    tokenConfig = open("/home/pi/Desktop/Senior-Design-Project/software/Server/token.txt", "r+")
     tokenConfig.seek(0)
     tokenConfig.truncate(0)
     tokenConfig.write(appValues.get("uid").strip())
@@ -103,24 +119,28 @@ def modifyTOKENFile():
 
     
     
-
+internet = True
 #check if the pi is connected to the internet'
-while True:
+while internet:
     try:
         url = "https://www.google.com"
-        urllib.urlopen(url)
-        status = "Connected"
-        GPIO.output(18, GPIO.LOW)
+        urllib.request.urlopen(url)
+        urllib.request.urlclose(url)
+        internet = False
+#        GPIO.output(18, GPIO.LOW)
+        print("Connected")
         break
-    except:
+    except urllib.error.URLError as e:
+        print(e.reason)
         status = "Not connected"
         
         
         
-    print status
+    print(status)
     if status == "Not connected":
         #turn on the bluetooth HAT
-        GPIO.output(18, GPIO.HIGH)
+#        GPIO.output(18, GPIO.HIGH)
+        #time.sleep(2)
         runReadSequence()
         modifyWPAFile()
         modifyTOKENFile()
