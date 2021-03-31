@@ -31,33 +31,45 @@ serialPort = serial.Serial("/dev/serial0", baudrate=115200)
 
 appValues = {}
 
+line = []
+fullString = ""
+
 startMsg = "start"
 endMsg = "stop"
 
 dataStart = False
-dataStop = True
+dataStop = False
 
 
 
 def runReadSequence():
+    global line
+    global fullString
+    global dataStart
+    global dataStop
     while True:
         for c in serialPort.read().decode():
-        line.append(c)
-        if c == '\n':
-            fullString = ''.join(line)
-            if startMsg in fullString:
-                dataStart = True
-                dataStop = False
-            elif endMsg in fullString:
-                dataStart = False
-                dataStop = True
-            elif dataStart = True and dataStop = False:
-                try:
-                    valName = eventPathString.split(':')[0]
-                    valData = eventPathString.split(':')[1]
-                    appValues[valName] = valData
-                except:
-                    print("invalid data")
+            line.append(c)
+            if c == '\n':
+                print("newString")
+                fullString = ''.join(line)
+                if startMsg in fullString:
+                    dataStart = True
+                    dataStop = False
+                    print("start")
+                elif endMsg in fullString:
+                    dataStart = False
+                    dataStop = True
+                    print("end")
+                if dataStart == False and dataStop == True:
+                    try:
+                        valName = eventPathString.split(':')[0]
+                        valData = eventPathString.split(':')[1]
+                        appValues[valName] = valData
+                        print("should return")
+                        return
+                    except:
+                        print("invalid data")
                     
             print(fullString)
                 
@@ -103,24 +115,27 @@ def modifyTOKENFile():
 
     
     
-
+internet = True
 #check if the pi is connected to the internet'
-while True:
+while internet:
     try:
         url = "https://www.google.com"
-        urllib.urlopen(url)
-        status = "Connected"
+        urllib.request.urlopen(url)
+        internet = False
         GPIO.output(18, GPIO.LOW)
+        print("Connected")
         break
-    except:
+    except urllib.error.URLError as e:
+        print(e.reason)
         status = "Not connected"
         
         
         
-    print status
+    print(status)
     if status == "Not connected":
         #turn on the bluetooth HAT
         GPIO.output(18, GPIO.HIGH)
+        time.sleep(2)
         runReadSequence()
         modifyWPAFile()
         modifyTOKENFile()
