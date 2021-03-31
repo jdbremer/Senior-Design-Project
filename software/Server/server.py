@@ -9,6 +9,123 @@ import pyrebase
 import time
 import os.path
 from os import path
+#for bluetooth com
+import serial
+#for internet check
+import urllib
+#for GPIO control
+import RPi.GPIO as GPIO #pulls in the GPIO pin numbers
+
+
+
+#setup the GPIO for the bluetooth module power
+#set the GPIO to the board layout (used for pin numbers)
+GPIO.setmode(GPIO.BOARD)
+#set the GPIO pin 18 to output
+GPIO.setup(18, GPIO.OUT)
+#default the output to LOW
+GPIO.output(18, GPIO.LOW)
+
+#setup the bluetooth config.. this does not include timeout
+serialPort = serial.Serial("/dev/serial0", baudrate=115200)
+
+appValues = {}
+
+startMsg = "start"
+endMsg = "stop"
+
+dataStart = False
+dataStop = True
+
+
+
+def runReadSequence():
+    while True:
+        for c in serialPort.read().decode():
+        line.append(c)
+        if c == '\n':
+            fullString = ''.join(line)
+            if startMsg in fullString:
+                dataStart = True
+                dataStop = False
+            elif endMsg in fullString:
+                dataStart = False
+                dataStop = True
+            elif dataStart = True and dataStop = False:
+                try:
+                    valName = eventPathString.split(':')[0]
+                    valData = eventPathString.split(':')[1]
+                    appValues[valName] = valData
+                except:
+                    print("invalid data")
+                    
+            print(fullString)
+                
+            line = []
+            break
+
+
+
+#restarts the wifi services
+def RestartWifi():
+  os.system('sudo systemctl daemon-reload')
+  time.sleep(1)
+  os.system('sudo systemctl restart dhcpcd')
+
+
+def modifyWPAFile():
+    wifiConfig = open("/etc/wpa_supplicant/wpa_supplicant.conf", "r+")
+    fileContents = wifiConfig.readlines()
+    newFileContents = ""
+    currentFileContents = ""
+    for line in fileContents:
+        newLine = line
+        if "ssid" in line:
+            newLine = "        ssid=" + '"'  + appValues.get("ssid").strip() + '"' + "\n"
+            print(newLine)
+        elif "psk" in line:
+            newLine = "        psk=" + '"' + appValues.get("password").strip() + '"' + "\n"
+            print(newLine)
+        newFileContents += newLine
+    wifiConfig.seek(0)
+    wifiConfig.truncate(0)
+    wifiConfig.write(newFileContents)
+    wifiConfig.close()
+    
+    
+    
+def modifyTOKENFile():
+    tokenConfig = open("/home/pi/Desktop/Senior-Design-Project/software/Server", "r+")
+    tokenConfig.seek(0)
+    tokenConfig.truncate(0)
+    tokenConfig.write(appValues.get("uid").strip())
+    tokenConfig.close()
+
+    
+    
+
+#check if the pi is connected to the internet'
+while True:
+    try:
+        url = "https://www.google.com"
+        urllib.urlopen(url)
+        status = "Connected"
+        GPIO.output(18, GPIO.LOW)
+        break
+    except:
+        status = "Not connected"
+        
+        
+        
+    print status
+    if status == "Not connected":
+        #turn on the bluetooth HAT
+        GPIO.output(18, GPIO.HIGH)
+        runReadSequence()
+        modifyWPAFile()
+        modifyTOKENFile()
+        RestartWifi()
+
 
 ##DATABASE INIT##
 #firebase database config

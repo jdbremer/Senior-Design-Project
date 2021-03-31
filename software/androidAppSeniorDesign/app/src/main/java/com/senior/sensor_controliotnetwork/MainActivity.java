@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,7 +15,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -154,14 +157,16 @@ public class MainActivity extends AppCompatActivity {
         //check to see if the user was already signed in
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            Intent lightIntent = new Intent(this, lightService.class);
-            this.startService(lightIntent);
+//            Intent lightIntent = new Intent(this, lightService.class);
+//            this.startService(lightIntent);
             Intent connectionIntent = new Intent(this, connectionsService.class);
             this.startService(connectionIntent);
         } else {
             createSignInIntent(); //initiate the sign on screen
         }
+
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -220,8 +225,8 @@ public class MainActivity extends AppCompatActivity {
                 // Successfully signed in
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 String userId = user.getUid();
-                Intent lightIntent = new Intent(this, lightService.class);
-                this.startService(lightIntent);
+//                Intent lightIntent = new Intent(this, lightService.class);
+//                this.startService(lightIntent);
                 Intent connectionIntent = new Intent(this, connectionsService.class);
                 this.startService(connectionIntent);
             } else {
@@ -240,9 +245,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.alexa_Linking:
                 doApptoApp();
             case R.id.child_Connect:
-                Fragment someFragment = new ChildConnect();
+                Fragment someFragment = new client_connect();
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.child_connect, someFragment ); // give your fragment container id in first parameter
+                transaction.replace(R.id.connectionFrag, someFragment ); // give your fragment container id in first parameter
                 transaction.addToBackStack(null);  // if written, this transaction will be added to backstack
                 transaction.commit();
             default:
