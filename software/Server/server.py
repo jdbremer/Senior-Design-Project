@@ -39,6 +39,8 @@ connectToSocketLib = {}
 #used for firebase handler
 firstHandlerEntry = 0
 
+key = ""
+
 
 #the firebase handler will run this function to go through the sequence to send 
 #the data from the app to the correct child node
@@ -217,8 +219,7 @@ while True:
     print("entered the token checking code")
     if(path.exists("token.txt")): #check if the token txt file exists
         print("the file exists!")
-        f = open("token.txt", "r")
-        key = ""
+        key = open("token.txt", "r")
         users = database.child(key + "/").get()
         if users.val() == None:
           print("does not exist")
