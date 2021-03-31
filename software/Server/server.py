@@ -223,8 +223,8 @@ while True:
         grabToken = open("token.txt")
         token = grabToken.read().replace("\n", " ")
         grabToken.close
-        print(key)
-        users = database.child(key + "/").get()
+        #print(key)
+        users = database.child(token + "/").get()
         if users.val() == None:
           print("does not exist")
         else:
