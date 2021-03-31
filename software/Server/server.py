@@ -218,17 +218,13 @@ while True:
     if(path.exists("token.txt")): #check if the token txt file exists
         print("the file exists!")
         f = open("token.txt", "r")
-        if (database.child(f).get()):
-            print("user exists")
+        key = ""
+        users = database.child(key + "/").get()
+        if users.val() == None:
+          print("does not exist")
         else:
-            print("users does NOT exist")
-        # try:
-        #     user = auth.get_user(f)
-        #     print(user)
-        # except:
-        #     print("reached except")
-        #     print(user)
-        #     break
+          print("exists")
+          break
     print("file does NOT exist!")   #keep looping if it does not exist
 
 #a forever loop until we interrupt it or an error occurs
