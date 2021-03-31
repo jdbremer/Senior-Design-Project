@@ -156,6 +156,9 @@ connectToSocketLib = {}
 #used for firebase handler
 firstHandlerEntry = 0
 
+grabToken = ""
+token = ""
+
 
 #the firebase handler will run this function to go through the sequence to send 
 #the data from the app to the correct child node
@@ -331,13 +334,18 @@ print ("status socket is listening")
 
 #while loop for firebase token
 while True:
-    print("entered the token checking code")
     if(path.exists("token.txt")): #check if the token txt file exists
-        print("the file exists!")
-        f = open("token.txt", "r")
-        print(f.read())
-        break
-    print("file does NOT exist!")   #keep looping if it does not exist
+        print("Token file exists")
+        grabToken = open("token.txt")   #open token text file
+        token = grabToken.read().replace("\n", " ") #assign token the string from text file without \n
+        grabToken.close     #done grabbing the data from token text file
+        users = database.child(token + "/").get()
+        if users.val() == None:
+            print("Invalid token")
+            time.sleep(3)   #token not found in db, repeat loop after 3 seconds
+        else:
+            print("Token exists")   #token exists in db
+            break                   #exit while true loop since the token exists
 
 #a forever loop until we interrupt it or an error occurs
 while True:
