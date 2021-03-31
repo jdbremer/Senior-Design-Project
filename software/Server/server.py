@@ -217,19 +217,18 @@ print ("status socket is listening")
 
 #while loop for firebase token
 while True:
-    print("entered the token checking code")
     if(path.exists("token.txt")): #check if the token txt file exists
-        print("the file exists!")
+        print("Token file exists")
         grabToken = open("token.txt")   #open token text file
         token = grabToken.read().replace("\n", " ") #assign token the string from text file without \n
         grabToken.close     #done grabbing the data from token text file
         users = database.child(token + "/").get()
         if users.val() == None:
+            print("Invalid token")
             time.sleep(3)   #token not found in db, repeat loop after 3 seconds
         else:
             print("Token exists")   #token exists in db
             break                   #exit while true loop since the token exists
-    print("file does NOT exist!")   #keep looping if it does not exist
 
 #a forever loop until we interrupt it or an error occurs
 while True:
