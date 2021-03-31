@@ -219,7 +219,11 @@ while True:
     print("entered the token checking code")
     if(path.exists("token.txt")): #check if the token txt file exists
         print("the file exists!")
-        key = open("token.txt", "r")
+        # key = open("token.txt", "r")
+        grabToken = open("token.txt")
+        token = file.read().replace("\n", " ")
+        grabToken.close
+        print key
         users = database.child(key + "/").get()
         if users.val() == None:
           print("does not exist")
