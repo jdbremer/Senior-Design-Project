@@ -221,9 +221,9 @@ while True:
         print("the file exists!")
         # key = open("token.txt", "r")
         grabToken = open("token.txt")
-        token = file.read().replace("\n", " ")
+        token = grabToken.read().replace("\n", " ")
         grabToken.close
-        print key
+        print(key)
         users = database.child(key + "/").get()
         if users.val() == None:
           print("does not exist")
