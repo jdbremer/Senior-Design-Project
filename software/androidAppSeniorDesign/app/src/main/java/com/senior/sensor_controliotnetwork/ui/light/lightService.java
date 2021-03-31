@@ -234,8 +234,9 @@ public class lightService extends Service {
         //GraphFragment test = (GraphFragment) getSupportFragmentManager().findFragmentByTag("testID");
 
 
-        // If we get killed, after returning from here, restart
-        return START_STICKY;
+        // If we get killed, after returning from here, don't restart
+        // START_STICKY means that it restarts after being force quit
+        return START_NOT_STICKY;
     }
 
     @Override

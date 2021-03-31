@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -49,6 +50,7 @@ public class connectionsService extends Service {
 
     public ArrayList<String> arrayList = new ArrayList<String>();
 
+    Intent lightIntent;
 
 
 
@@ -68,6 +70,18 @@ public class connectionsService extends Service {
             i.putExtra("connectionsArrayForMain", arrayList);
             i.setAction("CONNECTIONS2MAIN");
             sendBroadcast(i);
+        }
+
+        public void turnOnLightService(String nodeId) {
+            if(nodeId.contains("LightSensor")){
+                getBaseContext().startService(lightIntent);
+            }
+        }
+
+        public void turnOffLightService(String nodeId) {
+            if(nodeId.contains("LightSensor")){
+                getBaseContext().stopService(lightIntent);
+            }
         }
 
 
@@ -93,9 +107,11 @@ public class connectionsService extends Service {
                             String nodId = snap.getKey();
                             int onOff = Integer.parseInt((String) snap.getValue());
                             if(onOff == 1 && !arrayList.contains(nodId)){
+                                turnOnLightService(nodId);
                                 addingToList(nodId);
                             }
                             else if(onOff == 0 && arrayList.contains((nodId))){
+                                turnOffLightService(nodId);
                                 removeFromList(nodId);
                                 //mDatabase.child(userId).child("dataFromApp").child(nodId).setValue("0");
                             }
@@ -122,9 +138,11 @@ public class connectionsService extends Service {
                             String nodId = snap.getKey();
                             int onOff = Integer.parseInt((String) snap.getValue());
                             if(onOff == 1 && !arrayList.contains(nodId)){
+                                turnOnLightService(nodId);
                                 initializeList(nodId);
                             }
                             else if(onOff == 0 && arrayList.contains(nodId)) {
+                                turnOffLightService(nodId);
                                 removeFromList(nodId);
                                 //mDatabase.child(userId).child("dataFromApp").child(nodId).setValue("0");
                             }
@@ -187,6 +205,10 @@ public class connectionsService extends Service {
             manager.createNotificationChannel(channel);
         }
 
+        lightIntent = new Intent(getBaseContext(), lightService.class);
+
+        //getBaseContext().startService(lightIntent);
+
         // Get the HandlerThread's Looper and use it for our Handler
         serviceLooper = thread.getLooper();
         serviceHandler = new ServiceHandler(serviceLooper);
@@ -201,6 +223,8 @@ public class connectionsService extends Service {
         Message msg = serviceHandler.obtainMessage();
         msg.arg1 = startId;
         serviceHandler.sendMessage(msg);
+
+
 
         // If we get killed, after returning from here, restart
         return START_STICKY;
