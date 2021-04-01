@@ -14,6 +14,7 @@ from os import path
 import serial
 #for internet check
 import urllib
+import requests
 #for GPIO control
 import RPi.GPIO as GPIO #pulls in the GPIO pin numbers
 
@@ -127,14 +128,14 @@ internet = True
 while internet:
     try:
         url = "https://www.google.com"
-        urllib.request.urlopen(url)
-        urllib.request.urlclose(url)
+#        urllib.request.urlopen(url)
+        response = requests.get(url)
         internet = False
 #        GPIO.output(18, GPIO.LOW)
         print("Connected")
         break
-    except urllib.error.URLError as e:
-        print(e.reason)
+    except requests.ConnectionError:
+        print(response.status_code)
         status = "Not connected"
         
         
