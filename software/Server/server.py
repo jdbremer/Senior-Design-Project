@@ -203,9 +203,9 @@ def firebaseStreamHandler(event):
 
     else:
         eventPathString = event["path"]
-        if(len(eventPathString.split('/')) >= 1):
+        if(len(eventPathString.split('/')) >= 2):
             #pulls out the sensor name from the event data which is delimited
-            sensorName = eventPathString.split('/')[1]
+            sensorName = eventPathString.split('/')[2]
             #pulls out the sensor data from the event data, this data is not delimited
             sensorData = eventPathString = event["data"]
             print("Received data from.. " + sensorName + " Sensor data.. ")
