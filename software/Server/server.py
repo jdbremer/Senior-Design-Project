@@ -203,7 +203,6 @@ def firebaseStreamHandler(event):
 
     else:
         eventPathString = event["path"]
-        print("testing")
         if(len(eventPathString.split('/')) >= 2):
             #pulls out the sensor name from the event data which is delimited
             sensorName = eventPathString.split('/')[2]
@@ -214,9 +213,7 @@ def firebaseStreamHandler(event):
             sendingClientFromFirebase(sensorData, sensorName)
             
 
-        
-#initialize the firebase listener
-myStream = database.child(token + "/dataFromApp").stream(firebaseStreamHandler, None)
+       
 
 
 
@@ -372,6 +369,9 @@ while True:
         else:
             print("Token exists")   #token exists in db
             break                   #exit while true loop since the token exists
+            
+#initialize the firebase listener
+myStream = database.child(token + "/dataFromApp").stream(firebaseStreamHandler, None)
 
 #a forever loop until we interrupt it or an error occurs
 while True:
