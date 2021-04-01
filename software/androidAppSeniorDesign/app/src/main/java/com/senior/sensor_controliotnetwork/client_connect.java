@@ -68,6 +68,12 @@ public class client_connect extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        findBT();
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //findBT();

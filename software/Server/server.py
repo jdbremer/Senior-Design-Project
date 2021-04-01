@@ -38,6 +38,9 @@ line = []
 fullString = ""
 
 
+grabToken = ""
+token = ""
+
 
 def runReadSequence():
     global line
@@ -176,8 +179,6 @@ connectToSocketLib = {}
 #used for firebase handler
 firstHandlerEntry = 0
 
-grabToken = ""
-token = ""
 
 
 #the firebase handler will run this function to go through the sequence to send 
@@ -193,6 +194,7 @@ def sendingClientFromFirebase(data, sensorName):
 
 #firebase listener "dataFromApp"
 def firebaseStreamHandler(event):
+    global token
     global firstHandlerEntry
     #if this is the first time in here, the data will be initialization data, which we want to discard
     if(firstHandlerEntry == 0):
@@ -212,12 +214,13 @@ def firebaseStreamHandler(event):
 
         
 #initialize the firebase listener
-myStream = database.child("dataFromApp").stream(firebaseStreamHandler, None)
+myStream = database.child(token + "/dataFromApp").stream(firebaseStreamHandler, None)
 
 
 
 #thread for the data received from the clients
 def receiveClient(recvDataSocket, status_addr ,addr, statusSocket, sendDataSocket):
+    global token
     #print the address of the new connecitons
     print ('Got connection from recv client.. ', addr )
 
@@ -246,7 +249,7 @@ def receiveClient(recvDataSocket, status_addr ,addr, statusSocket, sendDataSocke
             print(fromClient)
             
             #send the data to the database
-            database.child("dataFromChild").update({str(connections.get(status_addr[1])) : str(fromClient)})
+            database.child(token + "/dataFromChild").update({str(connections.get(status_addr[1])) : str(fromClient)})
 
             #send a messsage to the client to keep sync
             checkMsg = 'I am here'
@@ -263,6 +266,7 @@ def receiveClient(recvDataSocket, status_addr ,addr, statusSocket, sendDataSocke
 
 #status socket thread
 def clientCloseCheck(statusSocket, addr, recvDataSocket, sendDataSocket):
+    global token
     #lock the thread
     lock.acquire()
     #client initialization 
@@ -289,7 +293,7 @@ def clientCloseCheck(statusSocket, addr, recvDataSocket, sendDataSocket):
     #release the thread lock
     lock.release()
     #update the database to display connected sensor
-    database.child("Connections").update({str(sensor) : "1"})
+    database.child(token + "/Connections").update({str(sensor) : "1"})
 
 
     #keep trying to send data to the client (the client will never accept on purpose)
@@ -310,9 +314,9 @@ def clientCloseCheck(statusSocket, addr, recvDataSocket, sendDataSocket):
             #release the thread
             lock.release()
             #update the connections database with the disconnected device
-            database.child("Connections").update({str(valueToPull) : "0"})
+            database.child(token + "/Connections").update({str(valueToPull) : "0"})
             #update the data coming from child within the database to 0
-            database.child("dataFromChild").update({str(valueToPull) : "0"})
+            database.child(token + "/dataFromChild").update({str(valueToPull) : "0"})
             #display the disconnected sockets address
             print('Socket has disconnected! ', addr)
             #close all sockets (for saftey measures)
