@@ -59,6 +59,8 @@ public class GraphFragment extends Fragment {
 
     private int maxDataPoints = 25;
 
+    public static HashMap<Integer, String> hashMap = new HashMap<Integer, String>();
+
 
     private DataPoint[] values = new DataPoint[50];
     private GraphView graph;
@@ -141,7 +143,7 @@ public class GraphFragment extends Fragment {
 
             if(intent.getAction().equals("SensorMap"))
             {
-                HashMap<Integer, String> hashMap = (HashMap<Integer, String>)intent.getSerializableExtra("MAPS");
+                hashMap = (HashMap<Integer, String>)intent.getSerializableExtra("MAPS");
                 testFunc(hashMap);
                 // Show it in GraphView
             }
@@ -178,11 +180,12 @@ public class GraphFragment extends Fragment {
         graph.getViewport().setMinY(0);
         graph.getViewport().setMaxY(1000);
 
-       // mSeries1 = new LineGraphSeries<>();
-        LineGraphSeries<DataPoint> series = new LineGraphSeries<>();
 
+        //LineGraphSeries<DataPoint> series = new LineGraphSeries<>();
+        if(!hashMap.isEmpty()) {
+            testFunc(hashMap);
+        }
 
-        double x = 20;
 
 
 
@@ -191,21 +194,12 @@ public class GraphFragment extends Fragment {
     }
 
 
-
-//    BroadcastReceiver br = new BroadcastReceiver() {
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            HashMap<String, String> hashMap = (HashMap<String, String>)intent.getSerializableExtra("MAPS");
-//        }
-//    };
-
     public void testFunc(HashMap sensorValues){
 
         //trying to remove old data on the graph and add new data
         mSeries1.clearReference(graph);
         graph.removeSeries(mSeries1);
         mSeries1 = new LineGraphSeries<>();
-        //LineGraphSeries<DataPoint> mSeries1 = new LineGraphSeries<>();
         mSeries1.setThickness(15);
         mSeries1.setColor(Color.rgb(210,180,140));
         graph.addSeries(mSeries1);
@@ -213,23 +207,25 @@ public class GraphFragment extends Fragment {
         graph.onDataChanged(true, true);
 
 
-        //this is here as a test to just continue adding data
-        //mSeries1.appendData(new DataPoint(inc2++,y*1000),false, 10);
-
-
         TreeMap<Integer,String> sortedSensorValues = new TreeMap<Integer,String>(sensorValues); //convert the hashmaps (which aren't sorted) to treemaps (which are sorted)
         //iterate through the hash table to then add the shifted data to the series
         Iterator<TreeMap.Entry<Integer, String>> itr = sortedSensorValues.entrySet().iterator();
+        int i = 0;
         while(itr.hasNext()){
-            //iterate.next();
+
             TreeMap.Entry<Integer, String> entry = itr.next();
             int x = entry.getKey();
             double y2 = (Double.parseDouble((String) entry.getValue()));
-            mSeries1.appendData(new DataPoint(x,y2),false, maxDataPoints);
+            if(i == 0){
+                mSeries1.resetData(new DataPoint[] {new DataPoint(x, y2)});
+                i = 1;
+            }
+            else {
+                mSeries1.appendData(new DataPoint(x, y2), false, maxDataPoints);
+            }
             graph.refreshDrawableState();
             graph.onDataChanged(true, true);
         }
-
     }
 
 

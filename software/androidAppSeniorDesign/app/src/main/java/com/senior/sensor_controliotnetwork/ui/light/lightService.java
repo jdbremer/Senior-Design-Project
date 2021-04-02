@@ -54,10 +54,12 @@ public class lightService extends Service {
     private DatabaseReference mPostReferenceLightThreshold;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String userId = user.getUid();  //assign userId the token for the user
-    private HashMap<Integer, String> sensorValues = new HashMap<Integer, String>();
+    private HashMap<Integer, String> sensorValues = new HashMap<Integer, String>();;
     public int inc = 0;
     public String value = "";
     public String thresholdMetValue = "";
+    public boolean graphActive = false;
+
 
 
 
@@ -86,89 +88,91 @@ public class lightService extends Service {
         }
         @Override
         public void handleMessage(Message msg) {
-
+            //sensorValues = new HashMap<Integer, String>();
+            sensorValues.clear();
+            inc = 0;
 
 
             try {
-                mPostReferenceLightThreshold.setValue("0");
-            //CONSTANT LISTENER CODE//
-            ValueEventListener constantListener = new ValueEventListener(){
-                @Override
-                public void onDataChange (DataSnapshot dataSnapshot){
-                    //LineGraphSeries<DataPoint> mSeries3 = new LineGraphSeries<>();
+                //mPostReferenceLightThreshold.setValue("0");
+                //CONSTANT LISTENER CODE//
+                ValueEventListener constantListener = new ValueEventListener(){
+                    @Override
+                    public void onDataChange (DataSnapshot dataSnapshot){
+                        //LineGraphSeries<DataPoint> mSeries3 = new LineGraphSeries<>();
 
-                    int maxGraphPoints = 26;
-                    value = (String) dataSnapshot.getValue();
+                        int maxGraphPoints = 26;
+                        value = (String) dataSnapshot.getValue();
 
-                    //send notification that the light data is over the threshold value
-                    float valueFloat = Float.parseFloat(value);
-                    if(thresholdFloat < valueFloat && thresholdFloat != 0.0){
-                        thresholdMetValue = value;
-                        sendNotification(thresholdMetValue);
-                    }
+                        //send notification that the light data is over the threshold value
+                        float valueFloat = Float.parseFloat(value);
+                        if(thresholdFloat < valueFloat && thresholdFloat != 0.0){
+                            thresholdMetValue = value;
+                            sendNotification(thresholdMetValue);
+                        }
+                        if(valueFloat > 0.0) {
+                            //add data to a hash table
+                            sensorValues.put(inc, value);
 
-                    //add data to a hash table
-                    sensorValues.put(inc, value );
 
+                            //if the max number of points was reached
+                            if (inc >= maxGraphPoints) {
 
-                    //if the max number of points was reached
-                    if(inc >= maxGraphPoints){
+                                //shift all the data within the hash table
+                                for (int i = 0; i < maxGraphPoints + 1; i++) {
+                                    if (i == 0) {
 
-                        //shift all the data within the hash table
-                        for ( int i = 0; i < maxGraphPoints+1 ; i++){
-                            if(i == 0){
+                                        sensorValues.remove(i);
+                                    } else {
+                                        String key = sensorValues.get(i);
+                                        sensorValues.remove(i);
+                                        sensorValues.put(i - 1, key);
+                                    }
+                                }
+                            } else {
 
-                                sensorValues.remove(i);
+                                inc++;
+
                             }
-                            else{
-                                String key = sensorValues.get(i);
-                                sensorValues.remove(i);
-                                sensorValues.put(i-1, key);
+                            if (GraphFragment.active) {
+                                //DO STUFF
+                                talkToGraph();
+                            }
+                            if (DataFragment.active) {
+                                //DO STUFF
+                                talkToData();
                             }
                         }
-
-                        if (GraphFragment.active) {
-                            //DO STUFF
-                            talkToGraph();
-                        }
-                        if (DataFragment.active) {
-                            //DO STUFF
-                            talkToData();
-                        }
                     }
-                    else{
-                        inc++;
+
+                    @Override
+                    public void onCancelled (@NonNull DatabaseError error){
+                        //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                        System.out.println("The read failed: " + error.getMessage());
                     }
-                }
-
-                @Override
-                public void onCancelled (@NonNull DatabaseError error){
-                    //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                    System.out.println("The read failed: " + error.getMessage());
-                }
-            };
-            //END CONSTANT LISTENER CODE//
-            mPostReference.addValueEventListener(constantListener);
+                };
+                //END CONSTANT LISTENER CODE//
+                mPostReference.addValueEventListener(constantListener);
 
 
-            //CONSTANT LISTENER CODE//
-            ValueEventListener thresholdListener = new ValueEventListener(){
-                @Override
-                public void onDataChange (DataSnapshot dataSnapshot){
+                //CONSTANT LISTENER CODE//
+                ValueEventListener thresholdListener = new ValueEventListener(){
+                    @Override
+                    public void onDataChange (DataSnapshot dataSnapshot){
 
-                    threshold = (String) dataSnapshot.getValue();
-                    thresholdFloat = Float.parseFloat(threshold);
+                        threshold = (String) dataSnapshot.getValue();
+                        thresholdFloat = Float.parseFloat(threshold);
 
-                }
+                    }
 
-                @Override
-                public void onCancelled (@NonNull DatabaseError error){
-                    //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-                    System.out.println("The read failed: " + error.getMessage());
-                }
-            };
-            //END CONSTANT LISTENER CODE//
-            mPostReferenceLightThreshold.addValueEventListener(thresholdListener);
+                    @Override
+                    public void onCancelled (@NonNull DatabaseError error){
+                        //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                        System.out.println("The read failed: " + error.getMessage());
+                    }
+                };
+                //END CONSTANT LISTENER CODE//
+                mPostReferenceLightThreshold.addValueEventListener(thresholdListener);
 
 
             // Normally we would do some work here, like download a file.
@@ -176,9 +180,13 @@ public class lightService extends Service {
 
                 while(true) {
                     Thread.sleep(1000);
-                    if (GraphFragment.active) {
+                    if (GraphFragment.active && graphActive == false) {
                         //DO STUFF
-                        talkToGraph();
+                       // talkToGraph();
+                        graphActive = true;
+                    }
+                    else if(!GraphFragment.active) {
+                        graphActive = false;
                     }
                     if (DataFragment.active) {
                         //DO STUFF
@@ -229,6 +237,7 @@ public class lightService extends Service {
         Message msg = serviceHandler.obtainMessage();
         msg.arg1 = startId;
         serviceHandler.sendMessage(msg);
+
 
         //mPostReference = FirebaseDatabase.getInstance().getReference().child(userId).child("dataFromChild").child("LightSensor");  //LISTENER OBJECT
         //GraphFragment test = (GraphFragment) getSupportFragmentManager().findFragmentByTag("testID");

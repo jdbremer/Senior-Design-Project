@@ -184,9 +184,9 @@ public class MainActivity extends AppCompatActivity {
         nav_Menu.findItem(R.id.nav_connections).setVisible(true);
 
         ///////ADD NEW CONNECTIONS HERE
-        nav_Menu.findItem(R.id.nav_light).setVisible(false);
-        nav_Menu.findItem(R.id.nav_controlSwitch).setVisible(false);
-        nav_Menu.findItem(R.id.nav_microphone).setVisible(false);
+//        nav_Menu.findItem(R.id.nav_light).setVisible(false);
+//        nav_Menu.findItem(R.id.nav_controlSwitch).setVisible(false);
+//        nav_Menu.findItem(R.id.nav_microphone).setVisible(false);
 
         ///////
 

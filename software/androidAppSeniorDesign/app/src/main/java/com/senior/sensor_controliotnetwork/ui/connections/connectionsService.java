@@ -72,6 +72,8 @@ public class connectionsService extends Service {
             sendBroadcast(i);
         }
 
+
+
         public void turnOnLightService(String nodeId) {
             if(nodeId.contains("LightSensor")){
                 getBaseContext().startService(lightIntent);
