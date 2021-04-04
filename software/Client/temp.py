@@ -1,6 +1,9 @@
 import os
 import glob
 import time
+import RPi.GPIO as GPIO #pulls in the GPIO pin numbers
+import socket
+import _thread
 
 os.system('modprobe w1-gpio')
 os.system('modprobe w1-therm')
@@ -9,6 +12,43 @@ base_dir = '/sys/bus/w1/devices/'
 device_folder = glob.glob(base_dir + '28*')[0]
 device_file = device_folder + '/w1_slave'
 
+#function to send data to the server in a sequence
+def sendingSocket(sendingSocket, data):
+       #send the data to the server
+       sendingSocket.send(str(data).encode('ascii'))
+       #received message from server to keep in sync
+       msgFromServer = sendingSocket.recv(1024).decode('ascii')
+
+
+#thread that initiates when the status socket gets initiated
+def statusSocket(serverSocket,receiveSocket, sendingSocket):
+    print (serverSocket.recv(1024).decode('ascii'))
+    serverSocket.send('LightSensor'.encode('ascii'))
+    
+    
+#thread to handle the data that is received from the base node
+def receivingSocket(serverSocket,receiveSocket, sendingSocket):
+    while True:
+        #data that comes from the base node will end up in receivedDAta
+        receivedData = receiveSocket.recv(1024).decode('ascii')
+        print (receivedData)
+        #need to send data back to keep sync
+        receiveSocket.send('Received...'.encode('ascii'))
+        global interval
+        #CODE TO DO SOMETHING WITH RECEIVED DATA
+        interval = int(receivedData)
+
+        #END CODE TO DO SOMETHING WITH RECEIVED DATA
+
+def sampleThread(sendSocket,receive):
+    global interval
+    while True:
+        time.sleep(interval)
+        print('average_lux: ')
+        print(average_lux)
+        sendingSocket(sendSocket, average_lux)
+
+#read the temperature
 def read_temp_raw():
     f = open(device_file, 'r')
     lines = f.readlines()
@@ -27,6 +67,34 @@ def read_temp():
         temp_f = temp_c * 9.0 / 5.0 + 32.0
         return temp_c, temp_f
 
+#create a socket object for the receiving, sending, and status sockets
+receiving = socket.socket()
+sending = socket.socket()
+status = socket.socket()
+
+#defining of the ports for each of the sockets
+sendPort = 12350
+recvPort = 12351
+statusPort = 12352
+
+#connect the IP and the port # to the sockets
+sending.connect(('192.168.86.31', sendPort))
+receiving.connect(('192.168.86.31', recvPort))
+status.connect(('192.168.86.31', statusPort))
+
+#after connection, start the new status socket thread to handle transmissions
+_thread.start_new_thread(statusSocket,(status, receiving, sending))
+_thread.start_new_thread(receivingSocket,(status, receiving, sending))
+
 while True:
-	print(read_temp())
-	time.sleep(1)
+	print(read_temp()) #read the temperature
+	time.sleep(interval)  #delay between temperature readings
+
+
+#delay before closing connections
+time.sleep(2)
+
+# close the connections
+sending.close()
+receiving.close()
+status.close()
