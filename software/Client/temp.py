@@ -15,7 +15,7 @@ device_file = device_folder + '/w1_slave'
 #function to send data to the server in a sequence
 def sendingSocket(sendingSocket, dataC, dataF):
        #send the data to the server
-       sendingSocket.send(str(dataC) + '~' + str(dataF).encode('ascii'))
+       sendingSocket.send(str(dataC).encode('ascii') + '~' + str(dataF).encode('ascii'))
        #received message from server to keep in sync
        msgFromServer = sendingSocket.recv(1024).decode('ascii')
 
