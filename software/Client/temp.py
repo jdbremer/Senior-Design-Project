@@ -13,9 +13,9 @@ device_folder = glob.glob(base_dir + '28*')[0]
 device_file = device_folder + '/w1_slave'
 
 #function to send data to the server in a sequence
-def sendingSocket(sendingSocket, data):
+def sendingSocket(sendingSocket, dataC, dataF):
        #send the data to the server
-       sendingSocket.send(str(data).encode('ascii'))
+       sendingSocket.send(str(dataC) + '~' + str(dataF).encode('ascii'))
        #received message from server to keep in sync
        msgFromServer = sendingSocket.recv(1024).decode('ascii')
 
@@ -23,7 +23,7 @@ def sendingSocket(sendingSocket, data):
 #thread that initiates when the status socket gets initiated
 def statusSocket(serverSocket,receiveSocket, sendingSocket):
     print (serverSocket.recv(1024).decode('ascii'))
-    serverSocket.send('LightSensor'.encode('ascii'))
+    serverSocket.send('TempSensor'.encode('ascii'))
     
     
 #thread to handle the data that is received from the base node
@@ -40,14 +40,6 @@ def receivingSocket(serverSocket,receiveSocket, sendingSocket):
 
         #END CODE TO DO SOMETHING WITH RECEIVED DATA
 
-def sampleThread(sendSocket,receive):
-    global interval
-    while True:
-        time.sleep(interval)
-        print('average_lux: ')
-        print(average_lux)
-        sendingSocket(sendSocket, average_lux)
-
 #read the temperature
 def read_temp_raw():
     f = open(device_file, 'r')
@@ -63,9 +55,10 @@ def read_temp():
     equals_pos = lines[1].find('t=')
     if equals_pos != -1:
         temp_string = lines[1][equals_pos+2:]
-        temp_c = float(temp_string) / 1000.0
-        temp_f = temp_c * 9.0 / 5.0 + 32.0
-        return temp_c, temp_f
+        temp_c = float(temp_string) / 1000.0    #temp in C
+        temp_f = temp_c * 9.0 / 5.0 + 32.0  #temp in F
+        sendingSocket(sendSocket, temp_c, temp_f)  #return the temp in the form: #degrees C~#degrees F
+        return str(temp_c) + '~' + str(temp_f)  #return the temp in the form: #degrees C~#degrees F
 
 #create a socket object for the receiving, sending, and status sockets
 receiving = socket.socket()
@@ -85,6 +78,14 @@ status.connect(('192.168.86.31', statusPort))
 #after connection, start the new status socket thread to handle transmissions
 _thread.start_new_thread(statusSocket,(status, receiving, sending))
 _thread.start_new_thread(receivingSocket,(status, receiving, sending))
+
+#the sending intialization sequence
+#receive, send, then receive again before sending data
+print (sending.recv(1024).decode('ascii') )
+msg = 'Connection Successful..'
+sending.send(msg.encode('ascii'))
+print (sending.recv(1024).decode('ascii') )
+#end of the send initialization sequence
 
 while True:
 	print(read_temp()) #read the temperature
