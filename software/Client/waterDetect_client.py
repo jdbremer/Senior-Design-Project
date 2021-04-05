@@ -35,7 +35,7 @@ def sendingSocket(sendingSocket, data):
 #thread that initiates when the status socket gets initiated
 def statusSocket(serverSocket,receiveSocket, sendingSocket):
     print (serverSocket.recv(1024).decode('ascii'))
-    serverSocket.send('LightSensor'.encode('ascii'))
+    serverSocket.send('WaterSensor'.encode('ascii'))
     
     
 #thread to handle the data that is received from the base node
