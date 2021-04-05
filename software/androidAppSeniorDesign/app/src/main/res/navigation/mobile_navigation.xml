@@ -28,4 +28,10 @@
         android:name="com.senior.sensor_controliotnetwork.ui.controlSwitch.ControlSwitchFragment"
         android:label="@string/menu_controlSwitch"
         tools:layout="@layout/fragment_control_switch" />
+
+    <fragment
+        android:id="@+id/nav_temp"
+        android:name="com.senior.sensor_controliotnetwork.ui.temp.TempFragment"
+        android:label="@string/menu_controlSwitch"
+        tools:layout="@layout/fragment_temp" />
 </navigation>
