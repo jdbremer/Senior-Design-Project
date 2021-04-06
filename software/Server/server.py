@@ -208,8 +208,10 @@ def firebaseStreamHandler(event):
             sensorName = eventPathString.split('/')[1]
             #pulls out the sensor data from the event data, this data is not delimited
             sensorData = eventPathString = event["data"]
+            
             print("Received data from.. " + sensorName + " Sensor data.. ")
             print(sensorData)
+            
             sendingClientFromFirebase(sensorData, sensorName)
             
 
