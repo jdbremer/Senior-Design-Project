@@ -1,5 +1,6 @@
 package com.senior.sensor_controliotnetwork.ui.light;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -93,6 +94,7 @@ public class DataFragment extends Fragment {
 
     class DataLevelReceiver extends BroadcastReceiver {
 
+//        @SuppressLint("SetTextI18n")
         @Override
         public void onReceive(Context context, Intent intent) {
 
@@ -101,7 +103,7 @@ public class DataFragment extends Fragment {
                 String lightSensorData = (String)intent.getSerializableExtra("SENSOR");
 //                setSensorTxtBox(lightSensorData);
                 TextView sensorValueTxt = (TextView) getActivity().findViewById(R.id.lightSensorDataTxt);
-                sensorValueTxt.setText(lightSensorData);
+                sensorValueTxt.setText(String.format("%s Lux", lightSensorData));
             }
         }
     }
