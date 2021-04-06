@@ -323,6 +323,8 @@ def clientCloseCheck(statusSocket, addr, recvDataSocket, sendDataSocket):
             sendDataSocket.close()
             statusSocket.close()
             break
+        time.sleep(5)
+        
 
 
 # next create a socket object for receiving, sending and status
