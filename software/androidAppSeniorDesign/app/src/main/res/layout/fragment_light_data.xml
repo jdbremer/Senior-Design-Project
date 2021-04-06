@@ -7,6 +7,7 @@
 
     <TextView
         android:id="@+id/textConnectionLight"
+        android:textSize="22sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Connection Status:"
@@ -19,28 +20,17 @@
 
     <TextView
         android:id="@+id/textLightConnectionStatus"
-        android:layout_width="114dp"
-        android:layout_height="22dp"
+        android:layout_width="180dp"
+        android:layout_height="30dp"
         android:layout_marginTop="48dp"
-        android:layout_marginEnd="132dp"
-        android:layout_marginRight="132dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
         android:layout_marginBottom="39dp"
+        android:textSize="22sp"
         app:layout_constraintBottom_toTopOf="@+id/textSwitchStatus"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
-
-    <TextView
-        android:id="@+id/samplesPerSecondText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Samples Per Second:"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.115"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.162" />
 
     <Button
         android:id="@+id/buttonLightSampleInterval"
@@ -49,36 +39,67 @@
         android:text="Send Sample Interval"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.164"
+        app:layout_constraintHorizontal_bias="0.097"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.219" />
+        app:layout_constraintVertical_bias="0.499" />
+
+    <TextView
+        android:id="@+id/samplesPerSecondText"
+        android:textSize="22sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Samples Per Second:"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.122"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.429" />
 
     <EditText
         android:id="@+id/textLightDataSampleInterval"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="2"
-        android:text=""
+        android:ems="3"
         android:inputType="numberDecimal"
+        android:text=""
+        android:textSize="22sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.474"
+        app:layout_constraintHorizontal_bias="0.746"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.131" />
+        app:layout_constraintVertical_bias="0.407" />
+
+    <Button
+        android:id="@+id/thresholdOnOff"
+        android:layout_width="87dp"
+        android:layout_height="38dp"
+        android:text="On/Off"
+        android:textSize="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.672"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.682" />
 
     <TextView
-        android:id="@+id/textDataString"
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Data:"
+        android:layout_marginStart="36dp"
+        android:layout_marginLeft="36dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="168dp"
+        android:text="Threshold: "
+        android:textSize="22sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.736"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.162" />
+        app:layout_constraintEnd_toStartOf="@+id/LightThresholdText"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/setThreshold"
@@ -94,73 +115,65 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.68" />
+        app:layout_constraintVertical_bias="0.873" />
 
     <EditText
         android:id="@+id/LightThresholdText"
+        android:textSize="22sp"
         android:layout_width="91dp"
         android:layout_height="42dp"
         android:layout_marginTop="84dp"
         android:ems="10"
-        android:text=""
         android:inputType="numberDecimal"
+        android:text=""
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.331"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonLightSampleInterval"
-        app:layout_constraintVertical_bias="0.25" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
-        android:layout_marginLeft="36dp"
-        android:layout_marginTop="96dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:text="Threshold: "
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/LightThresholdText"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonLightSampleInterval"
-        app:layout_constraintVertical_bias="0.244" />
-
-    <Button
-        android:id="@+id/thresholdOnOff"
-        android:layout_width="87dp"
-        android:layout_height="38dp"
-        android:text="On/Off"
-        android:textSize="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.499" />
+        app:layout_constraintVertical_bias="0.74" />
 
     <TextView
         android:id="@+id/textView2"
+        android:textSize="22sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Threshold Toggle: "
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.108"
+        app:layout_constraintHorizontal_bias="0.119"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.686" />
 
     <TextView
         android:id="@+id/lightSensorDataTxt"
-        android:layout_width="50dp"
-        android:layout_height="18dp"
+        android:layout_width="150dp"
+        android:layout_height="30dp"
+        android:ellipsize="end"
+        android:ems="10"
+        android:lines="1"
+        android:scrollHorizontally="true"
         android:text=""
+        android:textSize="22sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.897"
+        app:layout_constraintHorizontal_bias="0.321"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.162" />
+        app:layout_constraintVertical_bias="0.161" />
+
+    <TextView
+        android:id="@+id/textDataString"
+        android:textSize="22sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Data:"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.071"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.161" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

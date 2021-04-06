@@ -140,7 +140,8 @@ while True:
             adcValue  = sensorTotal / numberOfSamples 
             #use the generated equation to determine the average lux
             average_lux = math.e**(((100*adcValue)-23529)/(11996))
-            
+            #round the average 2 decimal places
+            average_lux = round(average_lux, 2)
             
             
             inc = 0
