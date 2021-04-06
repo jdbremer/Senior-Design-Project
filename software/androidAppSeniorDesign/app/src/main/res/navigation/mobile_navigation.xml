@@ -28,6 +28,7 @@
         android:name="com.senior.sensor_controliotnetwork.ui.controlSwitch.ControlSwitchFragment"
         android:label="@string/menu_controlSwitch"
         tools:layout="@layout/fragment_control_switch" />
+<<<<<<< HEAD
     <fragment
         android:id="@+id/client_connect"
         android:name="com.senior.sensor_controliotnetwork.client_connect"
@@ -42,4 +43,12 @@
         android:name="com.senior.sensor_controliotnetwork.MainActivity"
         android:label="app_bar_main"
         tools:layout="@layout/app_bar_main" />
+=======
+
+    <fragment
+        android:id="@+id/nav_temp"
+        android:name="com.senior.sensor_controliotnetwork.ui.temp.TempFragment"
+        android:label="@string/menu_controlSwitch"
+        tools:layout="@layout/fragment_temp" />
+>>>>>>> origin/master
 </navigation>

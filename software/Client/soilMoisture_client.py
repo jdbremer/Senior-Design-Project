@@ -5,8 +5,8 @@ import time
 import _thread
 import math
 
-import Adafruit_GPIO.SPI as SPI #ADC SPI library
-import Adafruit_MCP3008
+# import Adafruit_GPIO.SPI as SPI #ADC SPI library
+# import Adafruit_MCP3008
 
 import nexmo
 
@@ -21,7 +21,7 @@ import nexmo
 
 interval = 5  #default of 5 seconds
 average = 0
-average_lux = 0
+average_soilMoisture = 0
 
 
 #function to send data to the server in a sequence
@@ -35,7 +35,7 @@ def sendingSocket(sendingSocket, data):
 #thread that initiates when the status socket gets initiated
 def statusSocket(serverSocket,receiveSocket, sendingSocket):
     print (serverSocket.recv(1024).decode('ascii'))
-    serverSocket.send('LightSensor'.encode('ascii'))
+    serverSocket.send('SoilMoistureSensor'.encode('ascii'))
     
     
 #thread to handle the data that is received from the base node
@@ -52,13 +52,13 @@ def receivingSocket(serverSocket,receiveSocket, sendingSocket):
 
         #END CODE TO DO SOMETHING WITH RECEIVED DATA
         
-def sendSampleThread(sendSocket,receive):
+def sampleThread(sendSocket,receive):
     global interval
     while True:
         time.sleep(interval)
-        print('average_lux: ')
-        print(average_lux)
-        sendingSocket(sendSocket, average_lux)
+        print('average_soilMoisture: ')
+        print(average_soilMoisture)
+        sendingSocket(sendSocket, average_soilMoisture)
 
 
 #create a socket object for the receiving, sending, and status sockets
@@ -82,10 +82,9 @@ _thread.start_new_thread(receivingSocket,(status, receiving, sending))
 
 
 #hardware SPI configuration
-SPI_PORT   = 0
-SPI_DEVICE = 0
+# SPI_PORT   = 0
+# SPI_DEVICE = 0
 #connects the SPI port and device to the variable
-mcp = Adafruit_MCP3008.MCP3008(spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE))
 
 #set the GPIO to the board layout (used for pin numbers)
 # GPIO.setmode(GPIO.BOARD)
@@ -107,10 +106,10 @@ print (sending.recv(1024).decode('ascii') )
 
 inc = 0
 average = 0
-average_lux
+average_soilMoisture
 numberOfSamples = 500
 sensorTotal = 0
-adcValue = 0
+voltage = 0
 
 #sensor code
 while True:
@@ -124,29 +123,19 @@ while True:
     sensorTotal = 0 #reset sensorTotal for next group of samples
     inc = 0
     
-    #start the thread to send the average lux on a user specified interval
-    _thread.start_new_thread(sendSampleThread,(sending,receiving)) 
+    _thread.start_new_thread(sampleThread,(sending,receiving))
     while True:
         sensorTotal += mcp.read_adc(0) #read adc value of channel 0
         #take the average of the value
         #increment the incrementor
         inc = inc+1
-        #if the incrementor is greater than the numberOfSamples, enough samples have been taken
         if(inc > numberOfSamples):
-        
-            #https://learn.adafruit.com/photocells/using-a-photocell
-            
-            #divide the sensor total by the total number of samples to get the average
-            adcValue  = sensorTotal / numberOfSamples 
-            #use the generated equation to determine the average lux
-            average_lux = math.e**(((100*adcValue)-23529)/(11996))
-            
-            
-            
+            average_soilMoisture  = sensorTotal / numberOfSamples  #find the average
+            # print('average: ' + average)
             inc = 0
             sensorTotal = 0
 
-           
+
 # except KeyboardInterrupt:
 #   print("keyboard interrupt")
 

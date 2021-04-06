@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
     public MenuItem light;
     public MenuItem control;
     public MenuItem mic;
+    public MenuItem temp;
     public NavigationView navigationView;
     public ArrayList<String> connectionList = new ArrayList<String>();
     public ArrayList<String> arrayList = new ArrayList<String>();
@@ -144,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_connections, R.id.nav_light, R.id.nav_microphone, R.id.nav_controlSwitch)
+                R.id.nav_connections, R.id.nav_light, R.id.nav_microphone, R.id.nav_controlSwitch, R.id.nav_temp)
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -205,7 +206,9 @@ public class MainActivity extends AppCompatActivity {
                 else if (currentVal.equals("dBMeter")) {
                     nav_Menu.findItem(R.id.nav_microphone).setVisible(true);
                 }
-
+                else if (currentVal.equals("TempSensor")) {
+                    nav_Menu.findItem(R.id.nav_temp).setVisible(true);
+                }
                 ///////
             }
         }
