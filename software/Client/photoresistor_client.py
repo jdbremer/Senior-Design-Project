@@ -52,7 +52,7 @@ def receivingSocket(serverSocket,receiveSocket, sendingSocket):
 
         #END CODE TO DO SOMETHING WITH RECEIVED DATA
         
-def sampleThread(sendSocket,receive):
+def sendSampleThread(sendSocket,receive):
     global interval
     while True:
         time.sleep(interval)
@@ -110,7 +110,7 @@ average = 0
 average_lux
 numberOfSamples = 500
 sensorTotal = 0
-voltage = 0
+adcValue = 0
 
 #sensor code
 while True:
@@ -124,23 +124,25 @@ while True:
     sensorTotal = 0 #reset sensorTotal for next group of samples
     inc = 0
     
-    _thread.start_new_thread(sampleThread,(sending,receiving))
+    #start the thread to send the average lux on a user specified interval
+    _thread.start_new_thread(sendSampleThread,(sending,receiving)) 
     while True:
         sensorTotal += mcp.read_adc(0) #read adc value of channel 0
         #take the average of the value
         #increment the incrementor
         inc = inc+1
+        #if the incrementor is greater than the numberOfSamples, enough samples have been taken
         if(inc > numberOfSamples):
-            #print the average to serial
-            # print("inside if statement")
-            voltage  = sensorTotal / numberOfSamples
-            #average = (( Vcc * R )/( temp )) - R #https://learn.adafruit.com/photocells/using-a-photocell
-            #average_lux = (math.sqrt((76.278**1000)/(average**1000)))**(1/827) #the table data was put into excel, it was plotted then a linear fit line and  
-                                                                          #equation were created
-                                                                          
-            #average_lux = (math.sqrt(((76.278)/(average))**1000))**(1/827)
-            average_lux = math.e**(((100*voltage)-23529)/(11996))
-            # print('average: ' + average)
+        
+            #https://learn.adafruit.com/photocells/using-a-photocell
+            
+            #divide the sensor total by the total number of samples to get the average
+            adcValue  = sensorTotal / numberOfSamples 
+            #use the generated equation to determine the average lux
+            average_lux = math.e**(((100*adcValue)-23529)/(11996))
+            
+            
+            
             inc = 0
             sensorTotal = 0
 
