@@ -88,9 +88,9 @@ def runReadSequence():
 #restarts the wifi services
 def RestartWifi():
   os.system('sudo systemctl daemon-reload')
-  time.sleep(1)
+  time.sleep(5)
   os.system('sudo systemctl restart dhcpcd')
-  time.sleep(10)
+  time.sleep(20)
 
 
 def modifyWPAFile():
@@ -280,10 +280,14 @@ def clientCloseCheck(statusSocket, addr, recvDataSocket, sendDataSocket):
     if sensor in connectToSocketLib:
         sensor = sensor + "_1"
         i = 1
+        #while the sensor is found
         while sensor in connectToSocketLib:
             i += 1
+            #remove and replace the appended value 
+            #with an incremented value
             sensor = sensor[:-1]
             sensor = sensor + i
+            
         print("New Sensor Name: " + sensor)
     
     #print the address of the server/client status socket connection

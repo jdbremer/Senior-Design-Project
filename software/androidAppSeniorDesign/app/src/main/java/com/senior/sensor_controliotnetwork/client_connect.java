@@ -44,7 +44,8 @@ public class client_connect extends Fragment {
     public WifiManager wifiManager;
     public Spinner ssid_dropdown;
 
-
+    public static ArrayAdapter<String> adapter;
+    public static ArrayList<String> str;
 
     //bluetooth
     String ssid;
@@ -234,9 +235,10 @@ public class client_connect extends Fragment {
                         mmDevice = device;
                         bluetoothPairFound.setText("Bluetooth Device Found");
                         found = true;
-                        break;
+                        return;
                     }
                 }
+                bluetoothPairFound.setText("No bluetooth adapter available");
             }
        // }
     }
@@ -246,12 +248,12 @@ public class client_connect extends Fragment {
     private void scanSuccess() {
         List<ScanResult> results = wifiManager.getScanResults();
         Iterator<ScanResult> iter = results.iterator();
-        ArrayList<String> str = new ArrayList<String>();
+        str = new ArrayList<String>();
         while(iter.hasNext()){
             str.add(iter.next().SSID);
         }
         //String[] str = new String[]{results.get(0).SSID,results.get(1).SSID};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, str);
+        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, str);
 
         //ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, str);
         ssid_dropdown.setAdapter(adapter);
@@ -262,12 +264,12 @@ public class client_connect extends Fragment {
         // consider using old scan results: these are the OLD results!
         List<ScanResult> results = wifiManager.getScanResults();
         Iterator<ScanResult> iter = results.iterator();
-        ArrayList<String> str = new ArrayList<String>();
+        str = new ArrayList<String>();
         while(iter.hasNext()){
             str.add(iter.next().SSID);
         }
         //String[] str = new String[]{results.get(0).SSID,results.get(1).SSID};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, str);
+        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, str);
         ssid_dropdown.setAdapter(adapter);
     }
 
