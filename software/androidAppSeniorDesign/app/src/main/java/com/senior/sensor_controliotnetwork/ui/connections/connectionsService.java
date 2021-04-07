@@ -49,6 +49,8 @@ public class connectionsService extends Service {
     String userId = user.getUid();  //assign userId the token for the user
 
     public ArrayList<String> arrayList = new ArrayList<String>();
+    public ArrayList<String> allServices = new ArrayList<String>();
+    public ArrayList<String> temp = new ArrayList<String>();
 
     Intent lightIntent;
 
@@ -67,7 +69,7 @@ public class connectionsService extends Service {
 
         public void talkToMainActivity() {
             Intent i = new Intent();
-            i.putExtra("connectionsArrayForMain", arrayList);
+            i.putExtra("connectionsArrayForMain", allServices);
             i.setAction("CONNECTIONS2MAIN");
             sendBroadcast(i);
         }
@@ -103,10 +105,16 @@ public class connectionsService extends Service {
                 ValueEventListener constantListener = new ValueEventListener(){
                     @Override
                     public void onDataChange (DataSnapshot dataSnapshot){
+                        allServices.clear();
                         Iterator<DataSnapshot> iter = dataSnapshot.getChildren().iterator();
                         while (iter.hasNext()){
                             DataSnapshot snap = iter.next();
                             String nodId = snap.getKey();
+//                            if(!allServices.contains(nodId)){
+//                                allServices.add(nodId);
+//                            }
+//                            temp.add(nodId);
+                            allServices.add(nodId);
                             int onOff = Integer.parseInt((String) snap.getValue());
                             if(onOff == 1 && !arrayList.contains(nodId)){
                                 turnOnLightService(nodId);
@@ -119,6 +127,13 @@ public class connectionsService extends Service {
                             }
                             //justEntered = false;
                         }
+//                        Iterator<String> tempItr = allServices.iterator();
+//                        while (tempItr.hasNext()){
+//                            String temp = tempItr.next();
+//                            if(!temp.contains(temp)){
+//                                allServices.remove(temp);
+//                            }
+//                        }
                         talkToMainActivity();
                     }
 
@@ -134,10 +149,16 @@ public class connectionsService extends Service {
                 ValueEventListener singleListener = new ValueEventListener(){
                     @Override
                     public void onDataChange (DataSnapshot dataSnapshot){
+                        allServices.clear();
                         Iterator<DataSnapshot> iter = dataSnapshot.getChildren().iterator();
                         while (iter.hasNext()){
                             DataSnapshot snap = iter.next();
                             String nodId = snap.getKey();
+//                            if(!allServices.contains(nodId)){
+//                                allServices.add(nodId);
+//                            }
+//                            temp.add(nodId);
+                            allServices.add(nodId);
                             int onOff = Integer.parseInt((String) snap.getValue());
                             if(onOff == 1 && !arrayList.contains(nodId)){
                                 turnOnLightService(nodId);
@@ -149,6 +170,13 @@ public class connectionsService extends Service {
                                 //mDatabase.child(userId).child("dataFromApp").child(nodId).setValue("0");
                             }
                         }
+//                        Iterator<String> tempItr = allServices.iterator();
+//                        while (tempItr.hasNext()){
+//                           String temp = tempItr.next();
+//                           if(!temp.contains(temp)){
+//                               allServices.remove(temp);
+//                           }
+//                        }
                         talkToMainActivity();
                     }
 
