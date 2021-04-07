@@ -87,9 +87,11 @@ def runReadSequence():
 
 #restarts the wifi services
 def RestartWifi():
-  os.system('sudo systemctl daemon-reload')
+  os.system('sudo systemctl daemon-reload.service')
   time.sleep(5)
-  os.system('sudo systemctl restart dhcpcd')
+  os.system('sudo systemctl stop dhcpcd.service')
+  time.sleep(5)
+  os.system('sudo systemctl start dhcpcd.service')
   time.sleep(20)
 
 
