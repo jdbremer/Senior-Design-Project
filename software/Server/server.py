@@ -31,7 +31,7 @@ import RPi.GPIO as GPIO #pulls in the GPIO pin numbers
 #GPIO.output(18, GPIO.LOW)
 
 #setup the bluetooth config.. this does not include timeout
-serialPort = serial.Serial("/dev/serial0", baudrate=115200)
+serialPort = serial.Serial("/dev/serial0", baudrate=9600)
 
 appValues = {}
 
@@ -137,7 +137,7 @@ while internet:
         print("Connected")
         break
     except requests.ConnectionError:
-        print(response.status_code)
+#        print(response.status_code)
         status = "Not connected"
         
         
