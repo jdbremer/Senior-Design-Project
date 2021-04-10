@@ -87,7 +87,7 @@ def runReadSequence():
 
 #restarts the wifi services
 def RestartWifi():
-  os.system('sudo systemctl daemon-reload.service')
+  os.system('sudo systemctl daemon-reload')
   time.sleep(5)
   os.system('sudo systemctl stop dhcpcd.service')
   time.sleep(5)
@@ -124,7 +124,7 @@ def modifyTOKENFile():
     tokenConfig.close()
 
     
-    
+serialPort.write("AT+NAMESERVER")  
 internet = True
 #check if the pi is connected to the internet'
 while internet:
