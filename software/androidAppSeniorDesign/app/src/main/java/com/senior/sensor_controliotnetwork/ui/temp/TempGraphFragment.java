@@ -384,7 +384,7 @@ public class TempGraphFragment extends Fragment {
 
         mPostReference = FirebaseDatabase.getInstance().getReference().child(userId).child("dataFromChild").child("TempSensor");  //LISTENER OBJECT
 
-        graph = (GraphView) root.findViewById(R.id.graph);
+        graph = (GraphView) root.findViewById(R.id.tempGraph);
 
         mSeries1 = new LineGraphSeries<>();
         mSeries1.setThickness(15);

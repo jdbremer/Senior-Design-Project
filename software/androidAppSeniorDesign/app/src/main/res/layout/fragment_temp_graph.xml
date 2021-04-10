@@ -9,7 +9,7 @@
 
     <com.jjoe64.graphview.GraphView
         android:id="@+id/tempGraph"
-        android:background="@drawable/graph_gradient"
+        android:background="@drawable/temp_graph_gradient"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

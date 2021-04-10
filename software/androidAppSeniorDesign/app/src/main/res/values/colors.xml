@@ -21,4 +21,9 @@
     <color name="green">#008000</color>
     <color name="blue">#0000FF</color>
     <color name="navy">#000080</color>
+    <color name="orange">#FFA500</color>
+    <color name="Darkorange">#e07300</color>
+    <color name="moreBlue">#1475ad</color>
+
+<!--    199ae5-->
 </resources>
