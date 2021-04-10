@@ -231,7 +231,7 @@ public class client_connect extends Fragment {
             Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
             if (pairedDevices.size() > 0) {
                 for (BluetoothDevice device : pairedDevices) {
-                    if (device.getName().equals("RNBT-0890")) {
+                    if (device.getName().equals("SERVER")) {
                         mmDevice = device;
                         bluetoothPairFound.setText("Bluetooth Device Found");
                         found = true;

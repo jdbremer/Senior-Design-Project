@@ -53,6 +53,7 @@ def runReadSequence():
     uid = "uid"
     dataStart = False
     dataStop = False
+    line = []
     while True:
         for c in serialPort.read().decode():
             line.append(c)
@@ -124,7 +125,17 @@ def modifyTOKENFile():
     tokenConfig.close()
 
     
-serialPort.write("AT+NAMESERVER")  
+serialPort.write(("AT+IMME?").encode()) 
+serialPort.write(("AT+IMME1").encode())
+serialPort.write(("AT+NAMESERVER").encode())
+serialPort.write(("AT+IMME1").encode())
+line = []
+while True:
+        for c in serialPort.read().decode():
+            line.append(c)
+            if line == "OK+Get:0":
+                serialPort.write(("AT+IMME1").encode())
+ 
 internet = True
 #check if the pi is connected to the internet'
 while internet:
