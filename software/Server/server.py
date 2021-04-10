@@ -31,7 +31,7 @@ import RPi.GPIO as GPIO #pulls in the GPIO pin numbers
 #GPIO.output(18, GPIO.LOW)
 
 #setup the bluetooth config.. this does not include timeout
-serialPort = serial.Serial("/dev/serial0", baudrate=115200)
+serialPort = serial.Serial("/dev/serial0", baudrate=9600)
 
 appValues = {}
 
@@ -87,7 +87,7 @@ def runReadSequence():
 
 #restarts the wifi services
 def RestartWifi():
-  os.system('sudo systemctl daemon-reload.service')
+  os.system('sudo systemctl daemon-reload')
   time.sleep(5)
   os.system('sudo systemctl stop dhcpcd.service')
   time.sleep(5)
@@ -124,7 +124,7 @@ def modifyTOKENFile():
     tokenConfig.close()
 
     
-    
+serialPort.write("AT+NAMESERVER")  
 internet = True
 #check if the pi is connected to the internet'
 while internet:
@@ -137,7 +137,7 @@ while internet:
         print("Connected")
         break
     except requests.ConnectionError:
-        print(response.status_code)
+#        print(response.status_code)
         status = "Not connected"
         
         
