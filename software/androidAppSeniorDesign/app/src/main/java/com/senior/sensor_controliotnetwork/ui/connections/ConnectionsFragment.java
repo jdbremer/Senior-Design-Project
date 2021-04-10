@@ -66,6 +66,8 @@ import com.senior.sensor_controliotnetwork.ui.controlSwitch.ControlSwitchFragmen
 import com.senior.sensor_controliotnetwork.ui.light.GraphFragment;
 import com.senior.sensor_controliotnetwork.ui.light.LightFragment;
 import com.senior.sensor_controliotnetwork.ui.light.lightService;
+import com.senior.sensor_controliotnetwork.ui.microphone.microphoneService;
+import com.senior.sensor_controliotnetwork.ui.temp.tempService;
 import com.senior.sensor_controliotnetwork.ui.microphone.MicrophoneDataFragment;
 
 import org.w3c.dom.Text;
@@ -94,7 +96,8 @@ public class ConnectionsFragment extends Fragment {
     private ConnectionsViewModel connectionsViewModel;
 
     Intent lightIntent;
-
+    Intent micIntent;
+    Intent tempIntent;
 
     ConnectionLevelReceiver receiver;
     public  static boolean active = false;
@@ -156,6 +159,8 @@ public class ConnectionsFragment extends Fragment {
         EditText connectionsFilter = (EditText) root.findViewById(R.id.searchConnections);
 
         lightIntent = new Intent(getContext(), lightService.class);
+        micIntent = new Intent(getContext(), microphoneService.class);
+        tempIntent = new Intent(getContext(), tempService.class);
 
         adapter=new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,arrayList) {
             @Override

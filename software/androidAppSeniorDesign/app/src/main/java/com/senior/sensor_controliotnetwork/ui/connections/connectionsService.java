@@ -26,6 +26,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.senior.sensor_controliotnetwork.R;
 import com.senior.sensor_controliotnetwork.ui.light.GraphFragment;
 import com.senior.sensor_controliotnetwork.ui.light.lightService;
+import com.senior.sensor_controliotnetwork.ui.microphone.microphoneService;
+import com.senior.sensor_controliotnetwork.ui.temp.tempService;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -53,7 +55,9 @@ public class connectionsService extends Service {
     public ArrayList<String> temp = new ArrayList<String>();
 
     Intent lightIntent;
-
+    Intent micIntent;
+//    Intent controlSwitchIntent;
+    Intent tempIntent;
 
 
 
@@ -80,14 +84,30 @@ public class connectionsService extends Service {
             if(nodeId.contains("LightSensor")){
                 getBaseContext().startService(lightIntent);
             }
-//            else if
+            else if(nodeId.contains("dBMeter")){
+                getBaseContext().startService(micIntent);
+            }
+//            else if(nodeId.contains("ControlSwitch")){
+//                getBaseContext().startService(controlSwitchIntent);
+//            }
+            else if(nodeId.contains("TempSensor")){
+                getBaseContext().startService(tempIntent);
+            }
         }
 
         public void turnOffService(String nodeId) {
             if(nodeId.contains("LightSensor")){
                 getBaseContext().stopService(lightIntent);
             }
-//            else if
+            else if(nodeId.contains("dBMeter")){
+                getBaseContext().stopService(micIntent);
+            }
+//            else if(nodeId.contains("ControlSwitch")){
+//                getBaseContext().stopService(controlSwitchIntent);
+//            }
+            else if(nodeId.contains("TempSensor")){
+                getBaseContext().stopService(tempIntent);
+            }
         }
 
 
@@ -216,6 +236,8 @@ public class connectionsService extends Service {
         }
 
         lightIntent = new Intent(getBaseContext(), lightService.class);
+        micIntent = new Intent(getBaseContext(), microphoneService.class);
+        tempIntent = new Intent(getBaseContext(), tempService.class);
 
         //getBaseContext().startService(lightIntent);
 
