@@ -69,15 +69,15 @@ public class microphoneService extends Service {
 
         public void talkToGraph() {
             Intent i = new Intent();
-            i.putExtra("MAPS", sensorValues);
-            i.setAction("SensorMap");
+            i.putExtra("micMAPS", sensorValues);
+            i.setAction("micSensorMap");
             sendBroadcast(i);
         }
 
         public void talkToData() {
             Intent i = new Intent();
-            i.putExtra("SENSOR", value);
-            i.setAction("sensorVal");
+            i.putExtra("micSENSOR", value);
+            i.setAction("micSensorVal");
             sendBroadcast(i);
         }
 
