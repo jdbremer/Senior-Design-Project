@@ -43,6 +43,69 @@ grabToken = ""
 token = ""
 
 
+
+
+#BLE Init
+
+BLEReceived = True
+stopBLEThread = False
+
+def BLEModuleInit(fun,fun1):
+    line = []
+    global BLEReceived
+    while stopThread == False:
+        for c in serialPort.read().decode():
+            line.append(c)
+            linev2 = ''.join(line).replace("\n", " ").strip()
+            if linev2 == "OK":
+                print(linev2)
+                line = []
+                BLEReceived = True
+            elif linev2 == "OK+Set:1":
+                print(linev2)
+                line = []
+                BLEReceived = True
+            elif linev2 == "OK+RESET":
+                print(linev2)
+                line = []
+                BLEReceived = True
+            elif linev2 == "OK+Set:0":
+                print(linev2)
+                line = []
+                BLEReceived = True
+            elif linev2 == "OK+RESET"
+                print(linev2)
+                line = []
+                BLEReceived = True
+
+_thread.start_new_thread(BLEModuleInit,(1,1)) #start thread for BLE init
+
+BLEReceived = False
+serialPort.write(("AT").encode())
+while(BLEReceived == False)
+BLEReceived = False
+serialPort.write(("AT+IMME1").encode())
+while(BLEReceived == False)
+BLEReceived = False
+serialPort.write(("AT+NAMESERVER_IoT").encode())
+while(BLEReceived == False)
+BLEReceived = False
+serialPort.write(("AT+IMME0").encode())
+while(BLEReceived == False)
+BLEReceived = False
+serialPort.write(("AT+RESET").encode())
+while(BLEReceived == False)
+
+
+stopBLEThread = True
+print("BLE Initialization Complete")
+
+#END BLE Init
+
+
+
+
+
 def runReadSequence():
     global line
     global fullString
@@ -124,17 +187,9 @@ def modifyTOKENFile():
     tokenConfig.write(appValues.get("uid").strip())
     tokenConfig.close()
 
-    
-serialPort.write(("AT+IMME?").encode()) 
-serialPort.write(("AT+IMME1").encode())
-serialPort.write(("AT+NAMESERVER").encode())
-serialPort.write(("AT+IMME1").encode())
-line = []
-while True:
-        for c in serialPort.read().decode():
-            line.append(c)
-            if line == "OK+Get:0":
-                serialPort.write(("AT+IMME1").encode())
+
+
+
  
 internet = True
 #check if the pi is connected to the internet'

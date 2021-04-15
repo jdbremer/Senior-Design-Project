@@ -39,6 +39,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+
+
+
+//DEPRECATED CLASS//
+
+
+
+
+
 public class client_connect extends Fragment {
 
     public WifiManager wifiManager;
