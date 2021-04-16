@@ -1,51 +1,35 @@
-package com.senior.sensor_controliotnetwork.ui.temp;
+package com.senior.sensor_controliotnetwork.ui.water;
 
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
-import android.widget.Toast;
 import android.os.Process;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
 import com.senior.sensor_controliotnetwork.R;
-import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.IdpResponse;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
-public class tempService extends Service {
+public class waterService extends Service {
     private Looper serviceLooper;
     private String threshold;
     private Float thresholdFloat = 0.0f;
@@ -69,15 +53,15 @@ public class tempService extends Service {
 
         public void talkToGraph() {
             Intent i = new Intent();
-            i.putExtra("tempMAPS", sensorValues);
-            i.setAction("tempSensorMap");
+            i.putExtra("MAPS", sensorValues);
+            i.setAction("SensorMap");
             sendBroadcast(i);
         }
 
         public void talkToData() {
             Intent i = new Intent();
-            i.putExtra("tempSENSOR", value);
-            i.setAction("tempSensorVal");
+            i.putExtra("SENSOR", value);
+            i.setAction("sensorVal");
             sendBroadcast(i);
         }
 
@@ -134,11 +118,11 @@ public class tempService extends Service {
                                 inc++;
 
                             }
-                            if (TempGraphFragment.active) {
+                            if (WaterGraphFragment.active) {
                                 //DO STUFF
                                 talkToGraph();
                             }
-                            if (TempDataFragment.active) {
+                            if (WaterDataFragment.active) {
                                 //DO STUFF
                                 talkToData();
                             }
@@ -180,15 +164,15 @@ public class tempService extends Service {
 
                 while(true) {
                     Thread.sleep(1000);
-                    if (TempGraphFragment.active && graphActive == false) {
+                    if (WaterGraphFragment.active && graphActive == false) {
                         //DO STUFF
                         // talkToGraph();
                         graphActive = true;
                     }
-                    else if(!TempGraphFragment.active) {
+                    else if(!WaterGraphFragment.active) {
                         graphActive = false;
                     }
-                    if (TempDataFragment.active) {
+                    if (WaterDataFragment.active) {
                         //DO STUFF
                         talkToData();
                     }

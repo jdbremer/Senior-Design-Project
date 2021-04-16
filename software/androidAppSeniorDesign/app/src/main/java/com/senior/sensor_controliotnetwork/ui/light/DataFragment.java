@@ -69,7 +69,7 @@ public class DataFragment extends Fragment {
     public void onStart() {
         super.onStart();
         active = true;
-        getActivity().registerReceiver(receiver, new IntentFilter("sensorVal"));  //<----Register
+        getActivity().registerReceiver(receiver, new IntentFilter("SensorVal"));  //<----Register
 
 //        Intent serviceIntent = new Intent(lightService.class.getName());
 //        serviceIntent.setAction("sendSensorMap")

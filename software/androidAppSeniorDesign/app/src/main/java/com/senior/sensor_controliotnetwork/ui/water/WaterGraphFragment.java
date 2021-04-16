@@ -215,39 +215,24 @@
 
 
 
-package com.senior.sensor_controliotnetwork.ui.temp;
+package com.senior.sensor_controliotnetwork.ui.water;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-
-import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.IdpResponse;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.AuthResult;
+import androidx.fragment.app.Fragment;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
@@ -256,20 +241,14 @@ import com.senior.sensor_controliotnetwork.R;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.TreeMap;
-
-import android.content.IntentFilter;
-
-
-import android.app.Service;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link GraphFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TempGraphFragment extends Fragment {
+public class WaterGraphFragment extends Fragment {
 
     public  static boolean active = false;
     private DatabaseReference mPostReference;
@@ -301,7 +280,7 @@ public class TempGraphFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public TempGraphFragment() {
+    public WaterGraphFragment() {
         // Required empty public constructor
     }
 
@@ -314,8 +293,8 @@ public class TempGraphFragment extends Fragment {
      * @return A new instance of fragment GraphFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static TempGraphFragment newInstance(String param1, String param2) {
-        TempGraphFragment fragment = new TempGraphFragment();
+    public static WaterGraphFragment newInstance(String param1, String param2) {
+        WaterGraphFragment fragment = new WaterGraphFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -326,7 +305,7 @@ public class TempGraphFragment extends Fragment {
     public void onStart() {
         super.onStart();
         active = true;
-        getActivity().registerReceiver(receiver, new IntentFilter("tempSensorMap"));  //<----Register
+        getActivity().registerReceiver(receiver, new IntentFilter("SensorMap"));  //<----Register
 
 //        Intent serviceIntent = new Intent(lightService.class.getName());
 //        serviceIntent.setAction("sendSensorMap")
@@ -358,9 +337,9 @@ public class TempGraphFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            if(intent.getAction().equals("tempSensorMap"))
+            if(intent.getAction().equals("SensorMap"))
             {
-                hashMap = (HashMap<Integer, String>)intent.getSerializableExtra("tempMAPS");
+                hashMap = (HashMap<Integer, String>)intent.getSerializableExtra("MAPS");
                 testFunc(hashMap);
                 // Show it in GraphView
             }

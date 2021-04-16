@@ -142,7 +142,7 @@ public class MicrophoneDataFragment extends Fragment {
     public void onStart() {
         super.onStart();
         active = true;
-        getActivity().registerReceiver(receiver, new IntentFilter("sensorVal"));  //<----Register
+        getActivity().registerReceiver(receiver, new IntentFilter("micSensorVal"));  //<----Register
 
 //        Intent serviceIntent = new Intent(lightService.class.getName());
 //        serviceIntent.setAction("sendSensorMap")
@@ -170,9 +170,9 @@ public class MicrophoneDataFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            if(intent.getAction().equals("sensorVal"))
+            if(intent.getAction().equals("micSensorVal"))
             {
-                String micSensorData = (String)intent.getSerializableExtra("SENSOR");
+                String micSensorData = (String)intent.getSerializableExtra("micSENSOR");
 //                setSensorTxtBox(micSensorData);
                 TextView sensorValueTxt = (TextView) getActivity().findViewById(R.id.micSensorDataTxt);
                 sensorValueTxt.setText(micSensorData);
