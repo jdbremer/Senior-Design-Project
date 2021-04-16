@@ -82,7 +82,6 @@ def BLEModuleInit(fun,fun1):
             elif linev2 == "OK" and BLEInit == 0:
                 BLEInit = 1
                 print(linev2)
-                print("OKAY?")
                 line = []
                 BLEReceived = True
 
