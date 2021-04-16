@@ -203,7 +203,7 @@ class BluetoothConnectivity : AppCompatActivity()  {
 //        val textView = findViewById(R.id.device_name) as TextView
         for(item in scanResults){
             if(item.name != null){
-                if(item.name.toString().contains("ER")) {  //make sure to change this to "_IoT"
+                if(item.name.toString().contains("_IoT")) {  //make sure to change this to "_IoT"
                     str.add(item.name.toString())
                 }
             }
