@@ -50,18 +50,16 @@ token = ""
 BLEReceived = True
 stopBLEThread = False
 
+
 def BLEModuleInit(fun,fun1):
     line = []
+    BLEInit = 0
     global BLEReceived
-    while stopThread == False:
+    while stopBLEThread == False:
         for c in serialPort.read().decode():
             line.append(c)
             linev2 = ''.join(line).replace("\n", " ").strip()
-            if linev2 == "OK":
-                print(linev2)
-                line = []
-                BLEReceived = True
-            elif linev2 == "OK+Set:1":
+            if linev2 == "OK+Set:1":
                 print(linev2)
                 line = []
                 BLEReceived = True
@@ -73,8 +71,18 @@ def BLEModuleInit(fun,fun1):
                 print(linev2)
                 line = []
                 BLEReceived = True
-            elif linev2 == "OK+RESET"
+            elif linev2 == "OK+RESET":
                 print(linev2)
+                line = []
+                BLEReceived = True
+            elif linev2 == "OK+Set:SERVER_IoT":
+                print(linev2)
+                line = []
+                BLEReceived = True
+            elif linev2 == "OK" and BLEInit == 0:
+                BLEInit = 1
+                print(linev2)
+                print("OKAY?")
                 line = []
                 BLEReceived = True
 
@@ -82,19 +90,19 @@ _thread.start_new_thread(BLEModuleInit,(1,1)) #start thread for BLE init
 
 BLEReceived = False
 serialPort.write(("AT").encode())
-while(BLEReceived == False)
+while BLEReceived == False: continue
 BLEReceived = False
 serialPort.write(("AT+IMME1").encode())
-while(BLEReceived == False)
+while BLEReceived == False: continue
 BLEReceived = False
 serialPort.write(("AT+NAMESERVER_IoT").encode())
-while(BLEReceived == False)
+while BLEReceived == False: continue
 BLEReceived = False
 serialPort.write(("AT+IMME0").encode())
-while(BLEReceived == False)
+while BLEReceived == False: continue
 BLEReceived = False
 serialPort.write(("AT+RESET").encode())
-while(BLEReceived == False)
+while BLEReceived == False: continue
 
 
 stopBLEThread = True
