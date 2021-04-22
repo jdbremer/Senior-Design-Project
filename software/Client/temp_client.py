@@ -71,9 +71,12 @@ recvPort = 12351
 statusPort = 12352
 
 #connect the IP and the port # to the sockets
-sending.connect(('192.168.86.31', sendPort))
-receiving.connect(('192.168.86.31', recvPort))
-status.connect(('192.168.86.31', statusPort))
+# sending.connect(('192.168.86.31', sendPort))
+# receiving.connect(('192.168.86.31', recvPort))
+# status.connect(('192.168.86.31', statusPort))
+sending.connect(('172.20.10.11', sendPort))
+receiving.connect(('172.20.10.11', recvPort))
+status.connect(('172.20.10.11', statusPort))
 
 #after connection, start the new status socket thread to handle transmissions
 _thread.start_new_thread(statusSocket,(status, receiving, sending))
