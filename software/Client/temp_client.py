@@ -13,9 +13,9 @@ device_folder = glob.glob(base_dir + '28*')[0]
 device_file = device_folder + '/w1_slave'
 
 #function to send data to the server in a sequence
-def sendingSocket(sendingSocket, dataC, dataF):
+def sendingSocket(sendingSocket, data):
        #send the data to the server
-       sendingSocket.send(str(dataC).encode('ascii') + '~' + str(dataF).encode('ascii'))
+       sendingSocket.send(str(data).encode('ascii'))
        #received message from server to keep in sync
        msgFromServer = sendingSocket.recv(1024).decode('ascii')
 
@@ -47,7 +47,7 @@ def read_temp_raw():
     f.close()
     return lines
 
-def read_temp():
+def read_temp(sendSocket):
     lines = read_temp_raw()
     while lines[0].strip()[-3:] != 'YES':
         time.sleep(0.2)
@@ -57,7 +57,7 @@ def read_temp():
         temp_string = lines[1][equals_pos+2:]
         temp_c = float(temp_string) / 1000.0    #temp in C
         temp_f = temp_c * 9.0 / 5.0 + 32.0  #temp in F
-        sendingSocket(sendSocket, temp_c, temp_f)  #return the temp in the form: #degrees C~#degrees F
+        sendingSocket(sendSocket, (str(temp_c).encode('ascii') + '~' + str(temp_f).encode('ascii')))  #return the temp in the form: #degrees C~#degrees F
         return str(temp_c) + '~' + str(temp_f)  #return the temp in the form: #degrees C~#degrees F
 
 #create a socket object for the receiving, sending, and status sockets
@@ -91,7 +91,7 @@ print (sending.recv(1024).decode('ascii') )
 #end of the send initialization sequence
 
 while True:
-	print(read_temp()) #read the temperature
+	print(read_temp(sending)) #read the temperature
 	time.sleep(interval)  #delay between temperature readings
 
 
