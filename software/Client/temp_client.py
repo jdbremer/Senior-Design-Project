@@ -5,6 +5,8 @@ import RPi.GPIO as GPIO #pulls in the GPIO pin numbers
 import socket
 import _thread
 
+interval = 5
+
 os.system('modprobe w1-gpio')
 os.system('modprobe w1-therm')
 
