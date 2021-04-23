@@ -52,17 +52,17 @@ public class waterService extends Service {
     private final class ServiceHandler extends Handler {
 
         public void talkToGraph() {
-            Intent i = new Intent();
-            i.putExtra("MAPS", sensorValues);
-            i.setAction("SensorMap");
-            sendBroadcast(i);
+//            Intent i = new Intent();
+//            i.putExtra("MAPS", sensorValues);
+//            i.setAction("SensorMap");
+//            sendBroadcast(i);
         }
 
         public void talkToData() {
-            Intent i = new Intent();
-            i.putExtra("SENSOR", value);
-            i.setAction("sensorVal");
-            sendBroadcast(i);
+//            Intent i = new Intent();
+//            i.putExtra("SENSOR", value);
+//            i.setAction("sensorVal");
+//            sendBroadcast(i);
         }
 
 

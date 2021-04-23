@@ -54,7 +54,7 @@ public class WaterDataFragment extends Fragment {
     public void onStart() {
         super.onStart();
         active = true;
-        getActivity().registerReceiver(receiver, new IntentFilter("sensorVal"));  //<----Register
+//        getActivity().registerReceiver(receiver, new IntentFilter("sensorVal"));  //<----Register
 
 //        Intent serviceIntent = new Intent(tempService.class.getName());
 //        serviceIntent.setAction("sendSensorMap")
@@ -65,7 +65,7 @@ public class WaterDataFragment extends Fragment {
     public void onStop() {
         super.onStop();
         active = false;
-        getActivity().unregisterReceiver(receiver);           //<-- Unregister to avoid memoryleak
+//        getActivity().unregisterReceiver(receiver);           //<-- Unregister to avoid memoryleak
     }
 
     @Override
@@ -82,13 +82,13 @@ public class WaterDataFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            if(intent.getAction().equals("sensorVal"))
-            {
-                String tempSensorData = (String)intent.getSerializableExtra("SENSOR");
-//                setSensorTxtBox(tempSensorData);
-                TextView sensorValueTxt = (TextView) getActivity().findViewById(R.id.tempSensorDataTxt);
-                sensorValueTxt.setText(tempSensorData);
-            }
+//            if(intent.getAction().equals("sensorVal"))
+//            {
+//                String tempSensorData = (String)intent.getSerializableExtra("SENSOR");
+////                setSensorTxtBox(tempSensorData);
+//                TextView sensorValueTxt = (TextView) getActivity().findViewById(R.id.tempSensorDataTxt);
+//                sensorValueTxt.setText(tempSensorData);
+//            }
         }
     }
 

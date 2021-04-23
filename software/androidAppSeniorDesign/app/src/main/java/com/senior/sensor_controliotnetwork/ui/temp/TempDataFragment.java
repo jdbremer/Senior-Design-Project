@@ -54,7 +54,7 @@ public class TempDataFragment extends Fragment {
     public void onStart() {
         super.onStart();
         active = true;
-        getActivity().registerReceiver(receiver, new IntentFilter("sensorVal"));  //<----Register
+        getActivity().registerReceiver(receiver, new IntentFilter("tempSensorVal"));  //<----Register
 
 //        Intent serviceIntent = new Intent(tempService.class.getName());
 //        serviceIntent.setAction("sendSensorMap")
@@ -82,9 +82,9 @@ public class TempDataFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            if(intent.getAction().equals("sensorVal"))
+            if(intent.getAction().equals("tempSensorVal"))
             {
-                String tempSensorData = (String)intent.getSerializableExtra("SENSOR");
+                String tempSensorData = (String)intent.getSerializableExtra("tempSENSOR");
 //                setSensorTxtBox(tempSensorData);
                 TextView sensorValueTxt = (TextView) getActivity().findViewById(R.id.tempSensorDataTxt);
                 sensorValueTxt.setText(tempSensorData);
