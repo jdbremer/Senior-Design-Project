@@ -251,25 +251,7 @@ def receivingSocket(serverSocket,receiveSocket, sendingSocket):
         receiveSocket.send('Received...'.encode('ascii'))
 
         #CODE TO DO SOMETHING WITH RECEIVED DATA
-        try:
-            print("received data.. " + receivedData)
-            relay1 = receivedData.split('~')[0]
-            relay2 = receivedData.split('~')[1]
-            if(int(relay1) == 0):
-                GPIO.output(18, GPIO.LOW)
-            elif(int(relay1) == 1):
-                GPIO.output(18, GPIO.HIGH)
-                
-                
-            if(int(relay2) == 0):
-                GPIO.output(16, GPIO.LOW)
-            elif(int(relay2) == 1):
-                GPIO.output(16, GPIO.HIGH)
-                
-            sendsSocket(sendingSocket, receivedData)
-        
-        except KeyboardInterrupt:
-            print("keyboard interrupt")
+
 
 
         #END CODE TO DO SOMETHING WITH RECEIVED DATA
@@ -314,19 +296,7 @@ print (sending.recv(1024).decode('ascii') )
 #CODE FOR OPERATIONS#
 
 try:
-    #set the GPIO to the board layout (used for pin numbers)
-    # GPIO.setmode(GPIO.BOARD)
-    #set the GPIO pin 18 to output
-    # GPIO.setup(18, GPIO.OUT)
-    #default the output to LOW
-    # GPIO.output(18, GPIO.LOW)
-    
-    #set the GPIO pin 16 to output
-    # GPIO.setup(16, GPIO.OUT)
-    #default the output to LOW
-    # GPIO.output(16, GPIO.LOW)
-   
-    #for testing...
+
     while True:
         continue
     
