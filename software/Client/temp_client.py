@@ -5,6 +5,8 @@ import RPi.GPIO as GPIO #pulls in the GPIO pin numbers
 import socket
 import _thread
 
+interval = 5
+
 os.system('modprobe w1-gpio')
 os.system('modprobe w1-therm')
 
@@ -13,9 +15,9 @@ device_folder = glob.glob(base_dir + '28*')[0]
 device_file = device_folder + '/w1_slave'
 
 #function to send data to the server in a sequence
-def sendingSocket(sendingSocket, dataC, dataF):
+def sendingSocket(sendingSocket, data):
        #send the data to the server
-       sendingSocket.send(str(dataC).encode('ascii') + '~' + str(dataF).encode('ascii'))
+       sendingSocket.send(str(data).encode('ascii'))
        #received message from server to keep in sync
        msgFromServer = sendingSocket.recv(1024).decode('ascii')
 
@@ -47,7 +49,7 @@ def read_temp_raw():
     f.close()
     return lines
 
-def read_temp():
+def read_temp(sendSocket):
     lines = read_temp_raw()
     while lines[0].strip()[-3:] != 'YES':
         time.sleep(0.2)
@@ -55,9 +57,9 @@ def read_temp():
     equals_pos = lines[1].find('t=')
     if equals_pos != -1:
         temp_string = lines[1][equals_pos+2:]
-        temp_c = float(temp_string) / 1000.0    #temp in C
-        temp_f = temp_c * 9.0 / 5.0 + 32.0  #temp in F
-        sendingSocket(sendSocket, temp_c, temp_f)  #return the temp in the form: #degrees C~#degrees F
+        temp_c = round(float(temp_string) / 1000.0, 2)    #temp in C
+        temp_f = round(temp_c * 9.0 / 5.0 + 32.0, 2)  #temp in F
+        sendingSocket(sendSocket, (str(temp_c) + '~' + str(temp_f)).encode('ascii'))  #return the temp in the form: #degrees C~#degrees F
         return str(temp_c) + '~' + str(temp_f)  #return the temp in the form: #degrees C~#degrees F
 
 #create a socket object for the receiving, sending, and status sockets
@@ -71,9 +73,12 @@ recvPort = 12351
 statusPort = 12352
 
 #connect the IP and the port # to the sockets
-sending.connect(('192.168.86.31', sendPort))
-receiving.connect(('192.168.86.31', recvPort))
-status.connect(('192.168.86.31', statusPort))
+# sending.connect(('192.168.86.31', sendPort))
+# receiving.connect(('192.168.86.31', recvPort))
+# status.connect(('192.168.86.31', statusPort))
+sending.connect(('172.20.10.11', sendPort))
+receiving.connect(('172.20.10.11', recvPort))
+status.connect(('172.20.10.11', statusPort))
 
 #after connection, start the new status socket thread to handle transmissions
 _thread.start_new_thread(statusSocket,(status, receiving, sending))
@@ -88,7 +93,7 @@ print (sending.recv(1024).decode('ascii') )
 #end of the send initialization sequence
 
 while True:
-	print(read_temp()) #read the temperature
+	print(read_temp(sending)) #read the temperature
 	time.sleep(interval)  #delay between temperature readings
 
 
