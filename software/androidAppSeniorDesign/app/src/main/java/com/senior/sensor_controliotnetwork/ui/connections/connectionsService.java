@@ -81,8 +81,8 @@ public class connectionsService extends Service {
 
 
         public void turnOnService(String nodeId) {
-            if(nodeId.contains("LightSensor")){
-                getBaseContext().startService(lightIntent);
+            if(nodeId.contains("TempSensor")){
+                getBaseContext().startService(tempIntent);
             }
             else if(nodeId.contains("dBMeter")){
                 getBaseContext().startService(micIntent);
@@ -90,8 +90,8 @@ public class connectionsService extends Service {
 //            else if(nodeId.contains("ControlSwitch")){
 //                getBaseContext().startService(controlSwitchIntent);
 //            }
-            else if(nodeId.contains("TempSensor")){
-                getBaseContext().startService(tempIntent);
+            else if(nodeId.contains("LightSensor")){
+                getBaseContext().startService(lightIntent);
             }
         }
 

@@ -71,6 +71,8 @@ public class tempService extends Service {
             Intent i = new Intent();
             i.putExtra("tempMAPS", sensorValues);
             i.setAction("tempSensorMap");
+//            i.putExtra("tempMAPSF", sensorValuesF);
+//            i.setAction("tempSensorMapF");
             sendBroadcast(i);
         }
 
@@ -78,6 +80,8 @@ public class tempService extends Service {
             Intent i = new Intent();
             i.putExtra("tempSENSOR", value);
             i.setAction("tempSensorVal");
+//            i.putExtra("tempSENSORF", valueF);
+//            i.setAction("tempSensorValF");
             sendBroadcast(i);
         }
 

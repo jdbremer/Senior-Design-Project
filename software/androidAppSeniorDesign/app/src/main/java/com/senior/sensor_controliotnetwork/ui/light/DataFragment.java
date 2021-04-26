@@ -123,7 +123,7 @@ public class DataFragment extends Fragment {
         mDatabase = FirebaseDatabase.getInstance().getReference();  //DATABASE OBJECT
 
         mDatabase.child(userId).child("internalAppData").child("thresholds").child("LightSensor").setValue("0");
-        mDatabase.child(userId).child("dataFromApp").child("LightSensor").setValue("5");    //set sample interval in database
+//        mDatabase.child(userId).child("dataFromApp").child("LightSensor").setValue("5");    //set sample interval in database
 
         Button setThresholdButton = (Button) root.findViewById(R.id.setThreshold);
         setThresholdButton.setEnabled(false);

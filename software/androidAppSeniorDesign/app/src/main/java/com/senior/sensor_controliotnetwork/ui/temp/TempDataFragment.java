@@ -85,9 +85,11 @@ public class TempDataFragment extends Fragment {
             if(intent.getAction().equals("tempSensorVal"))
             {
                 String tempSensorData = (String)intent.getSerializableExtra("tempSENSOR");
+//                String[] tempData = tempSensorData.split("~");
 //                setSensorTxtBox(tempSensorData);
                 TextView sensorValueTxt = (TextView) getActivity().findViewById(R.id.tempSensorDataTxt);
                 sensorValueTxt.setText(tempSensorData);
+//                sensorValueTxt.setText(tempData[0]);    //print the Celsius temp
             }
         }
     }
