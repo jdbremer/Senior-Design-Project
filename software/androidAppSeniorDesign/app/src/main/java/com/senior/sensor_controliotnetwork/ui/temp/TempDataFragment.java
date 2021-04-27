@@ -43,7 +43,6 @@ public class TempDataFragment extends Fragment {
     boolean setThreshold = false;
 
 
-
     private TempViewModel tempViewModel;
 
     public static boolean active = false;
@@ -85,10 +84,16 @@ public class TempDataFragment extends Fragment {
             if(intent.getAction().equals("tempSensorVal"))
             {
                 String tempSensorData = (String)intent.getSerializableExtra("tempSENSOR");
+                String [] valueCvalueF;
 //                String[] tempData = tempSensorData.split("~");
 //                setSensorTxtBox(tempSensorData);
                 TextView sensorValueTxt = (TextView) getActivity().findViewById(R.id.tempSensorDataTxt);
-                sensorValueTxt.setText(String.format("%s °F", tempSensorData));
+//                sensorValueTxt.setText(String.format("%s °F", tempSensorData));
+                valueCvalueF = tempSensorData.split("~");  //[tempC~tempF]
+//                sensorValueTxt.setText(String.format("%s \u00B0 C", valueCvalueF[1]));
+                sensorValueTxt.setText((valueCvalueF[0]) + "\u2109C");                      //NOTE: [0] IS C AND [1] IS F!!!!!
+//                sensorValueTxt.setText(String.format("%s \u00B0 C", valueCvalueF));
+//                valueArray = value.split("~");  //[tempC~tempF]
 //                sensorValueTxt.setText(tempSensorData);
 //                sensorValueTxt.setText(tempData[0]);    //print the Celsius temp
             }
