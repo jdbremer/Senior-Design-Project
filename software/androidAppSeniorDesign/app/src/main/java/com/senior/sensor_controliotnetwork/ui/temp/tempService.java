@@ -54,9 +54,12 @@ public class tempService extends Service {
     private DatabaseReference mPostReferenceTempThreshold;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String userId = user.getUid();  //assign userId the token for the user
-    private HashMap<Integer, String> sensorValues = new HashMap<Integer, String>();;
+    private HashMap<Integer, String> sensorValuesC = new HashMap<Integer, String>();
+    private HashMap<Integer, String> sensorValuesF = new HashMap<Integer, String>();
     public int inc = 0;
     public String value = "";
+//    public String valueArray [];
+    public String [] valueArray;
     public String thresholdMetValue = "";
     public boolean graphActive = false;
 
@@ -69,7 +72,7 @@ public class tempService extends Service {
 
         public void talkToGraph() {
             Intent i = new Intent();
-            i.putExtra("tempMAPS", sensorValues);
+            i.putExtra("tempMAPS", sensorValuesC);
             i.setAction("tempSensorMap");
 //            i.putExtra("tempMAPSF", sensorValuesF);
 //            i.setAction("tempSensorMapF");
@@ -92,8 +95,8 @@ public class tempService extends Service {
         }
         @Override
         public void handleMessage(Message msg) {
-            //sensorValues = new HashMap<Integer, String>();
-            sensorValues.clear();
+            //sensorValuesC = new HashMap<Integer, String>();
+            sensorValuesC.clear();
             inc = 0;
 
 
@@ -107,16 +110,17 @@ public class tempService extends Service {
 
                         int maxGraphPoints = 26;
                         value = (String) dataSnapshot.getValue();
-
-                        //send notification that the temp data is over the threshold value
-                        float valueFloat = Float.parseFloat(value);
-                        if(thresholdFloat < valueFloat && thresholdFloat != 0.0){
+                        valueArray = value.split("~");  //[tempC~tempF]
+                        float valueFloatC = Float.parseFloat(valueArray[0]);    //grab the Celsius value
+                        float valueFloatF = Float.parseFloat(valueArray[1]);    //grab the Fahrenheit value
+                        if(thresholdFloat < valueFloatC && thresholdFloat != 0.0){
                             thresholdMetValue = value;
                             sendNotification(thresholdMetValue);
                         }
-                        if(valueFloat > 0.0) {
+//                        if(valueFloatC > 0.0) {
                             //add data to a hash table
-                            sensorValues.put(inc, value);
+                            sensorValuesC.put(inc, valueArray[0]);
+                            sensorValuesF.put(inc, valueArray[1]);
 
 
                             //if the max number of points was reached
@@ -125,28 +129,34 @@ public class tempService extends Service {
                                 //shift all the data within the hash table
                                 for (int i = 0; i < maxGraphPoints + 1; i++) {
                                     if (i == 0) {
-
-                                        sensorValues.remove(i);
+                                        sensorValuesC.remove(i);
+                                        sensorValuesF.remove(i);
                                     } else {
-                                        String key = sensorValues.get(i);
-                                        sensorValues.remove(i);
-                                        sensorValues.put(i - 1, key);
+                                        String keyC = sensorValuesC.get(i);
+                                        String keyF = sensorValuesF.get(i);
+                                        sensorValuesC.remove(i);
+                                        sensorValuesF.remove(i);
+                                        sensorValuesC.put(i - 1, keyC);
+                                        sensorValuesF.put(i - 1, keyF);
                                     }
                                 }
                             } else {
-
                                 inc++;
-
                             }
                             if (TempGraphFragment.active) {
                                 //DO STUFF
                                 talkToGraph();
+                                //talkToGraphC();
+//                                else
+                                //talkToGraphF();
                             }
                             if (TempDataFragment.active) {
                                 //DO STUFF
                                 talkToData();
+//                                talkToDataC();
+//                                talkToDataF();
                             }
-                        }
+//                        }
                     }
 
                     @Override
