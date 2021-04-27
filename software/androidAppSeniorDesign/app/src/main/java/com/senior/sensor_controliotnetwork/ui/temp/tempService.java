@@ -72,10 +72,10 @@ public class tempService extends Service {
 
         public void talkToGraph() {
             Intent i = new Intent();
-            i.putExtra("tempMAPS", sensorValuesC);
+            i.putExtra("tempMAPSC", sensorValuesC);
             i.setAction("tempSensorMap");
-//            i.putExtra("tempMAPSF", sensorValuesF);
-//            i.setAction("tempSensorMapF");
+            i.putExtra("tempMAPSF", sensorValuesF);
+            i.setAction("tempSensorMapF");
             sendBroadcast(i);
         }
 
@@ -196,7 +196,7 @@ public class tempService extends Service {
                     Thread.sleep(1000);
                     if (TempGraphFragment.active && graphActive == false) {
                         //DO STUFF
-                        // talkToGraph();
+//                        talkToGraph();
                         graphActive = true;
                     }
                     else if(!TempGraphFragment.active) {

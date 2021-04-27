@@ -277,6 +277,7 @@ public class TempGraphFragment extends Fragment {
     private int maxDataPoints = 25;
 
     public static HashMap<Integer, String> hashMap = new HashMap<Integer, String>();
+    public boolean isCelsius = true;
 
 
     private DataPoint[] values = new DataPoint[50];
@@ -360,7 +361,10 @@ public class TempGraphFragment extends Fragment {
 
             if(intent.getAction().equals("tempSensorMap"))
             {
-                hashMap = (HashMap<Integer, String>)intent.getSerializableExtra("tempMAPS");
+                if(isCelsius == true)
+                    hashMap = (HashMap<Integer, String>)intent.getSerializableExtra("tempMAPSC");
+                else    //Fahrenheit
+                    hashMap = (HashMap<Integer, String>)intent.getSerializableExtra("tempMAPSF");
                 testFunc(hashMap);
                 // Show it in GraphView
             }
@@ -395,7 +399,7 @@ public class TempGraphFragment extends Fragment {
         graph.getViewport().setMaxX(maxDataPoints);
         graph.getViewport().setYAxisBoundsManual(true);
         graph.getViewport().setMinY(0);
-        graph.getViewport().setMaxY(1000);
+        graph.getViewport().setMaxY(100);
 
 
         //LineGraphSeries<DataPoint> series = new LineGraphSeries<>();
