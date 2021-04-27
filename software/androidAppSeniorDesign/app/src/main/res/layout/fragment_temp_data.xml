@@ -152,7 +152,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tempSensorDataTxt"
+        android:id="@+id/tempSensorDataTxtC"
         android:layout_width="50dp"
         android:layout_height="18dp"
         android:text=""
@@ -162,5 +162,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.162" />
+
+    <TextView
+        android:id="@+id/tempSensorDataTxtF"
+        android:layout_width="50dp"
+        android:layout_height="18dp"
+        android:text=""
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.897"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.222" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

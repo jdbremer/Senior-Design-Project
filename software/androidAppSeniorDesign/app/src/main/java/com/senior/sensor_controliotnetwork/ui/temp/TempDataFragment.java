@@ -87,11 +87,13 @@ public class TempDataFragment extends Fragment {
                 String [] valueCvalueF;
 //                String[] tempData = tempSensorData.split("~");
 //                setSensorTxtBox(tempSensorData);
-                TextView sensorValueTxt = (TextView) getActivity().findViewById(R.id.tempSensorDataTxt);
+                TextView sensorValueTxtC = (TextView) getActivity().findViewById(R.id.tempSensorDataTxtC);
+                TextView sensorValueTxtF = (TextView) getActivity().findViewById(R.id.tempSensorDataTxtF);
 //                sensorValueTxt.setText(String.format("%s °F", tempSensorData));
                 valueCvalueF = tempSensorData.split("~");  //[tempC~tempF]
 //                sensorValueTxt.setText(String.format("%s \u00B0 C", valueCvalueF[1]));
-                sensorValueTxt.setText((valueCvalueF[0]) + "\u2109C");                      //NOTE: [0] IS C AND [1] IS F!!!!!
+                sensorValueTxtC.setText((valueCvalueF[0]) + "\u2103");                      //NOTE: [0] IS C AND [1] IS F!!!!!
+                sensorValueTxtF.setText((valueCvalueF[1]) + "\u2109");                      //NOTE: [0] IS C AND [1] IS F!!!!!
 //                sensorValueTxt.setText(String.format("%s \u00B0 C", valueCvalueF));
 //                valueArray = value.split("~");  //[tempC~tempF]
 //                sensorValueTxt.setText(tempSensorData);

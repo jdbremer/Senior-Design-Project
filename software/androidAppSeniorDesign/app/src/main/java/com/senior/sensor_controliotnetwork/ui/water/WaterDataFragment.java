@@ -86,7 +86,7 @@ public class WaterDataFragment extends Fragment {
 //            {
 //                String tempSensorData = (String)intent.getSerializableExtra("SENSOR");
 ////                setSensorTxtBox(tempSensorData);
-//                TextView sensorValueTxt = (TextView) getActivity().findViewById(R.id.tempSensorDataTxt);
+//                TextView sensorValueTxt = (TextView) getActivity().findViewById(R.id.tempSensorDataTxtC);
 //                sensorValueTxt.setText(tempSensorData);
 //            }
         }
