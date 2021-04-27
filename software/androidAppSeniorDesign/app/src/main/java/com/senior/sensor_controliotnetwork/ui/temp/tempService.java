@@ -73,9 +73,8 @@ public class tempService extends Service {
         public void talkToGraph() {
             Intent i = new Intent();
             i.putExtra("tempMAPSC", sensorValuesC);
-            i.setAction("tempSensorMap");
             i.putExtra("tempMAPSF", sensorValuesF);
-            i.setAction("tempSensorMapF");
+            i.setAction("tempSensorMap");
             sendBroadcast(i);
         }
 
