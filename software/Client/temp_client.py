@@ -59,7 +59,7 @@ def read_temp(sendSocket):
         temp_string = lines[1][equals_pos+2:]
         temp_c = round(float(temp_string) / 1000.0, 2)    #temp in C
         temp_f = round(temp_c * 9.0 / 5.0 + 32.0, 2)  #temp in F
-        sendingSocket(sendSocket, (str(temp_c) + '~' + str(temp_f)).encode('ascii'))  #return the temp in the form: #degrees C~#degrees F
+        sendingSocket(sendSocket, (str(temp_c) + '~' + str(temp_f)))  #return the temp in the form: #degrees C~#degrees F
         return str(temp_c) + '~' + str(temp_f)  #return the temp in the form: #degrees C~#degrees F
 
 #create a socket object for the receiving, sending, and status sockets
