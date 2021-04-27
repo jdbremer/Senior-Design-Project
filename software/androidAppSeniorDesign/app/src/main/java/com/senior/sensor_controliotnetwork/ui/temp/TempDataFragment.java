@@ -109,7 +109,7 @@ public class TempDataFragment extends Fragment {
         mDatabase = FirebaseDatabase.getInstance().getReference();  //DATABASE OBJECT
 
         mDatabase.child(userId).child("internalAppData").child("thresholds").child("TempSensor").setValue("0");
-        mDatabase.child(userId).child("dataFromApp").child("TempSensor").setValue("5");    //set sample interval in database
+//        mDatabase.child(userId).child("dataFromApp").child("TempSensor").setValue("5");    //set sample interval in database
 
         Button setThresholdButton = (Button) root.findViewById(R.id.setThreshold);
         setThresholdButton.setEnabled(false);

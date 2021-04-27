@@ -37,6 +37,9 @@
 
         <service android:name=".ui.light.lightService" />
         <service android:name=".ui.connections.connectionsService" />
+        <service android:name=".ui.temp.tempService" />
+        <service android:name=".ui.microphone.microphoneService" />
+        <service android:name=".ui.water.waterService" />
     </application>
 
 </manifest>
