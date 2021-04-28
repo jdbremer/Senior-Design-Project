@@ -24,7 +24,6 @@ public class TempPagerAdapter extends FragmentPagerAdapter {
         switch (position){
             case 0:
                 return new TempDataFragment();
-
             case 1:
                 return new TempGraphFragment();
             default:

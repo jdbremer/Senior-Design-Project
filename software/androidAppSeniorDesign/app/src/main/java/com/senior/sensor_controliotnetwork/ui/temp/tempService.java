@@ -116,7 +116,7 @@ public class tempService extends Service {
 //                            thresholdMetValue = value;
 //                            sendNotification(thresholdMetValue);
 //                        }
-//                        if(valueFloatC > 0.0) {
+                        if(valueArray.length > 1) {
                             //add data to a hash table
                             sensorValuesC.put(inc, valueArray[0]);
                             sensorValuesF.put(inc, valueArray[1]);
@@ -155,7 +155,7 @@ public class tempService extends Service {
 //                                talkToDataC();
 //                                talkToDataF();
                             }
-//                        }
+                        }
                     }
 
                     @Override

@@ -403,9 +403,9 @@ public class TempGraphFragment extends Fragment {
 
         unitSwitch = (Switch) root.findViewById(R.id.tempUnitSwitch);
 
-       // unitSwitch.setChecked(isCelsius);
+        unitSwitch.setChecked(isCelsius);
 
-        isCelsius = unitSwitch.isChecked();
+        //isCelsius = unitSwitch.isChecked();
 
         mPostReference = FirebaseDatabase.getInstance().getReference().child(userId).child("dataFromChild").child("TempSensor");  //LISTENER OBJECT
 
@@ -438,6 +438,8 @@ public class TempGraphFragment extends Fragment {
 
         unitSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                isCelsius = isChecked;
+
                 if(isChecked){
                     hashMap = hashMapC;
                 }
