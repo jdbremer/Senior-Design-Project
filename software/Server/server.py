@@ -85,23 +85,23 @@ def BLEModuleInit(fun,fun1):
                 line = []
                 BLEReceived = True
 
-_thread.start_new_thread(BLEModuleInit,(1,1)) #start thread for BLE init
+# _thread.start_new_thread(BLEModuleInit,(1,1)) #start thread for BLE init
 
-BLEReceived = False
-serialPort.write(("AT").encode())
-while BLEReceived == False: continue
-BLEReceived = False
-serialPort.write(("AT+IMME1").encode())
-while BLEReceived == False: continue
-BLEReceived = False
-serialPort.write(("AT+NAMESERVER_IoT").encode())
-while BLEReceived == False: continue
-BLEReceived = False
-serialPort.write(("AT+IMME0").encode())
-while BLEReceived == False: continue
-BLEReceived = False
-serialPort.write(("AT+RESET").encode())
-while BLEReceived == False: continue
+# BLEReceived = False
+# serialPort.write(("AT").encode())
+# while BLEReceived == False: continue
+# BLEReceived = False
+# serialPort.write(("AT+IMME1").encode())
+# while BLEReceived == False: continue
+# BLEReceived = False
+# serialPort.write(("AT+NAMESERVER_IoT").encode())
+# while BLEReceived == False: continue
+# BLEReceived = False
+# serialPort.write(("AT+IMME0").encode())
+# while BLEReceived == False: continue
+# BLEReceived = False
+# serialPort.write(("AT+RESET").encode())
+# while BLEReceived == False: continue
 
 
 stopBLEThread = True
@@ -264,7 +264,7 @@ def sendingClientFromFirebase(data, sensorName):
         sendSocket = connectToSocketLib.get(sensorName)
         sendSocket.send(data.encode('ascii'))
         receivedData = sendSocket.recv(1024).decode('ascii')
-        print(receivedData)
+        print("Database to " + sensorName + ": " + data)
 
 
 
@@ -284,21 +284,14 @@ def firebaseStreamHandler(event):
             #pulls out the sensor data from the event data, this data is not delimited
             sensorData = eventPathString = event["data"]
             
-            print("Received data from.. " + sensorName + " Sensor data.. ")
-            print(sensorData)
-            
             sendingClientFromFirebase(sensorData, sensorName)
             
-
-       
-
-
 
 #thread for the data received from the clients
 def receiveClient(recvDataSocket, status_addr ,addr, statusSocket, sendDataSocket):
     global token
     #print the address of the new connecitons
-    print ('Got connection from recv client.. ', addr )
+    print ('Connection from Client.. ', addr )
 
     #client receiving initialization
     thankYouMsg = 'Server :: Thank you for connecting.. '
@@ -322,7 +315,7 @@ def receiveClient(recvDataSocket, status_addr ,addr, statusSocket, sendDataSocke
                 return
 
             #print the data that came from the client
-            print(fromClient)
+            print(str(connections.get(status_addr[1])) + " to Database: " + fromClient)
             
             #send the data to the database
             database.child(token + "/dataFromChild").update({str(connections.get(status_addr[1])) : str(fromClient)})
@@ -349,7 +342,7 @@ def clientCloseCheck(statusSocket, addr, recvDataSocket, sendDataSocket):
     statusSocket.send('connected....'.encode('ascii'))
     sensor = statusSocket.recv(1024).decode('ascii')
     
-    print (sensor)
+    print (sensor + " Connected")
     
     #if a sensor already exists, increment it by 1
     if sensor in connectToSocketLib:
@@ -363,10 +356,10 @@ def clientCloseCheck(statusSocket, addr, recvDataSocket, sendDataSocket):
             sensor = sensor[:-1]
             sensor = sensor + i
             
-        print("New Sensor Name: " + sensor)
+        print("Sensor name taken..\nNew Sensor Name: " + sensor)
     
     #print the address of the server/client status socket connection
-    print (addr[1])
+    print (sensor + ": " + str(addr[1]))
     #add the sensor name and address to the connections dictionary
     connections[addr[1]] = sensor
     connectToSocketLib[sensor] = sendDataSocket

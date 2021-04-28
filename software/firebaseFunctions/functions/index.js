@@ -40,21 +40,15 @@ exports.defaultValues = functions.database
           .child(user + "/dataFromChild/" + sensorControl);
       const refInternalAppData = change.after.ref.root
           .child(user + "/internalAppData/thresholds/" + sensorControl);
-      if (data == "1") {
+      if (data == "0") {
         if (sensorControl == "ControlSwitch") {
           refDataFromApp.set("0~0");
+        } else if (sensorControl == "TempSensor") {
+          refDataFromChild.set("0.0~0.0");
         } else {
           refDataFromApp.set("0");
+          refDataFromChild.set("0");
         }
-        refDataFromChild.set("0");
-        return refInternalAppData.set("0");
-      } else {
-        if (sensorControl == "ControlSwitch") {
-          refDataFromApp.set("0~0");
-        } else {
-          refDataFromApp.set("0");
-        }
-        refDataFromChild.set("0");
         return refInternalAppData.set("0");
       }
     });
@@ -74,6 +68,8 @@ exports.addConnectionToDB = functions.database
           .child(user + "/internalAppData/thresholds/" + sensorControl);
       if (sensorControl == "ControlSwitch") {
         refDataFromApp.set("0~0");
+      } else if (sensorControl == "TempSensor") {
+        refDataFromChild.set("0.0~0.0");
       } else {
         refDataFromApp.set("0");
       }

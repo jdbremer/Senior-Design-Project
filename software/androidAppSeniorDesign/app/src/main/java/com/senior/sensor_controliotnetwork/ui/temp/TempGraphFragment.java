@@ -422,11 +422,11 @@ public class TempGraphFragment extends Fragment {
 
         if(isCelsius){
             graph.getViewport().setMinY(-50);
-            graph.getViewport().setMaxY(120);
+            graph.getViewport().setMaxY(50);
         }
         else{
             graph.getViewport().setMinY(-50);
-            graph.getViewport().setMaxY(50);
+            graph.getViewport().setMaxY(120);
         }
 
 
@@ -462,23 +462,27 @@ public class TempGraphFragment extends Fragment {
         //trying to remove old data on the graph and add new data
         mSeries1.clearReference(graph);
         graph.removeSeries(mSeries1);
+        graph.onDataChanged(true, false);
         graph.clearSecondScale();
 
         mSeries1 = new LineGraphSeries<>();
         mSeries1.setThickness(15);
         mSeries1.setColor(Color.rgb(210,180,140));
         graph.addSeries(mSeries1);
+        //graph.getViewport().setScalable(true);
         graph.getViewport().setYAxisBoundsManual(true);
         if(isCelsius){
             graph.getViewport().setMinY(-50);
-            graph.getViewport().setMaxY(120);
+            graph.getViewport().setMaxY(50);
         }
         else{
             graph.getViewport().setMinY(-50);
-            graph.getViewport().setMaxY(50);
+            graph.getViewport().setMaxY(120);
         }
        // graph.refreshDrawableState();
-        //graph.onDataChanged(false, false);
+        graph.onDataChanged(true, true);
+        graph.refreshDrawableState();
+
 
 
         TreeMap<Integer,String> sortedSensorValues = new TreeMap<Integer,String>(sensorValues); //convert the hashmaps (which aren't sorted) to treemaps (which are sorted)
@@ -497,8 +501,9 @@ public class TempGraphFragment extends Fragment {
             else {
                 mSeries1.appendData(new DataPoint(x, y2), false, maxDataPoints);
             }
+            //graph.refreshDrawableState();
+            graph.onDataChanged(true, true);
             graph.refreshDrawableState();
-            graph.onDataChanged(true, false);
         }
     }
 
