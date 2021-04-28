@@ -403,9 +403,9 @@ public class TempGraphFragment extends Fragment {
 
         unitSwitch = (Switch) root.findViewById(R.id.tempUnitSwitch);
 
-       // unitSwitch.setChecked(isCelsius);
+        unitSwitch.setChecked(isCelsius);
 
-        isCelsius = unitSwitch.isChecked();
+        //isCelsius = unitSwitch.isChecked();
 
         mPostReference = FirebaseDatabase.getInstance().getReference().child(userId).child("dataFromChild").child("TempSensor");  //LISTENER OBJECT
 
@@ -422,11 +422,11 @@ public class TempGraphFragment extends Fragment {
 
         if(isCelsius){
             graph.getViewport().setMinY(-50);
-            graph.getViewport().setMaxY(120);
+            graph.getViewport().setMaxY(50);
         }
         else{
             graph.getViewport().setMinY(-50);
-            graph.getViewport().setMaxY(50);
+            graph.getViewport().setMaxY(120);
         }
 
 
@@ -438,6 +438,8 @@ public class TempGraphFragment extends Fragment {
 
         unitSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                isCelsius = isChecked;
+
                 if(isChecked){
                     hashMap = hashMapC;
                 }
@@ -464,6 +466,7 @@ public class TempGraphFragment extends Fragment {
         graph.removeSeries(mSeries1);
         graph.onDataChanged(true, false);
         graph.clearSecondScale();
+
         mSeries1 = new LineGraphSeries<>();
         mSeries1.setThickness(15);
         mSeries1.setColor(Color.rgb(210,180,140));
@@ -472,14 +475,16 @@ public class TempGraphFragment extends Fragment {
         graph.getViewport().setYAxisBoundsManual(true);
         if(isCelsius){
             graph.getViewport().setMinY(-50);
-            graph.getViewport().setMaxY(120);
+            graph.getViewport().setMaxY(50);
         }
         else{
             graph.getViewport().setMinY(-50);
-            graph.getViewport().setMaxY(50);
+            graph.getViewport().setMaxY(120);
         }
        // graph.refreshDrawableState();
-        graph.onDataChanged(false, false);
+        graph.onDataChanged(true, true);
+        graph.refreshDrawableState();
+
 
 
         TreeMap<Integer,String> sortedSensorValues = new TreeMap<Integer,String>(sensorValues); //convert the hashmaps (which aren't sorted) to treemaps (which are sorted)
@@ -498,8 +503,9 @@ public class TempGraphFragment extends Fragment {
             else {
                 mSeries1.appendData(new DataPoint(x, y2), false, maxDataPoints);
             }
-           // graph.refreshDrawableState();
+            //graph.refreshDrawableState();
             graph.onDataChanged(true, true);
+            graph.refreshDrawableState();
         }
     }
 

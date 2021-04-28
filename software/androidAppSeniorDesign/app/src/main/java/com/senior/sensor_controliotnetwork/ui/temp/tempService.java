@@ -110,13 +110,13 @@ public class tempService extends Service {
                         int maxGraphPoints = 26;
                         value = (String) dataSnapshot.getValue();
                         valueArray = value.split("~");  //[tempC~tempF]
-                        float valueFloatC = Float.parseFloat(valueArray[0]);    //grab the Celsius value
-                        float valueFloatF = Float.parseFloat(valueArray[1]);    //grab the Fahrenheit value
-                        if(thresholdFloat < valueFloatC && thresholdFloat != 0.0){
-                            thresholdMetValue = value;
-                            sendNotification(thresholdMetValue);
-                        }
-//                        if(valueFloatC > 0.0) {
+                   //     float valueFloatC = Float.parseFloat(valueArray[0]);    //grab the Celsius value
+                      //  float valueFloatF = Float.parseFloat(valueArray[1]);    //grab the Fahrenheit value
+//                        if(thresholdFloat < valueFloatC && thresholdFloat != 0.0){
+//                            thresholdMetValue = value;
+//                            sendNotification(thresholdMetValue);
+//                        }
+                        if(valueArray.length > 1) {
                             //add data to a hash table
                             sensorValuesC.put(inc, valueArray[0]);
                             sensorValuesF.put(inc, valueArray[1]);
@@ -155,7 +155,7 @@ public class tempService extends Service {
 //                                talkToDataC();
 //                                talkToDataF();
                             }
-//                        }
+                        }
                     }
 
                     @Override
