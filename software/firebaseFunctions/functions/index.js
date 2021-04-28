@@ -111,3 +111,24 @@ exports.newUserSetup = functions.auth.user()
       return admin.database()
           .ref("/" + userId + "/" + internal + "/thresholds/").set("");
     });
+
+// ControlSwitch/Alexa
+
+exports.defaultValues = functions.database
+    .ref("{user}/dataFromChild/{connection}")
+    .onUpdate((change, context) => {
+      const data = change.after.val();
+      const sensorControl = context.params.connection;
+      const user = context.params.user;
+      const refAlexa = change.after.ref.root
+          .child(user + "/alexa/control switch/data");
+      if (sensorControl == "ControlSwitch") {
+        if (data == "1~1") {
+          return refAlexa.set("1");
+        } else if (data == "0~1" || data == "1~0") {
+          return refAlexa.set("2");
+        } else {
+          return refAlexa.set("0");
+        }
+      }
+    });

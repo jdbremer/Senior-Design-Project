@@ -101,44 +101,46 @@ public class microphoneService extends Service {
 
                         int maxGraphPoints = 26;
                         value = (String) dataSnapshot.getValue();
+                        try {
+                            //send notification that the light data is over the threshold value
+                            float valueFloat = Float.parseFloat(value);
+                            if (thresholdFloat < valueFloat && thresholdFloat != 0.0) {
+                                thresholdMetValue = value;
+                                sendNotification(thresholdMetValue);
+                            }
 
-                        //send notification that the light data is over the threshold value
-                        float valueFloat = Float.parseFloat(value);
-                        if(thresholdFloat < valueFloat && thresholdFloat != 0.0){
-                            thresholdMetValue = value;
-                            sendNotification(thresholdMetValue);
-                        }
-
-                        //add data to a hash table
-                        sensorValues.put(inc, value );
+                            //add data to a hash table
+                            sensorValues.put(inc, value);
 
 
-                        //if the max number of points was reached
-                        if(inc >= maxGraphPoints){
+                            //if the max number of points was reached
+                            if (inc >= maxGraphPoints) {
 
-                            //shift all the data within the hash table
-                            for ( int i = 0; i < maxGraphPoints+1 ; i++){
-                                if(i == 0){
-                                    sensorValues.remove(i);
+                                //shift all the data within the hash table
+                                for (int i = 0; i < maxGraphPoints + 1; i++) {
+                                    if (i == 0) {
+                                        sensorValues.remove(i);
+                                    } else {
+                                        String key = sensorValues.get(i);
+                                        sensorValues.remove(i);
+                                        sensorValues.put(i - 1, key);
+                                    }
                                 }
-                                else{
-                                    String key = sensorValues.get(i);
-                                    sensorValues.remove(i);
-                                    sensorValues.put(i-1, key);
-                                }
-                            }
 
-                            if (MicrophoneGraphFragment.active) {
-                                //DO STUFF
-                                talkToGraph();
-                            }
-                            if (active) {
-                                //DO STUFF
-                                talkToData();
+                                if (MicrophoneGraphFragment.active) {
+                                    //DO STUFF
+                                    talkToGraph();
+                                }
+                                if (active) {
+                                    //DO STUFF
+                                    talkToData();
+                                }
+                            } else {
+                                inc++;
                             }
                         }
-                        else{
-                            inc++;
+                        catch (Exception e){
+                            System.out.println("Microphone Service: The incoming data failed");
                         }
                     }
 
@@ -156,9 +158,13 @@ public class microphoneService extends Service {
                 ValueEventListener thresholdListener = new ValueEventListener(){
                     @Override
                     public void onDataChange (DataSnapshot dataSnapshot){
-
-                        threshold = (String) dataSnapshot.getValue();
-                        thresholdFloat = Float.parseFloat(threshold);
+                        try {
+                            threshold = (String) dataSnapshot.getValue();
+                            thresholdFloat = Float.parseFloat(threshold);
+                        }
+                        catch (Exception e){
+                            System.out.println("The incoming data failed");
+                        }
                     }
 
                     @Override
@@ -235,7 +241,7 @@ public class microphoneService extends Service {
 
 
         // If we get killed, after returning from here, restart
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
     @Override

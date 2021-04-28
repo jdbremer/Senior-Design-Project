@@ -1,8 +1,10 @@
 package com.senior.sensor_controliotnetwork.ui.connections;
 
+import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
@@ -78,6 +80,15 @@ public class connectionsService extends Service {
             sendBroadcast(i);
         }
 
+        private boolean isMyServiceRunning(Class<?> serviceClass) {
+            ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+            for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+                if (serviceClass.getName().equals(service.service.getClassName())) {
+                    return true;
+                }
+            }
+            return false;
+        }
 
 
         public void turnOnService(String nodeId) {
@@ -96,17 +107,24 @@ public class connectionsService extends Service {
         }
 
         public void turnOffService(String nodeId) {
+
             if(nodeId.contains("LightSensor")){
-                getBaseContext().stopService(lightIntent);
+                if(isMyServiceRunning(lightService.class)) {
+                    getBaseContext().stopService(lightIntent);
+                }
             }
             else if(nodeId.contains("dBMeter")){
-                getBaseContext().stopService(micIntent);
+                if(isMyServiceRunning(microphoneService.class)) {
+                    getBaseContext().stopService(micIntent);
+                }
             }
 //            else if(nodeId.contains("ControlSwitch")){
 //                getBaseContext().stopService(controlSwitchIntent);
 //            }
             else if(nodeId.contains("TempSensor")){
-                getBaseContext().stopService(tempIntent);
+                if(isMyServiceRunning(tempService.class)) {
+                    getBaseContext().stopService(tempIntent);
+                }
             }
         }
 

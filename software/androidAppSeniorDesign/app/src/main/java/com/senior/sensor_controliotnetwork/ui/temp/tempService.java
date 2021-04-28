@@ -106,55 +106,59 @@ public class tempService extends Service {
                     @Override
                     public void onDataChange (DataSnapshot dataSnapshot){
                         //LineGraphSeries<DataPoint> mSeries3 = new LineGraphSeries<>();
-
-                        int maxGraphPoints = 26;
-                        value = (String) dataSnapshot.getValue();
-                        valueArray = value.split("~");  //[tempC~tempF]
-                   //     float valueFloatC = Float.parseFloat(valueArray[0]);    //grab the Celsius value
-                      //  float valueFloatF = Float.parseFloat(valueArray[1]);    //grab the Fahrenheit value
+                        try {
+                            int maxGraphPoints = 26;
+                            value = (String) dataSnapshot.getValue();
+                            valueArray = value.split("~");  //[tempC~tempF]
+                            //     float valueFloatC = Float.parseFloat(valueArray[0]);    //grab the Celsius value
+                            //  float valueFloatF = Float.parseFloat(valueArray[1]);    //grab the Fahrenheit value
 //                        if(thresholdFloat < valueFloatC && thresholdFloat != 0.0){
 //                            thresholdMetValue = value;
 //                            sendNotification(thresholdMetValue);
 //                        }
-                        if(valueArray.length > 1) {
-                            //add data to a hash table
-                            sensorValuesC.put(inc, valueArray[0]);
-                            sensorValuesF.put(inc, valueArray[1]);
+                            if (valueArray.length > 1) {
+                                //add data to a hash table
+                                sensorValuesC.put(inc, valueArray[0]);
+                                sensorValuesF.put(inc, valueArray[1]);
 
 
-                            //if the max number of points was reached
-                            if (inc >= maxGraphPoints) {
+                                //if the max number of points was reached
+                                if (inc >= maxGraphPoints) {
 
-                                //shift all the data within the hash table
-                                for (int i = 0; i < maxGraphPoints + 1; i++) {
-                                    if (i == 0) {
-                                        sensorValuesC.remove(i);
-                                        sensorValuesF.remove(i);
-                                    } else {
-                                        String keyC = sensorValuesC.get(i);
-                                        String keyF = sensorValuesF.get(i);
-                                        sensorValuesC.remove(i);
-                                        sensorValuesF.remove(i);
-                                        sensorValuesC.put(i - 1, keyC);
-                                        sensorValuesF.put(i - 1, keyF);
+                                    //shift all the data within the hash table
+                                    for (int i = 0; i < maxGraphPoints + 1; i++) {
+                                        if (i == 0) {
+                                            sensorValuesC.remove(i);
+                                            sensorValuesF.remove(i);
+                                        } else {
+                                            String keyC = sensorValuesC.get(i);
+                                            String keyF = sensorValuesF.get(i);
+                                            sensorValuesC.remove(i);
+                                            sensorValuesF.remove(i);
+                                            sensorValuesC.put(i - 1, keyC);
+                                            sensorValuesF.put(i - 1, keyF);
+                                        }
                                     }
+                                } else {
+                                    inc++;
                                 }
-                            } else {
-                                inc++;
-                            }
-                            if (TempGraphFragment.active) {
-                                //DO STUFF
-                                talkToGraph();
-                                //talkToGraphC();
+                                if (TempGraphFragment.active) {
+                                    //DO STUFF
+                                    talkToGraph();
+                                    //talkToGraphC();
 //                                else
-                                //talkToGraphF();
-                            }
-                            if (TempDataFragment.active) {
-                                //DO STUFF
-                                talkToData();
+                                    //talkToGraphF();
+                                }
+                                if (TempDataFragment.active) {
+                                    //DO STUFF
+                                    talkToData();
 //                                talkToDataC();
 //                                talkToDataF();
+                                }
                             }
+                        }
+                        catch (Exception e){
+                            System.out.println("Temp Service: The incoming data failed");
                         }
                     }
 
@@ -172,9 +176,13 @@ public class tempService extends Service {
                 ValueEventListener thresholdListener = new ValueEventListener(){
                     @Override
                     public void onDataChange (DataSnapshot dataSnapshot){
-
-                        threshold = (String) dataSnapshot.getValue();
-                        thresholdFloat = Float.parseFloat(threshold);
+                        try {
+                            threshold = (String) dataSnapshot.getValue();
+                            thresholdFloat = Float.parseFloat(threshold);
+                        }
+                        catch (Exception e){
+                            System.out.println("Temp Service: The incoming data failed");
+                        }
 
                     }
 

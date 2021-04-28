@@ -83,21 +83,27 @@ public class TempDataFragment extends Fragment {
 
             if(intent.getAction().equals("tempSensorVal"))
             {
-                String tempSensorData = (String)intent.getSerializableExtra("tempSENSOR");
-                String [] valueCvalueF;
+                try {
+                    String tempSensorData = (String) intent.getSerializableExtra("tempSENSOR");
+                    String[] valueCvalueF;
 //                String[] tempData = tempSensorData.split("~");
 //                setSensorTxtBox(tempSensorData);
-                TextView sensorValueTxtC = (TextView) getActivity().findViewById(R.id.tempSensorDataTxtC);
-                TextView sensorValueTxtF = (TextView) getActivity().findViewById(R.id.tempSensorDataTxtF);
+                    TextView sensorValueTxtC = (TextView) getActivity().findViewById(R.id.tempSensorDataTxtC);
+                    TextView sensorValueTxtF = (TextView) getActivity().findViewById(R.id.tempSensorDataTxtF);
 //                sensorValueTxt.setText(String.format("%s °F", tempSensorData));
-                valueCvalueF = tempSensorData.split("~");  //[tempC~tempF]
+                    valueCvalueF = tempSensorData.split("~");  //[tempC~tempF]
 //                sensorValueTxt.setText(String.format("%s \u00B0 C", valueCvalueF[1]));
-                sensorValueTxtC.setText((valueCvalueF[0]) + "\u2103");                      //NOTE: [0] IS C AND [1] IS F!!!!!
-                sensorValueTxtF.setText((valueCvalueF[1]) + "\u2109");                      //NOTE: [0] IS C AND [1] IS F!!!!!
+                    sensorValueTxtC.setText((valueCvalueF[0]) + "\u2103");                      //NOTE: [0] IS C AND [1] IS F!!!!!
+                    sensorValueTxtF.setText((valueCvalueF[1]) + "\u2109");                      //NOTE: [0] IS C AND [1] IS F!!!!!
 //                sensorValueTxt.setText(String.format("%s \u00B0 C", valueCvalueF));
 //                valueArray = value.split("~");  //[tempC~tempF]
 //                sensorValueTxt.setText(tempSensorData);
 //                sensorValueTxt.setText(tempData[0]);    //print the Celsius temp
+                }
+                catch (Exception e){
+                    System.out.println("Temp Data Frag: The incoming data failed");
+
+                }
             }
         }
     }
