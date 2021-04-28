@@ -359,7 +359,7 @@ def clientCloseCheck(statusSocket, addr, recvDataSocket, sendDataSocket):
         print("Sensor name taken..\nNew Sensor Name: " + sensor)
     
     #print the address of the server/client status socket connection
-    print (sensor + ": " + addr[1])
+    print (sensor + ": " + str(addr[1]))
     #add the sensor name and address to the connections dictionary
     connections[addr[1]] = sensor
     connectToSocketLib[sensor] = sendDataSocket
