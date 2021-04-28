@@ -466,6 +466,7 @@ public class TempGraphFragment extends Fragment {
         graph.removeSeries(mSeries1);
         graph.onDataChanged(true, false);
         graph.clearSecondScale();
+
         mSeries1 = new LineGraphSeries<>();
         mSeries1.setThickness(15);
         mSeries1.setColor(Color.rgb(210,180,140));
