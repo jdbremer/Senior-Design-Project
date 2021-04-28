@@ -132,6 +132,8 @@ public class DataFragment extends Fragment {
 
         TextView connectionLightText = (TextView) root.findViewById(R.id.textLightConnectionStatus);
         Button lightSampleIntervalButton = (Button) root.findViewById(R.id.buttonLightSampleInterval);
+        EditText lightIntervalText = (EditText) root.findViewById(R.id.textLightDataSampleInterval);
+
 
         //CONSTANT LISTENER CODE//
         ValueEventListener lightConnectionStatusConstantListener = new ValueEventListener(){
@@ -139,6 +141,7 @@ public class DataFragment extends Fragment {
             public void onDataChange (DataSnapshot dataSnapshot){
                 int onOff = Integer.parseInt((String) dataSnapshot.getValue());
                 if(onOff == 1){ //on
+                    lightIntervalText.setText("5");
                     connectionLightText.setText("Connected");   //change text so show light sensor is connected
                     onOrOff = true; //light sensor is on
                     lightSampleIntervalButton.setEnabled(true); //allow user to press button to change sample rate
@@ -165,12 +168,14 @@ public class DataFragment extends Fragment {
         //END CONSTANT LISTENER CODE//
 
         //CONSTANT LISTENER CODE//
-        EditText lightIntervalText = (EditText) root.findViewById(R.id.textLightDataSampleInterval);
+//        EditText lightIntervalText = (EditText) root.findViewById(R.id.textLightDataSampleInterval);
         ValueEventListener lightIntervalConstantListener = new ValueEventListener(){
             @Override
             public void onDataChange (DataSnapshot dataSnapshot){
                 lightIntervalText.setText(dataSnapshot.getValue().toString());
                 sampleInterval = dataSnapshot.getValue().toString();
+                if(sampleInterval.equals("0"))
+                    lightIntervalText.setText("5");
             }
 
             @Override
