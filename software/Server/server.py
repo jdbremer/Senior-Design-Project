@@ -85,23 +85,23 @@ def BLEModuleInit(fun,fun1):
                 line = []
                 BLEReceived = True
 
-_thread.start_new_thread(BLEModuleInit,(1,1)) #start thread for BLE init
+# _thread.start_new_thread(BLEModuleInit,(1,1)) #start thread for BLE init
 
-BLEReceived = False
-serialPort.write(("AT").encode())
-while BLEReceived == False: continue
-BLEReceived = False
-serialPort.write(("AT+IMME1").encode())
-while BLEReceived == False: continue
-BLEReceived = False
-serialPort.write(("AT+NAMESERVER_IoT").encode())
-while BLEReceived == False: continue
-BLEReceived = False
-serialPort.write(("AT+IMME0").encode())
-while BLEReceived == False: continue
-BLEReceived = False
-serialPort.write(("AT+RESET").encode())
-while BLEReceived == False: continue
+# BLEReceived = False
+# serialPort.write(("AT").encode())
+# while BLEReceived == False: continue
+# BLEReceived = False
+# serialPort.write(("AT+IMME1").encode())
+# while BLEReceived == False: continue
+# BLEReceived = False
+# serialPort.write(("AT+NAMESERVER_IoT").encode())
+# while BLEReceived == False: continue
+# BLEReceived = False
+# serialPort.write(("AT+IMME0").encode())
+# while BLEReceived == False: continue
+# BLEReceived = False
+# serialPort.write(("AT+RESET").encode())
+# while BLEReceived == False: continue
 
 
 stopBLEThread = True
