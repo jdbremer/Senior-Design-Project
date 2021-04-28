@@ -56,8 +56,8 @@ def sendSampleThread(sendSocket,receive):
     global interval
     while True:
         time.sleep(interval)
-        print('average_lux: ')
-        print(average_lux)
+        print('average_lux: ' + str(average_lux))
+        # print(average_lux)
         sendingSocket(sendSocket, average_lux)
 
 

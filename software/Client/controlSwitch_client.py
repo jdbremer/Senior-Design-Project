@@ -26,13 +26,13 @@ def receivingSocket(serverSocket,receiveSocket, sendingSocket):
     while True:
         #data that comes from the base node will end up in receivedDAta
         receivedData = receiveSocket.recv(1024).decode('ascii')
-        print(receivedData)
+        # print(receivedData)
         #need to send data back to keep sync
         receiveSocket.send('Received...'.encode('ascii'))
 
         #CODE TO DO SOMETHING WITH RECEIVED DATA
         try:
-            print("received data.. " + receivedData)
+            print("Received data.. " + receivedData)
             relay1 = receivedData.split('~')[0]
             relay2 = receivedData.split('~')[1]
             if(int(relay1) == 0):
