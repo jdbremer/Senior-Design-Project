@@ -6,6 +6,12 @@ import socket
 import _thread
 import random
 
+
+ip = '172.20.10.11'
+
+#ip = '192.168.86.31'
+
+
 interval = 5
 
 os.system('modprobe w1-gpio')
@@ -87,9 +93,10 @@ statusPort = 12352
 # sending.connect(('192.168.86.31', sendPort))
 # receiving.connect(('192.168.86.31', recvPort))
 # status.connect(('192.168.86.31', statusPort))
-sending.connect(('172.20.10.11', sendPort))
-receiving.connect(('172.20.10.11', recvPort))
-status.connect(('172.20.10.11', statusPort))
+
+sending.connect((ip, sendPort))
+receiving.connect((ip, recvPort))
+status.connect((ip, statusPort))
 
 #after connection, start the new status socket thread to handle transmissions
 _thread.start_new_thread(statusSocket,(status, receiving, sending))
