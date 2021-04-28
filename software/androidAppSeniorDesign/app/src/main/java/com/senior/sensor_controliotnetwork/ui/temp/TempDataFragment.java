@@ -126,6 +126,7 @@ public class TempDataFragment extends Fragment {
 
         TextView connectionTempText = (TextView) root.findViewById(R.id.textTempConnectionStatus);
         Button tempSampleIntervalButton = (Button) root.findViewById(R.id.buttonTempSampleInterval);
+        EditText tempIntervalText = (EditText) root.findViewById(R.id.textTempDataSampleInterval);
 
         //CONSTANT LISTENER CODE//
         ValueEventListener tempConnectionStatusConstantListener = new ValueEventListener(){
@@ -133,6 +134,7 @@ public class TempDataFragment extends Fragment {
             public void onDataChange (DataSnapshot dataSnapshot){
                 int onOff = Integer.parseInt((String) dataSnapshot.getValue());
                 if(onOff == 1){ //on
+                    tempIntervalText.setText("5");
                     connectionTempText.setText("Connected");   //change text so show temp sensor is connected
                     onOrOff = true; //temp sensor is on
                     tempSampleIntervalButton.setEnabled(true); //allow user to press button to change sample rate
@@ -159,12 +161,14 @@ public class TempDataFragment extends Fragment {
         //END CONSTANT LISTENER CODE//
 
         //CONSTANT LISTENER CODE//
-        EditText tempIntervalText = (EditText) root.findViewById(R.id.textTempDataSampleInterval);
+
         ValueEventListener tempIntervalConstantListener = new ValueEventListener(){
             @Override
             public void onDataChange (DataSnapshot dataSnapshot){
                 tempIntervalText.setText(dataSnapshot.getValue().toString());
                 sampleInterval = dataSnapshot.getValue().toString();
+                if(sampleInterval.equals("0"))
+                    tempIntervalText.setText("5");
             }
 
             @Override
