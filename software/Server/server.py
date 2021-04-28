@@ -321,7 +321,7 @@ def receiveClient(recvDataSocket, status_addr ,addr, statusSocket, sendDataSocke
             database.child(token + "/dataFromChild").update({str(connections.get(status_addr[1])) : str(fromClient)})
 
             #send a messsage to the client to keep sync
-            checkMsg = 'I am here'
+            checkMsg = 'Synchronized'
             recvDataSocket.send(checkMsg.encode('ascii'))
 
         #if the socket has an error, or is disconnected, come into this exception
