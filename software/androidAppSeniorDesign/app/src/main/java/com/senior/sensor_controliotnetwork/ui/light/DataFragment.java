@@ -18,7 +18,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -132,6 +131,8 @@ public class DataFragment extends Fragment {
 
         TextView connectionLightText = (TextView) root.findViewById(R.id.textLightConnectionStatus);
         Button lightSampleIntervalButton = (Button) root.findViewById(R.id.buttonLightSampleInterval);
+        Button lightRenameButton = (Button) root.findViewById(R.id.LightRenameButton);
+        EditText lightRenameText = (EditText) root.findViewById(R.id.LightRenameText);
         EditText lightIntervalText = (EditText) root.findViewById(R.id.textLightDataSampleInterval);
 
 
@@ -219,6 +220,17 @@ public class DataFragment extends Fragment {
 
 
 
+
+        lightRenameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String tempNewName;
+                tempNewName = lightRenameText.getText().toString(); //grab new name
+                //assign new name to the strings.xml file
+
+                Utils.hideKeyboard(getActivity());  //hide keyboard after button press
+            }
+        });
 
 
 

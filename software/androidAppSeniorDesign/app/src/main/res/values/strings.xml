@@ -12,6 +12,7 @@
     <string name="menu_microphone">Microphone</string>
     <string name="menu_controlSwitch">Control Switch</string>
     <string name="menu_temp">Temperature Sensor</string>
+    <string name="menu_fire">Fire Detection</string>
 
     <string name="lightData">Data</string>
     <string name="lightGraph">Graph</string>

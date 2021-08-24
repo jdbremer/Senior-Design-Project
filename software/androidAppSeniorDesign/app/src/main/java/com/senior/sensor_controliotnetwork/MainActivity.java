@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_connections, R.id.nav_light, R.id.nav_microphone, R.id.nav_controlSwitch, R.id.nav_temp)
+                R.id.nav_connections, R.id.nav_light, R.id.nav_microphone, R.id.nav_controlSwitch, R.id.nav_temp, R.id.nav_fire)
                 .setDrawerLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
         nav_Menu.findItem(R.id.nav_controlSwitch).setVisible(false);
         nav_Menu.findItem(R.id.nav_microphone).setVisible(false);
         nav_Menu.findItem(R.id.nav_temp).setVisible(false);
-
+        nav_Menu.findItem(R.id.nav_fire).setVisible(false);
         ///////
 
         if(initialize == true) {
@@ -178,6 +178,9 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else if (currentVal.equals("TempSensor")) {
                     nav_Menu.findItem(R.id.nav_temp).setVisible(true);
+                }
+                else if (currentVal.equals("Fire")) {
+                    nav_Menu.findItem(R.id.nav_fire).setVisible(true);
                 }
                 ///////
             }

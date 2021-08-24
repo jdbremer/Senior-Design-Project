@@ -34,4 +34,10 @@
         android:name="com.senior.sensor_controliotnetwork.ui.temp.TempFragment"
         android:label="@string/menu_temp"
         tools:layout="@layout/fragment_temp" />
+
+    <fragment
+        android:id="@+id/nav_fire"
+        android:name="com.senior.sensor_controliotnetwork.ui.fire.FireFragment"
+        android:label="@string/menu_fire"
+        tools:layout="@layout/fragment_fire" />
 </navigation>
