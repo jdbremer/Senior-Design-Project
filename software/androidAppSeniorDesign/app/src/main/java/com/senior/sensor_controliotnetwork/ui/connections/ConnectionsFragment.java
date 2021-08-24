@@ -68,6 +68,7 @@ import com.senior.sensor_controliotnetwork.ui.light.LightFragment;
 import com.senior.sensor_controliotnetwork.ui.light.lightService;
 import com.senior.sensor_controliotnetwork.ui.microphone.microphoneService;
 import com.senior.sensor_controliotnetwork.ui.temp.tempService;
+import com.senior.sensor_controliotnetwork.ui.fire.fireService;
 import com.senior.sensor_controliotnetwork.ui.microphone.MicrophoneDataFragment;
 
 import org.w3c.dom.Text;
@@ -98,6 +99,7 @@ public class ConnectionsFragment extends Fragment {
     Intent lightIntent;
     Intent micIntent;
     Intent tempIntent;
+    Intent fireIntent;
 
     ConnectionLevelReceiver receiver;
     public  static boolean active = false;
@@ -161,6 +163,7 @@ public class ConnectionsFragment extends Fragment {
         lightIntent = new Intent(getContext(), lightService.class);
         micIntent = new Intent(getContext(), microphoneService.class);
         tempIntent = new Intent(getContext(), tempService.class);
+        fireIntent = new Intent(getContext(), fireService.class);
 
         adapter=new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,arrayList) {
             @Override

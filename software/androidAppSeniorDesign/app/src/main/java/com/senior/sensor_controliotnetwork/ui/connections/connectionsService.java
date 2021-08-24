@@ -30,6 +30,7 @@ import com.senior.sensor_controliotnetwork.ui.light.GraphFragment;
 import com.senior.sensor_controliotnetwork.ui.light.lightService;
 import com.senior.sensor_controliotnetwork.ui.microphone.microphoneService;
 import com.senior.sensor_controliotnetwork.ui.temp.tempService;
+import com.senior.sensor_controliotnetwork.ui.fire.fireService;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -60,6 +61,7 @@ public class connectionsService extends Service {
     Intent micIntent;
 //    Intent controlSwitchIntent;
     Intent tempIntent;
+    Intent fireIntent;
 
 
 
@@ -104,6 +106,9 @@ public class connectionsService extends Service {
             else if(nodeId.contains("LightSensor")){
                 getBaseContext().startService(lightIntent);
             }
+            else if(nodeId.contains("Fire")){
+                getBaseContext().startService(fireIntent);
+            }
         }
 
         public void turnOffService(String nodeId) {
@@ -124,6 +129,11 @@ public class connectionsService extends Service {
             else if(nodeId.contains("TempSensor")){
                 if(isMyServiceRunning(tempService.class)) {
                     getBaseContext().stopService(tempIntent);
+                }
+            }
+            else if(nodeId.contains("Fire")){
+                if(isMyServiceRunning(fireService.class)) {
+                    getBaseContext().stopService(fireIntent);
                 }
             }
         }
@@ -256,6 +266,7 @@ public class connectionsService extends Service {
         lightIntent = new Intent(getBaseContext(), lightService.class);
         micIntent = new Intent(getBaseContext(), microphoneService.class);
         tempIntent = new Intent(getBaseContext(), tempService.class);
+        fireIntent = new Intent(getBaseContext(), fireService.class);
 
         //getBaseContext().startService(lightIntent);
 
