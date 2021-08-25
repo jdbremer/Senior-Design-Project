@@ -164,6 +164,6 @@ public class fireService extends Service {
         builder.setSmallIcon(R.drawable.ic_menu_send);
         builder.setAutoCancel(true);
         NotificationManagerCompat managerCompat = NotificationManagerCompat.from(this);
-        managerCompat.notify(1,builder.build());
+        managerCompat.notify(14,builder.build());
     }
 }

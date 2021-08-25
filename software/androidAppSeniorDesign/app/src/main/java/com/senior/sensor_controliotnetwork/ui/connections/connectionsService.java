@@ -3,6 +3,7 @@ package com.senior.sensor_controliotnetwork.ui.connections;
 import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -62,8 +63,9 @@ public class connectionsService extends Service {
 //    Intent controlSwitchIntent;
     Intent tempIntent;
     Intent fireIntent;
-
-
+//    Intent fireIntent = new Intent(this,)
+//    PendingIntent pendingIntentFire = PendingIntent.getBroadcast(this,1, fireIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//    PendingIntent pendingIntentFire = PendingIntent.getService(this, 2, fireIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
     // Handler that receives messages from the thread
     private final class ServiceHandler extends Handler {
