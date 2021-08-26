@@ -6,14 +6,14 @@
     android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/fireFrag">
+    android:id="@+id/waterFrag">
 
     <TextView
-        android:id="@+id/textFire"
+        android:id="@+id/textWater"
         android:textSize="20sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Fire Detection Status:"
+        android:text="Water Detection Status:"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.025"
@@ -22,7 +22,7 @@
         app:layout_constraintVertical_bias="0.205" />
 
     <TextView
-        android:id="@+id/textConnectionFire"
+        android:id="@+id/textConnectionWater"
         android:textSize="20sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
         app:layout_constraintVertical_bias="0.023" />
 
     <TextView
-        android:id="@+id/textFireConnectionStatus"
+        android:id="@+id/textWaterConnectionStatus"
         android:layout_width="174dp"
         android:layout_height="22dp"
         android:textSize="20sp"
@@ -47,7 +47,7 @@
         app:layout_constraintVertical_bias="0.076" />
 
     <TextView
-        android:id="@+id/textFireStatus"
+        android:id="@+id/textWaterStatus"
         android:layout_width="174dp"
         android:layout_height="22dp"
         android:textSize="20sp"

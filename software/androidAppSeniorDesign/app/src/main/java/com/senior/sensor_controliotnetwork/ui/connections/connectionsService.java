@@ -32,6 +32,7 @@ import com.senior.sensor_controliotnetwork.ui.light.lightService;
 import com.senior.sensor_controliotnetwork.ui.microphone.microphoneService;
 import com.senior.sensor_controliotnetwork.ui.temp.tempService;
 import com.senior.sensor_controliotnetwork.ui.fire.fireService;
+import com.senior.sensor_controliotnetwork.ui.water.waterService;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -63,9 +64,7 @@ public class connectionsService extends Service {
 //    Intent controlSwitchIntent;
     Intent tempIntent;
     Intent fireIntent;
-//    Intent fireIntent = new Intent(this,)
-//    PendingIntent pendingIntentFire = PendingIntent.getBroadcast(this,1, fireIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-//    PendingIntent pendingIntentFire = PendingIntent.getService(this, 2, fireIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+    Intent waterIntent;
 
     // Handler that receives messages from the thread
     private final class ServiceHandler extends Handler {
@@ -111,6 +110,9 @@ public class connectionsService extends Service {
             else if(nodeId.contains("Fire")){
                 getBaseContext().startService(fireIntent);
             }
+            else if(nodeId.contains("WaterDetection")){
+                getBaseContext().startService(waterIntent);
+            }
         }
 
         public void turnOffService(String nodeId) {
@@ -136,6 +138,11 @@ public class connectionsService extends Service {
             else if(nodeId.contains("Fire")){
                 if(isMyServiceRunning(fireService.class)) {
                     getBaseContext().stopService(fireIntent);
+                }
+            }
+            else if(nodeId.contains("WaterDetection")) {
+                if (isMyServiceRunning(waterService.class)) {
+                    getBaseContext().stopService(waterIntent);
                 }
             }
         }
@@ -269,6 +276,7 @@ public class connectionsService extends Service {
         micIntent = new Intent(getBaseContext(), microphoneService.class);
         tempIntent = new Intent(getBaseContext(), tempService.class);
         fireIntent = new Intent(getBaseContext(), fireService.class);
+        waterIntent = new Intent(getBaseContext(), waterService.class);
 
         //getBaseContext().startService(lightIntent);
 

@@ -40,6 +40,7 @@
         <service android:name=".ui.temp.tempService" />
         <service android:name=".ui.microphone.microphoneService" />
         <service android:name=".ui.fire.fireService" />
+        <service android:name=".ui.water.waterService" />
     </application>
 
 </manifest>

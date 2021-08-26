@@ -28,5 +28,9 @@
             android:id="@+id/nav_fire"
             android:icon="@drawable/ic_menu_send"
             android:title="@string/menu_fire" />
+        <item
+            android:id="@+id/nav_water"
+            android:icon="@drawable/ic_menu_send"
+            android:title="@string/menu_water" />
     </group>
 </menu>
