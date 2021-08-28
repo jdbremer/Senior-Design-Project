@@ -203,9 +203,6 @@ mcp = Adafruit_MCP3008.MCP3008(spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE))
 # Find the firebase token, and verify it is correct
 if(os.path.exists(tokenFileName)): #check if the token txt file exists
     print("Token file exists")
-    # grabToken = open("token.txt")   #open token text file
-    # token = grabToken.read().replace("\n", " ") #assign token the string from text file without \n
-    # grabToken.close     #done grabbing the data from token text file
     users = database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + "/").get()
     if users.val() == None:
         print("Invalid token")
