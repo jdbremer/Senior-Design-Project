@@ -171,7 +171,7 @@ def firebaseStreamHandler(event):
 #function to send data to the server in a sequence
 def sendingToDatabase(data):
     #send the data to the database
-    database.child(decryptFileContents(tokenFileName, key) + "/dataFromChild").update({str(deviceName) : str(data)})
+    database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + "/dataFromChild").update({str(deviceName) : str(data)})
 
     
         
@@ -206,21 +206,21 @@ if(os.path.exists(tokenFileName)): #check if the token txt file exists
     # grabToken = open("token.txt")   #open token text file
     # token = grabToken.read().replace("\n", " ") #assign token the string from text file without \n
     # grabToken.close     #done grabbing the data from token text file
-    users = database.child(decryptFileContents(tokenFileName, key) + "/").get()
+    users = database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + "/").get()
     if users.val() == None:
         print("Invalid token")
         # JUMP TO BLUETOOTH INIT HERE
     else:
         print("Token exists")   #token exists in db
         #update the database to display connected sensor
-        database.child(decryptFileContents(tokenFileName, key) + "/Connections").update({str(deviceName) : "1"})
+        database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + "/Connections").update({str(deviceName) : "1"})
 
 # else:
     # JUMP TO BLUETOOTH INIT HERE
 
 
 #initialize the firebase listener
-myStream = database.child(decryptFileContents(tokenFileName, key) + "/dataFromApp/" + deviceName).stream(firebaseStreamHandler, None)
+myStream = database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + "/dataFromApp/" + deviceName).stream(firebaseStreamHandler, None)
 
 
 
@@ -278,7 +278,7 @@ finally:
     print("clean up")
     GPIO.cleanup()
     #update the database to display connected sensor
-    database.child(decryptFileContents(tokenFileName, key) + "/Connections").update({str(deviceName) : "0"})
+    database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + "/Connections").update({str(deviceName) : "0"})
 
 
 #delay before closing connections
