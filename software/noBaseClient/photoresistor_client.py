@@ -234,7 +234,6 @@ adcValue = 0
 #sensor code
 try:
     while True:
-        print("inside outter while loop")
         #grab the start time
         #start = time.time()
         #set the pin 18 to high
@@ -265,8 +264,7 @@ try:
                 average_lux = math.e**(((100*adcValue)-23529)/(11996))
                 #round the average 2 decimal places
                 average_lux = round(average_lux, 2)
-                
-                
+            
                 inc = 0
                 sensorTotal = 0
 
@@ -279,7 +277,8 @@ finally:
     GPIO.cleanup()
     #update the database to display connected sensor
     database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + "/Connections").update({str(deviceName) : "0"})
+    print("connection closed")
 
 
-#delay before closing connections
+#delay
 time.sleep(2)
