@@ -214,7 +214,6 @@ if(os.path.exists(tokenFileName)): #check if the token txt file exists
         print("Token exists")   #token exists in db
         #update the database to display connected sensor
         database.child(decryptFileContents(tokenFileName, key) + "/Connections").update({str(deviceName) : "1"})
-        break                   #exit while true loop since the token exists
 
 # else:
     # JUMP TO BLUETOOTH INIT HERE
