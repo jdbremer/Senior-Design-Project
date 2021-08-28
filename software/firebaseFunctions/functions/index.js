@@ -34,6 +34,8 @@ exports.defaultValues = functions.database
       const data = change.after.val();
       const sensorControl = context.params.connection;
       const user = context.params.user;
+      const refName = change.after.ref.root
+          .child(user + "/Name/" + sensorControl);
       const refDataFromApp = change.after.ref.root
           .child(user + "/dataFromApp/" + sensorControl);
       const refDataFromChild = change.after.ref.root
@@ -49,6 +51,7 @@ exports.defaultValues = functions.database
           refDataFromApp.set("0");
           refDataFromChild.set("0");
         }
+        refName.set(sensorControl); //default Name field example -> LightSensor: "LightSensor"
         return refInternalAppData.set("0");
       }
     });
@@ -60,6 +63,8 @@ exports.addConnectionToDB = functions.database
     .onCreate((snapshot, context) => {
       const sensorControl = context.params.connection;
       const user = context.params.user;
+      const refName = snapshot.ref.root
+          .child(user + "/Name/" + sensorControl);
       const refDataFromApp = snapshot.ref.root
           .child(user + "/dataFromApp/" + sensorControl);
       const refDataFromChild = snapshot.ref.root
@@ -74,6 +79,7 @@ exports.addConnectionToDB = functions.database
         refDataFromApp.set("0");
       }
       refDataFromChild.set("0");
+      refName.set(sensorControl); //default Name field example -> LightSensor: "LightSensor"
       return refInternalAppData.set("0");
     });
 
@@ -84,12 +90,15 @@ exports.deleteConnectionToDB = functions.database
     .onDelete((snapshot, context) => {
       const sensorControl = context.params.connection;
       const user = context.params.user;
+      const refName = snapshot.ref.root
+          .child(user + "/Name/" + sensorControl);
       const refDataFromApp = snapshot.ref.root
           .child(user + "/dataFromApp/" + sensorControl);
       const refDataFromChild = snapshot.ref.root
           .child(user + "/dataFromChild/" + sensorControl);
       const refInternalAppData = snapshot.ref.root
           .child(user + "/internalAppData/thresholds/" + sensorControl);
+      refName.remove();
       refDataFromApp.remove();
       refDataFromChild.remove();
       return refInternalAppData.remove();
@@ -103,6 +112,7 @@ exports.newUserSetup = functions.auth.user()
       const internal = "internalAppData";
       const body = {
         Connections: "",
+        Name: "",
         alexa: "",
         dataFromApp: "",
         dataFromChild: "",
