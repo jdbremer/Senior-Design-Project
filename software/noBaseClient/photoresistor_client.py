@@ -175,7 +175,7 @@ def sendingToDatabase(data):
 
     
         
-def sendSampleThread(sendSocket,receive):
+def sendSampleThread():
     global interval
     global average_lux
     while True:
@@ -244,7 +244,7 @@ try:
         receiving = 0 #REMOVE
 
         #start the thread to send the average lux on a user specified interval
-        _thread.start_new_thread(sendSampleThread,(sending,receiving)) 
+        _thread.start_new_thread(sendSampleThread) 
         while True:
             sensorTotal += mcp.read_adc(0) #read adc value of channel 0
             #take the average of the value
