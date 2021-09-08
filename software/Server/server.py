@@ -51,7 +51,7 @@ BLEReceived = True
 stopBLEThread = False
 
 
-def BLEModuleInit(fun,fun1):
+def BLEModuleInit(rand1,rand2):
     line = []
     BLEInit = 0
     global BLEReceived

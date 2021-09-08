@@ -5,6 +5,7 @@ import time
 import _thread
 import math
 import os
+from uuid import getnode as get_mac
 
 import Adafruit_GPIO.SPI as SPI #ADC SPI library
 import Adafruit_MCP3008
@@ -19,7 +20,8 @@ import pyrebase
 from cryptography.fernet import Fernet
 
 
-
+mac = get_mac()
+print("MAC address: " + str(mac))
 
 
 tokenFileName = "token.txt"
@@ -37,6 +39,31 @@ average_lux = 0
 firstHandlerEntry = 0
 token = ""
 deviceName = "LightSensor"
+
+
+
+
+#setup the bluetooth config.. this does not include timeout
+serialPort = serial.Serial("/dev/serial0", baudrate=9600)
+
+appValues = {}
+
+line = []
+fullString = ""
+
+
+grabToken = ""
+token = ""
+
+
+
+
+#BLE Init
+BLEReceived = True
+stopBLEThread = False
+
+
+
 
 
 
@@ -117,7 +144,188 @@ else:
     # bluetooth and wait for user input
     print("token.txt does not exist")
 
-    # JUMP TO BLUETOOTH INIT HERE
+
+
+
+
+
+def BLEModuleInit(fun,fun1):
+    line = []
+    BLEInit = 0
+    global BLEReceived
+    while stopBLEThread == False:
+        for c in serialPort.read().decode():
+            line.append(c)
+            linev2 = ''.join(line).replace("\n", " ").strip()
+            if linev2 == "OK+Set:1":
+                print(linev2)
+                line = []
+                BLEReceived = True
+            elif linev2 == "OK+RESET":
+                print(linev2)
+                line = []
+                BLEReceived = True
+            elif linev2 == "OK+Set:0":
+                print(linev2)
+                line = []
+                BLEReceived = True
+            elif linev2 == "OK+RESET":
+                print(linev2)
+                line = []
+                BLEReceived = True
+            elif linev2 == "OK+Set:SERVER_IoT":
+                print(linev2)
+                line = []
+                BLEReceived = True
+            elif linev2 == "OK" and BLEInit == 0:
+                BLEInit = 1
+                print(linev2)
+                line = []
+                BLEReceived = True
+
+# _thread.start_new_thread(BLEModuleInit,(1,1)) #start thread for BLE init
+
+# BLEReceived = False
+# serialPort.write(("AT").encode())
+# while BLEReceived == False: continue
+# BLEReceived = False
+# serialPort.write(("AT+IMME1").encode())
+# while BLEReceived == False: continue
+# BLEReceived = False
+# serialPort.write(("AT+NAMESERVER_IoT").encode())
+# while BLEReceived == False: continue
+# BLEReceived = False
+# serialPort.write(("AT+IMME0").encode())
+# while BLEReceived == False: continue
+# BLEReceived = False
+# serialPort.write(("AT+RESET").encode())
+# while BLEReceived == False: continue
+
+
+stopBLEThread = True
+print("BLE Initialization Complete")
+
+#END BLE Init
+
+
+def runReadSequence():
+    global line
+    global fullString
+    startMsg = "start"
+    endMsg = "stop"
+    ssid = "ssid"
+    ssid_pswd = "password"
+    uid = "uid"
+    dataStart = False
+    dataStop = False
+    line = []
+    while True:
+        for c in serialPort.read().decode():
+            line.append(c)
+
+            if c == '\n':
+                print("newString")
+                fullString = ''.join(line).replace("\n"," ")
+                print(fullString)
+                line = []
+
+                if startMsg in fullString:
+                    dataStart = True
+                    dataStop = False
+                    print("start")
+
+                elif endMsg in fullString:
+                    dataStart = False
+                    dataStop = True
+                    print("end")
+                    return
+
+                elif dataStart == True and dataStop == False:
+                    if ssid in fullString or ssid_pswd in fullString or uid in fullString:
+                        try:
+                            valName = fullString.split(':')[0]
+                            print(valName)
+                            valData = fullString.split(':')[1]
+                            print(valData)
+                            appValues[valName] = valData
+                        except:
+                            print("invalid data")
+                            return
+
+
+
+#restarts the wifi services
+def RestartWifi():
+  os.system('sudo systemctl daemon-reload')
+  time.sleep(5)
+  os.system('sudo systemctl stop dhcpcd.service')
+  time.sleep(5)
+  os.system('sudo systemctl start dhcpcd.service')
+  time.sleep(20)
+
+
+def modifyWPAFile():
+    wifiConfig = open("/etc/wpa_supplicant/wpa_supplicant.conf", "r+")
+    fileContents = wifiConfig.readlines()
+    newFileContents = ""
+    currentFileContents = ""
+    for line in fileContents:
+        newLine = line
+        if "ssid" in line:
+            newLine = "        ssid=" + '"'  + appValues.get("ssid").strip() + '"' + "\n"
+            print(newLine)
+        elif "psk" in line:
+            newLine = "        psk=" + '"' + appValues.get("password").strip() + '"' + "\n"
+            print(newLine)
+        newFileContents += newLine
+    wifiConfig.seek(0)
+    wifiConfig.truncate(0)
+    wifiConfig.write(newFileContents)
+    wifiConfig.close()
+    
+    
+    
+def modifyTOKENFile():
+    tokenConfig = open("/home/pi/Desktop/Senior-Design-Project/software/Server/token.txt", "r+")
+    tokenConfig.seek(0)
+    tokenConfig.truncate(0)
+    tokenConfig.write(appValues.get("uid").strip())
+    tokenConfig.close()
+
+
+
+
+def bluetoothMAIN():
+    print("Bluetooth MAIN")
+    internet = False
+    status = ""
+    #check if the pi is connected to the internet'
+    #while internet == False:
+    try:
+        url = "https://www.google.com"
+        #urllib.request.urlopen(url)
+        response = requests.get(url)
+        internet = True
+        #GPIO.output(18, GPIO.LOW)
+        status = "Connected"
+    except requests.ConnectionError:
+        #print(response.status_code)
+        status = "Not connected"
+            
+            
+            
+    print(status)
+    if status == "Not connected":
+        #turn on the bluetooth HAT
+        #GPIO.output(18, GPIO.HIGH)
+        #time.sleep(2)
+        runReadSequence()
+        modifyWPAFile()
+        modifyTOKENFile()
+        RestartWifi()
+        bluetoothMAIN()
+
+
 
 
 # Used to decrypt the file, we only want to decrypt the contents

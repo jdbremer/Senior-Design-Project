@@ -3,7 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/layout/activity_bluetooth_connectivity.xml" value="0.26992753623188404" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.16134751773049646" />
+        <entry key="app/src/main/res/layout/fragment_fire.xml" value="0.26992753623188404" />
+        <entry key="app/src/main/res/menu/activity_main_drawer.xml" value="0.4244791666666667" />
+        <entry key="app/src/main/res/menu/main.xml" value="0.4244791666666667" />
       </map>
     </option>
   </component>
