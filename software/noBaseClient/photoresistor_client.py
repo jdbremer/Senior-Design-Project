@@ -64,7 +64,15 @@ stopBLEThread = False
 
 
 
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(36, GPIO.OUT) #GREEN LED
+GPIO.setup(38, GPIO.OUT) #RED LED
+GPIO.setup(40, GPIO.OUT) #BLE ON/OFF
 
+#GPIO defaults
+GPIO.output(36, GPIO.HIGH) #GREEN LED
+GPIO.output(38, GPIO.HIGH) #RED LED
+GPIO.output(40, GPIO.HIGH)  #BLE ON/OFF
 
 
 
@@ -147,6 +155,11 @@ else:
 
 
 
+######
+#BLE Init
+
+BLEReceived = True
+stopBLEThread = False
 
 
 def BLEModuleInit(fun,fun1):
@@ -183,29 +196,32 @@ def BLEModuleInit(fun,fun1):
                 line = []
                 BLEReceived = True
 
-# _thread.start_new_thread(BLEModuleInit,(1,1)) #start thread for BLE init
+_thread.start_new_thread(BLEModuleInit,(1,1)) #start thread for BLE init
 
-# BLEReceived = False
-# serialPort.write(("AT").encode())
-# while BLEReceived == False: continue
-# BLEReceived = False
-# serialPort.write(("AT+IMME1").encode())
-# while BLEReceived == False: continue
-# BLEReceived = False
-# serialPort.write(("AT+NAMESERVER_IoT").encode())
-# while BLEReceived == False: continue
-# BLEReceived = False
-# serialPort.write(("AT+IMME0").encode())
-# while BLEReceived == False: continue
-# BLEReceived = False
-# serialPort.write(("AT+RESET").encode())
-# while BLEReceived == False: continue
+BLEReceived = False
+serialPort.write(("AT").encode())
+while BLEReceived == False: continue
+BLEReceived = False
+serialPort.write(("AT+IMME1").encode())
+while BLEReceived == False: continue
+BLEReceived = False
+serialPort.write(("AT+NAMESERVER_IoT").encode())
+while BLEReceived == False: continue
+BLEReceived = False
+serialPort.write(("AT+IMME0").encode())
+while BLEReceived == False: continue
+BLEReceived = False
+serialPort.write(("AT+RESET").encode())
+while BLEReceived == False: continue
 
 
 stopBLEThread = True
 print("BLE Initialization Complete")
 
 #END BLE Init
+
+
+
 
 
 def runReadSequence():
@@ -222,7 +238,6 @@ def runReadSequence():
     while True:
         for c in serialPort.read().decode():
             line.append(c)
-
             if c == '\n':
                 print("newString")
                 fullString = ''.join(line).replace("\n"," ")
@@ -233,13 +248,11 @@ def runReadSequence():
                     dataStart = True
                     dataStop = False
                     print("start")
-
                 elif endMsg in fullString:
                     dataStart = False
                     dataStop = True
                     print("end")
                     return
-
                 elif dataStart == True and dataStop == False:
                     if ssid in fullString or ssid_pswd in fullString or uid in fullString:
                         try:
@@ -286,11 +299,13 @@ def modifyWPAFile():
     
     
 def modifyTOKENFile():
-    tokenConfig = open("/home/pi/Desktop/Senior-Design-Project/software/Server/token.txt", "r+")
+    tokenConfig = open("/home/pi/Desktop/Senior-Design-Project/software/Token/token.txt", "r+")
     tokenConfig.seek(0)
     tokenConfig.truncate(0)
     tokenConfig.write(appValues.get("uid").strip())
     tokenConfig.close()
+
+######
 
 
 
@@ -307,6 +322,9 @@ def bluetoothMAIN():
         response = requests.get(url)
         internet = True
         #GPIO.output(18, GPIO.LOW)
+        GPIO.output(36, GPIO.HIGH) #GREEN LED
+        GPIO.output(38, GPIO.LOW) #RED LED
+        GPIO.output(40, GPIO.LOW)  #BLE ON/OFF
         status = "Connected"
     except requests.ConnectionError:
         #print(response.status_code)
@@ -319,6 +337,9 @@ def bluetoothMAIN():
         #turn on the bluetooth HAT
         #GPIO.output(18, GPIO.HIGH)
         #time.sleep(2)
+        GPIO.output(36, GPIO.LOW) #GREEN LED
+        GPIO.output(38, GPIO.HIGH) #RED LED
+        GPIO.output(40, GPIO.HIGH)  #BLE ON/OFF
         runReadSequence()
         modifyWPAFile()
         modifyTOKENFile()
