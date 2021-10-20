@@ -5,14 +5,15 @@ import time
 import _thread
 import math
 import os
+import glob
 from uuid import getnode as get_mac
 
 import Adafruit_GPIO.SPI as SPI #ADC SPI library
 import Adafruit_MCP3008
 
-import nexmo
+#import nexmo
 
-import pyrebase
+#import pyrebase
 
 
 # For cryptography operations
@@ -49,7 +50,7 @@ deviceName = "TempSensor"
 
 
 #setup the bluetooth config.. this does not include timeout
-serialPort = serial.Serial("/dev/serial0", baudrate=9600)
+#serialPort = serial.Serial("/dev/serial0", baudrate=9600)
 
 appValues = {}
 
@@ -201,27 +202,27 @@ def BLEModuleInit(fun,fun1):
                 line = []
                 BLEReceived = True
 
-_thread.start_new_thread(BLEModuleInit,(1,1)) #start thread for BLE init
+# _thread.start_new_thread(BLEModuleInit,(1,1)) #start thread for BLE init
 
-BLEReceived = False
-serialPort.write(("AT").encode())
-while BLEReceived == False: continue
-BLEReceived = False
-serialPort.write(("AT+IMME1").encode())
-while BLEReceived == False: continue
-BLEReceived = False
-serialPort.write(("AT+NAMESERVER_IoT").encode())
-while BLEReceived == False: continue
-BLEReceived = False
-serialPort.write(("AT+IMME0").encode())
-while BLEReceived == False: continue
-BLEReceived = False
-serialPort.write(("AT+RESET").encode())
-while BLEReceived == False: continue
+# BLEReceived = False
+# serialPort.write(("AT").encode())
+# while BLEReceived == False: continue
+# BLEReceived = False
+# serialPort.write(("AT+IMME1").encode())
+# while BLEReceived == False: continue
+# BLEReceived = False
+# serialPort.write(("AT+NAMESERVER_IoT").encode())
+# while BLEReceived == False: continue
+# BLEReceived = False
+# serialPort.write(("AT+IMME0").encode())
+# while BLEReceived == False: continue
+# BLEReceived = False
+# serialPort.write(("AT+RESET").encode())
+# while BLEReceived == False: continue
 
 
-stopBLEThread = True
-print("BLE Initialization Complete")
+# stopBLEThread = True
+# print("BLE Initialization Complete")
 
 #END BLE Init
 
@@ -424,7 +425,7 @@ def read_temp_raw():
     f.close()
     return lines
 
-def read_temp(sendSocket):
+def read_temp():
     lines = read_temp_raw()
     while lines[0].strip()[-3:] != 'YES':
         time.sleep(0.2)
@@ -444,7 +445,7 @@ def read_temp(sendSocket):
  #       temp_c = round(rand + temp_c,2)
  #       temp_f = round(rand + temp_f,2)
     
-        sendingSocket(sendSocket, (str(temp_c) + '~' + str(temp_f)))  #return the temp in the form: #degrees C~#degrees F
+        # sendingSocket(sendSocket, (str(temp_c) + '~' + str(temp_f)))  #return the temp in the form: #degrees C~#degrees F
         return str(temp_c) + ' C ~ ' + str(temp_f) + ' F'  #return the temp in the form: #degrees C~#degrees F
 
 
@@ -452,7 +453,7 @@ def read_temp(sendSocket):
 SPI_PORT   = 0
 SPI_DEVICE = 0
 #connects the SPI port and device to the variable
-mcp = Adafruit_MCP3008.MCP3008(spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE))
+#mcp = Adafruit_MCP3008.MCP3008(spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE))
 
 #set the GPIO to the board layout (used for pin numbers)
 # GPIO.setmode(GPIO.BOARD)
@@ -495,7 +496,10 @@ adcValue = 0
 #sensor code
 try:
     while True:
-        print(read_temp(sending)) #read the temperature
+        # print(read_temp(sendingToDatabase)) #read the temperature
+        tempVal = read_temp()
+        print(tempVal)
+        sendingToDatabase(tempVal)
         time.sleep(interval)  #delay between temperature readings
 
            
