@@ -7,9 +7,10 @@ import math
 import os
 import glob
 from uuid import getnode as get_mac
+import pyrebase
 
-import Adafruit_GPIO.SPI as SPI #ADC SPI library
-import Adafruit_MCP3008
+#import Adafruit_GPIO.SPI as SPI #ADC SPI library
+#import Adafruit_MCP3008
 
 #import nexmo
 
@@ -25,8 +26,8 @@ mac = get_mac()
 print("MAC address: " + str(mac))
 
 
-tokenFileName = "token.txt"
-keyFileName = "tokenFileKey.key"
+tokenFileName = "~/Desktop/Senior-Design-Project/software/Token/token.txt"
+keyFileName = "~/Desktop/Senior-Design-Project/software/Token/tokenFileKey.key"
 key = ""
 
 

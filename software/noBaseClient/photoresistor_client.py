@@ -24,8 +24,8 @@ mac = get_mac()
 print("MAC address: " + str(mac))
 
 
-tokenFileName = "token.txt"
-keyFileName = "tokenFileKey.key"
+tokenFileName = "~/Desktop/Senior-Design-Project/software/Token/token.txt"
+keyFileName = "~/Desktop/Senior-Design-Project/software/Token/tokenFileKey.key"
 key = ""
 
 
