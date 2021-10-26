@@ -400,9 +400,9 @@ def firebaseStreamHandler(event):
         dataReceivedFromDatabase = eventPathString = event["data"]
         #CODE TO DO SOMETHING WITH RECEIVED DATA
         try:
-            print("Received data.. " + receivedData)
-            relay1 = receivedData.split('~')[0]
-            relay2 = receivedData.split('~')[1]
+            print("Received data.. " + str(dataReceivedFromDatabase))
+            relay1 = str(dataReceivedFromDatabase).split('~')[0]
+            relay2 = str(dataReceivedFromDatabase).split('~')[1]
             if(int(relay1) == 0):
                 GPIO.output(18, GPIO.LOW)
             elif(int(relay1) == 1):
@@ -414,7 +414,8 @@ def firebaseStreamHandler(event):
             elif(int(relay2) == 1):
                 GPIO.output(16, GPIO.HIGH)
                 
-            sendsSocket(sendingSocket, receivedData)
+            sendingToDatabase(receivedData)
+            # sendsSocket(sendingSocket, receivedData)
         
         except KeyboardInterrupt:
             print("keyboard interrupt")
