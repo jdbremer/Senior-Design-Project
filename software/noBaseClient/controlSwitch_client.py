@@ -414,7 +414,7 @@ def firebaseStreamHandler(event):
             elif(int(relay2) == 1):
                 GPIO.output(16, GPIO.HIGH)
                 
-            sendingToDatabase(receivedData)
+            sendingToDatabase(str(dataReceivedFromDatabase))
             # sendsSocket(sendingSocket, receivedData)
         
         except KeyboardInterrupt:
