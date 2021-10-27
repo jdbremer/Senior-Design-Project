@@ -12,7 +12,7 @@ from uuid import getnode as get_mac
 
 # import nexmo
 
-import pyrebase
+#import pyrebase
 
 
 # For cryptography operations
@@ -45,7 +45,7 @@ deviceName = "Fire"
 
 
 #setup the bluetooth config.. this does not include timeout
-serialPort = serial.Serial("/dev/serial0", baudrate=9600)
+#serialPort = serial.Serial("/dev/serial0", baudrate=9600)
 
 appValues = {}
 
@@ -197,27 +197,27 @@ def BLEModuleInit(fun,fun1):
                 line = []
                 BLEReceived = True
 
-_thread.start_new_thread(BLEModuleInit,(1,1)) #start thread for BLE init
+# _thread.start_new_thread(BLEModuleInit,(1,1)) #start thread for BLE init
 
-BLEReceived = False
-serialPort.write(("AT").encode())
-while BLEReceived == False: continue
-BLEReceived = False
-serialPort.write(("AT+IMME1").encode())
-while BLEReceived == False: continue
-BLEReceived = False
-serialPort.write(("AT+NAMESERVER_IoT").encode())
-while BLEReceived == False: continue
-BLEReceived = False
-serialPort.write(("AT+IMME0").encode())
-while BLEReceived == False: continue
-BLEReceived = False
-serialPort.write(("AT+RESET").encode())
-while BLEReceived == False: continue
+# BLEReceived = False
+# serialPort.write(("AT").encode())
+# while BLEReceived == False: continue
+# BLEReceived = False
+# serialPort.write(("AT+IMME1").encode())
+# while BLEReceived == False: continue
+# BLEReceived = False
+# serialPort.write(("AT+NAMESERVER_IoT").encode())
+# while BLEReceived == False: continue
+# BLEReceived = False
+# serialPort.write(("AT+IMME0").encode())
+# while BLEReceived == False: continue
+# BLEReceived = False
+# serialPort.write(("AT+RESET").encode())
+# while BLEReceived == False: continue
 
 
-stopBLEThread = True
-print("BLE Initialization Complete")
+# stopBLEThread = True
+# print("BLE Initialization Complete")
 
 #END BLE Init
 
