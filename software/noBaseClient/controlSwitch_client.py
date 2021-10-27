@@ -368,7 +368,7 @@ def bluetoothMAIN():
 
 
 ##DATABASE INIT##
-#firebase database config
+# firebase database config
 config = {
     "apiKey": "AIzaSyAcaqrqFZYmvcAb0qFCI9N4QiZ6L6OeuZ8",
     "authDomain": "seniordesign-ajr.firebaseapp.com",
