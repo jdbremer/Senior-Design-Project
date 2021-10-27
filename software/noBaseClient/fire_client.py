@@ -12,7 +12,7 @@ from uuid import getnode as get_mac
 
 # import nexmo
 
-#import pyrebase
+import pyrebase
 
 
 # For cryptography operations
@@ -24,8 +24,8 @@ mac = get_mac()
 print("MAC address: " + str(mac))
 
 
-tokenFileName = "~/Desktop/Senior-Design-Project/software/Token/token.txt"
-keyFileName = "~/Desktop/Senior-Design-Project/software/Token/tokenFileKey.key"
+tokenFileName = "/home/pi/Desktop/Senior-Design-Project/software/Token/token.txt"
+keyFileName = "/home/pi/Desktop/Senior-Design-Project/software/Token/tokenFileKey.key"
 key = ""
 
 
@@ -369,7 +369,7 @@ config = {
 }
 
 #initialize the pyrebase config instance 
-firebase = pyrebase.initialize_app(config)
+# firebase = pyrebase.initialize_app(config) #WILL NEEEEEED THIS UNCOMMENTED LATER
 
 #instantiate both the storage and database firebase libraries
 storage = firebase.storage()
@@ -420,7 +420,7 @@ def sendSampleThread(sendSocket,receive):
 SPI_PORT   = 0
 SPI_DEVICE = 0
 #connects the SPI port and device to the variable
-mcp = Adafruit_MCP3008.MCP3008(spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE))
+# mcp = Adafruit_MCP3008.MCP3008(spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE))
 
 #set the GPIO to the board layout (used for pin numbers)
 # GPIO.setmode(GPIO.BOARD)
