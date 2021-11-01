@@ -444,7 +444,7 @@ def sendSampleThread(sendSocket,receive):
 SPI_PORT   = 0
 SPI_DEVICE = 0
 #connects the SPI port and device to the variable
-mcp = Adafruit_MCP3008.MCP3008(spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE))
+# mcp = Adafruit_MCP3008.MCP3008(spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE))
 
 #set the GPIO to the board layout (used for pin numbers)
 # GPIO.setmode(GPIO.BOARD)
@@ -502,13 +502,14 @@ try:
         while True:
 
 
-			print('Raw ADC Value: ', chan.value)
-			print('ADC Voltage: ' + str(chan.voltage) + 'V')
+            # print('Raw ADC Value: ', chan.value)
+            # print('ADC Voltage: ' + str(chan.voltage) + 'V')
 
 
 
-        	
-            sensorTotal += mcp.read_adc(0) #read adc value of channel 0
+
+            # sensorTotal += mcp.read_adc(0) #read adc value of channel 0
+            sensorTotal += chan.value
             #take the average of the value
             #increment the incrementor
             inc = inc+1
@@ -519,10 +520,10 @@ try:
                 
                 #divide the sensor total by the total number of samples to get the average
                 adcValue  = sensorTotal / numberOfSamples
-                if adcValue > 300:
-                	isFire = 1
+                if adcValue < 65450:
+                    isFire = 1
                 else:
-                	isFire = 0
+                    isFire = 0
                 #use the generated equation to determine the average lux
                 # average_lux = math.e**(((100*adcValue)-23529)/(11996))
                 #round the average 2 decimal places
