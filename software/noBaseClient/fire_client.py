@@ -5,10 +5,34 @@ import time
 import _thread
 import math
 import os
+import serial
+import requests
+
+
+import busio
+import digitalio
+import board
+import adafruit_mcp3xxx.mcp3008 as MCP
+from adafruit_mcp3xxx.analog_in import AnalogIn
+
+# create the spi bus
+spi = busio.SPI(clock=board.SCK, MISO=board.MISO, MOSI=board.MOSI)
+
+# create the cs (chip select)
+cs = digitalio.DigitalInOut(board.D5)
+
+# create the mcp object
+mcp = MCP.MCP3008(spi, cs)
+
+# create an analog input channel on pin 0
+chan = AnalogIn(mcp, MCP.P0)
+
+
+
 from uuid import getnode as get_mac
 
-import Adafruit_GPIO.SPI as SPI #ADC SPI library
-import Adafruit_MCP3008
+# import Adafruit_GPIO.SPI as SPI #ADC SPI library
+# import Adafruit_MCP3008
 
 # import nexmo
 
@@ -476,6 +500,14 @@ try:
         #start the thread to send the average lux on a user specified interval
         _thread.start_new_thread(sendSampleThread,(sending,receiving)) 
         while True:
+
+
+			print('Raw ADC Value: ', chan.value)
+			print('ADC Voltage: ' + str(chan.voltage) + 'V')
+
+
+
+        	
             sensorTotal += mcp.read_adc(0) #read adc value of channel 0
             #take the average of the value
             #increment the incrementor
