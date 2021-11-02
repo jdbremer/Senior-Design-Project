@@ -432,7 +432,7 @@ def sendSampleThread(sendSocket,receive):
     global risingEdgeCount
 
     while True:
-        # time.sleep(interval)
+        time.sleep(2)
         print("sending risingEdgeCount to database, this will become dB: " + str(risingEdgeCount))
         sendingToDatabase(risingEdgeCount)
 
@@ -514,7 +514,7 @@ try:
         #start the thread to send the average lux on a user specified interval
         _thread.start_new_thread(sendSampleThread,(sending,receiving)) 
         while True:
-            sleep(edgeDetectionInterval) #time to allow edge detection
+            time.sleep(edgeDetectionInterval) #time to allow edge detection
             print("# of rising edges detected = " + str(risingEdgeCount))
             risingEdgeCount = 0 #reset counter
 
