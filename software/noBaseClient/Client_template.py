@@ -23,7 +23,8 @@ from cryptography.fernet import Fernet
 mac = get_mac()
 print("MAC address: " + str(mac))
 
-
+#MODIFY
+#Modify the path to these two within the Token folder...
 tokenFileName = "token.txt"
 keyFileName = "tokenFileKey.key"
 key = ""
@@ -55,24 +56,110 @@ fullString = ""
 grabToken = ""
 token = ""
 
-
-
-
-#BLE Init
-BLEReceived = True
-stopBLEThread = False
-
-
-
+#GPIO Setup
 GPIO.setmode(GPIO.BOARD)
 GPIO.setup(36, GPIO.OUT) #GREEN LED
 GPIO.setup(38, GPIO.OUT) #RED LED
 GPIO.setup(40, GPIO.OUT) #BLE ON/OFF
 
+GPIO.output(40, GPIO.LOW)  #BLE ON/OFF
+time.sleep(2) # We want the bluetooth module to go off initially as a reset
+
 #GPIO defaults
 GPIO.output(36, GPIO.HIGH) #GREEN LED
 GPIO.output(38, GPIO.HIGH) #RED LED
-GPIO.output(40, GPIO.HIGH)  #BLE ON/OFF
+GPIO.output(40, GPIO.LOW)  #BLE ON/OFF
+
+
+#Light Sequence GLOBALS
+runReadSeq = False
+modifyLocations = False
+restartWIFI = False
+allOff = False
+allOn = False
+bleInit = False
+greenOn = False
+redOn = False
+
+def lightSequence(n,a):
+    global runReadSeq
+    global modifyLocations
+    global restartWIFI
+    global allOff
+    global allOn
+    global bleInit
+    global greenOn
+    global redOn
+    while True:
+        if runReadSeq:
+            GPIO.output(40, GPIO.HIGH)  #BLE ON/OFF
+            GPIO.output(36, GPIO.LOW) #GREEN LED
+            GPIO.output(38, GPIO.HIGH) #RED LED
+            time.sleep(.2)
+            GPIO.output(36, GPIO.HIGH) #GREEN LED
+            GPIO.output(38, GPIO.LOW) #RED LED
+            time.sleep(.2)
+        elif modifyLocations:
+            GPIO.output(40, GPIO.HIGH)  #BLE ON/OFF
+            GPIO.output(36, GPIO.HIGH) #GREEN LED
+            GPIO.output(38, GPIO.HIGH) #RED LED
+            time.sleep(.2)
+            GPIO.output(36, GPIO.LOW) #GREEN LED
+            GPIO.output(38, GPIO.LOW) #RED LED
+            time.sleep(.2)
+        elif restartWIFI:
+            GPIO.output(40, GPIO.HIGH)  #BLE ON/OFF
+            GPIO.output(36, GPIO.LOW) #GREEN LED
+            GPIO.output(38, GPIO.HIGH) #RED LED
+            time.sleep(.2)
+            GPIO.output(36, GPIO.LOW) #GREEN LED
+            GPIO.output(38, GPIO.LOW) #RED LED
+            time.sleep(.2)
+            GPIO.output(36, GPIO.LOW) #GREEN LED
+            GPIO.output(38, GPIO.HIGH) #RED LED
+            time.sleep(.2)
+            GPIO.output(36, GPIO.LOW) #GREEN LED
+            GPIO.output(38, GPIO.LOW) #RED LED
+            time.sleep(.2)
+            GPIO.output(36, GPIO.HIGH) #GREEN LED
+            GPIO.output(38, GPIO.LOW) #RED LED
+            time.sleep(.2)
+            GPIO.output(36, GPIO.LOW) #GREEN LED
+            GPIO.output(38, GPIO.LOW) #RED LED
+            time.sleep(.2)
+            GPIO.output(36, GPIO.HIGH) #GREEN LED
+            GPIO.output(38, GPIO.LOW) #RED LED
+            time.sleep(.2)
+            GPIO.output(36, GPIO.LOW) #GREEN LED
+            GPIO.output(38, GPIO.LOW) #RED LED
+            time.sleep(.2)
+        elif allOn:
+            GPIO.output(40, GPIO.HIGH)  #BLE ON/OFF
+            GPIO.output(36, GPIO.HIGH) #GREEN LED
+            GPIO.output(38, GPIO.HIGH) #RED LED
+            time.sleep(.2)
+        elif allOff:
+            GPIO.output(36, GPIO.LOW) #GREEN LED
+            GPIO.output(38, GPIO.LOW) #RED LED
+            time.sleep(.2)
+        elif bleInit:
+            GPIO.output(40, GPIO.HIGH)  #BLE ON/OFF
+            GPIO.output(36, GPIO.HIGH) #GREEN LED
+            GPIO.output(38, GPIO.HIGH) #RED LED
+            time.sleep(.2)  
+        elif greenOn:
+            GPIO.output(36, GPIO.HIGH) #GREEN LED
+            GPIO.output(38, GPIO.LOW) #RED LED
+        elif redOn:
+            GPIO.output(36, GPIO.LOW) #GREEN LED
+            GPIO.output(38, GPIO.HIGH) #RED LED
+
+
+ _thread.start_new_thread(lightSequence,(1,1)) #start thread for BLE init
+
+#BLE Init
+BLEReceived = True
+stopBLEThread = False
 
 
 
@@ -158,73 +245,97 @@ else:
 ######
 #BLE Init
 
-BLEReceived = True
-stopBLEThread = False
+# BLEReceived = True
+# stopBLEThread = False
 
 
-def BLEModuleInit(fun,fun1):
-    line = []
-    BLEInit = 0
-    global BLEReceived
-    while stopBLEThread == False:
-        for c in serialPort.read().decode():
-            line.append(c)
-            linev2 = ''.join(line).replace("\n", " ").strip()
-            if linev2 == "OK+Set:1":
-                print(linev2)
-                line = []
-                BLEReceived = True
-            elif linev2 == "OK+RESET":
-                print(linev2)
-                line = []
-                BLEReceived = True
-            elif linev2 == "OK+Set:0":
-                print(linev2)
-                line = []
-                BLEReceived = True
-            elif linev2 == "OK+RESET":
-                print(linev2)
-                line = []
-                BLEReceived = True
-            elif linev2 == "OK+Set:SERVER_IoT":
-                print(linev2)
-                line = []
-                BLEReceived = True
-            elif linev2 == "OK" and BLEInit == 0:
-                BLEInit = 1
-                print(linev2)
-                line = []
-                BLEReceived = True
+# def BLEModuleInit(fun,fun1):
+#     line = []
+#     BLEInit = 0
+#     global BLEReceived
+#     while stopBLEThread == False:
+#         for c in serialPort.read().decode():
+#             line.append(c)
+#             linev2 = ''.join(line).replace("\n", " ").strip()
+#             if linev2 == "OK+Set:1":
+#                 print(linev2)
+#                 line = []
+#                 BLEReceived = True
+#             elif linev2 == "OK+RESET":
+#                 print(linev2)
+#                 line = []
+#                 BLEReceived = True
+#             elif linev2 == "OK+Set:0":
+#                 print(linev2)
+#                 line = []
+#                 BLEReceived = True
+#             elif linev2 == "OK+RESET":
+#                 print(linev2)
+#                 line = []
+#                 BLEReceived = True
+#             elif linev2 == "OK+Set:SERVER_IoT":
+#                 print(linev2)
+#                 line = []
+#                 BLEReceived = True
+#             elif linev2 == "OK" and BLEInit == 0:
+#                 BLEInit = 1
+#                 print(linev2)
+#                 line = []
+#                 BLEReceived = True
 
-_thread.start_new_thread(BLEModuleInit,(1,1)) #start thread for BLE init
+# _thread.start_new_thread(BLEModuleInit,(1,1)) #start thread for BLE init
 
-BLEReceived = False
+
+bleInit = True
+# BLEReceived = False
 serialPort.write(("AT").encode())
-while BLEReceived == False: continue
-BLEReceived = False
+time.sleep(2)
+# while BLEReceived == False: continue
+# BLEReceived = False
 serialPort.write(("AT+IMME1").encode())
-while BLEReceived == False: continue
-BLEReceived = False
+time.sleep(2)
+# while BLEReceived == False: continue
+# BLEReceived = False
 serialPort.write(("AT+NAMESERVER_IoT").encode())
-while BLEReceived == False: continue
-BLEReceived = False
+time.sleep(2)
+# while BLEReceived == False: continue
+# BLEReceived = False
 serialPort.write(("AT+IMME0").encode())
-while BLEReceived == False: continue
-BLEReceived = False
+time.sleep(2)
+# while BLEReceived == False: continue
+# BLEReceived = False
 serialPort.write(("AT+RESET").encode())
-while BLEReceived == False: continue
+time.sleep(2)
+# while BLEReceived == False: continue
 
 
-stopBLEThread = True
+# stopBLEThread = True
 print("BLE Initialization Complete")
+bleInit = False
 
-#END BLE Init
-
-
+#END BLE Init    
 
 
 
 def runReadSequence():
+    global runReadSeq
+    global modifyLocations
+    global restartWIFI
+    global allOff
+    global allOn
+    global bleInit
+    global greenOn
+    global redOn
+    runReadSeq = True
+    modifyLocations = False
+    restartWIFI = False
+    allOff = False
+    allOn = False
+    bleInit = False
+    greenOn = False
+    redOn = False
+
+    
     global line
     global fullString
     startMsg = "start"
@@ -269,15 +380,49 @@ def runReadSequence():
 
 #restarts the wifi services
 def RestartWifi():
-  os.system('sudo systemctl daemon-reload')
-  time.sleep(5)
-  os.system('sudo systemctl stop dhcpcd.service')
-  time.sleep(5)
-  os.system('sudo systemctl start dhcpcd.service')
-  time.sleep(20)
+    global runReadSeq
+    global modifyLocations
+    global restartWIFI
+    global allOff
+    global allOn
+    global bleInit
+    global greenOn
+    global redOn
+    runReadSeq = False
+    modifyLocations = False
+    restartWIFI = True
+    allOff = False
+    allOn = False
+    bleInit = False
+    greenOn = False
+    redOn = False
+
+    os.system('sudo systemctl daemon-reload')
+    time.sleep(5)
+    os.system('sudo systemctl stop dhcpcd.service')
+    time.sleep(5)
+    os.system('sudo systemctl start dhcpcd.service')
+    time.sleep(20)
 
 
 def modifyWPAFile():
+    global runReadSeq
+    global modifyLocations
+    global restartWIFI
+    global allOff
+    global allOn
+    global bleInit
+    global greenOn
+    global redOn
+    runReadSeq = False
+    modifyLocations = True
+    restartWIFI = False
+    allOff = False
+    allOn = False
+    bleInit = False
+    greenOn = False
+    redOn = False
+
     wifiConfig = open("/etc/wpa_supplicant/wpa_supplicant.conf", "r+")
     fileContents = wifiConfig.readlines()
     newFileContents = ""
@@ -299,6 +444,23 @@ def modifyWPAFile():
     
     
 def modifyTOKENFile():
+    global runReadSeq
+    global modifyLocations
+    global restartWIFI
+    global allOff
+    global allOn
+    global bleInit
+    global greenOn
+    global redOn
+    runReadSeq = False
+    modifyLocations = True
+    restartWIFI = False
+    allOff = False
+    allOn = False
+    bleInit = False
+    greenOn = False
+    redOn = False
+
     tokenConfig = open("/home/pi/Desktop/Senior-Design-Project/software/Token/token.txt", "r+")
     tokenConfig.seek(0)
     tokenConfig.truncate(0)
@@ -311,6 +473,24 @@ def modifyTOKENFile():
 
 
 def bluetoothMAIN():
+    global runReadSeq
+    global modifyLocations
+    global restartWIFI
+    global allOff
+    global allOn
+    global bleInit
+    global greenOn
+    global redOn
+    runReadSeq = False
+    modifyLocations = False
+    restartWIFI = False
+    allOff = False
+    allOn = False
+    bleInit = False
+    greenOn = False
+    redOn = False
+
+
     print("Bluetooth MAIN")
     internet = False
     status = ""
@@ -321,9 +501,14 @@ def bluetoothMAIN():
         #urllib.request.urlopen(url)
         response = requests.get(url)
         internet = True
-        #GPIO.output(18, GPIO.LOW)
-        GPIO.output(36, GPIO.HIGH) #GREEN LED
-        GPIO.output(38, GPIO.LOW) #RED LED
+        runReadSeq = False
+        modifyLocations = False
+        restartWIFI = False
+        allOff = False
+        allOn = False
+        bleInit = False
+        greenOn = True
+        redOn = False
         GPIO.output(40, GPIO.LOW)  #BLE ON/OFF
         status = "Connected"
     except requests.ConnectionError:
@@ -334,11 +519,14 @@ def bluetoothMAIN():
             
     print(status)
     if status == "Not connected":
-        #turn on the bluetooth HAT
-        #GPIO.output(18, GPIO.HIGH)
-        #time.sleep(2)
-        GPIO.output(36, GPIO.LOW) #GREEN LED
-        GPIO.output(38, GPIO.HIGH) #RED LED
+        runReadSeq = False
+        modifyLocations = False
+        restartWIFI = False
+        allOff = False
+        allOn = False
+        bleInit = False
+        greenOn = False
+        redOn = True
         GPIO.output(40, GPIO.HIGH)  #BLE ON/OFF
         runReadSequence()
         modifyWPAFile()
@@ -347,7 +535,7 @@ def bluetoothMAIN():
         bluetoothMAIN()
 
 
-
+bluetoothMAIN()
 
 # Used to decrypt the file, we only want to decrypt the contents
 
