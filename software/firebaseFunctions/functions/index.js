@@ -21,6 +21,8 @@ exports.alexaControlSwitch = functions.database
           .child(user + "/dataFromApp/ControlSwitch");
       if (original == "1") {
         return reftwo.set("1~1");
+      } else if (original == "2") {
+        return NULL;  
       } else {
         return reftwo.set("0~0");
       }
