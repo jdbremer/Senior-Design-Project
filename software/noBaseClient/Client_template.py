@@ -173,7 +173,7 @@ def lightSequence(n,a):
             GPIO.output(38, GPIO.HIGH) #RED LED
 
 
- _thread.start_new_thread(lightSequence,(1,1)) #start thread for BLE init
+_thread.start_new_thread(lightSequence,(1,1)) #start thread for BLE init
 
 #BLE Init
 BLEReceived = True
