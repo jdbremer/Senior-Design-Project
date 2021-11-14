@@ -87,18 +87,18 @@ redLed.direction = digitalio.direction.output
 ble.direction = digitalio.direction.output
 
 
-# GPIO.setmode(GPIO.BOARD)
-# GPIO.setup(36, GPIO.OUT) #GREEN LED
-# GPIO.setup(38, GPIO.OUT) #RED LED
-# GPIO.setup(40, GPIO.OUT) #BLE ON/OFF
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(36, GPIO.OUT) #GREEN LED
+GPIO.setup(38, GPIO.OUT) #RED LED
+GPIO.setup(40, GPIO.OUT) #BLE ON/OFF
 
-ble.value = False  #BLE ON/OFF
+GPIO.output(40, GPIO.LOW)  #BLE ON/OFF
 time.sleep(2) # We want the bluetooth module to go off initially as a reset
 
 #GPIO defaults
-greenLed.value = True #GREEN LED
-redLed.value = True #RED LED
-ble.value = True  #BLE ON/OFF
+GPIO.output(36, GPIO.HIGH) #GREEN LED
+GPIO.output(38, GPIO.HIGH) #RED LED
+GPIO.output(40, GPIO.LOW)  #BLE ON/OFF
 
 
 #Light Sequence GLOBALS
@@ -122,67 +122,67 @@ def lightSequence(n,a):
     global redOn
     while True:
         if runReadSeq:
-            ble.value = True  #BLE ON/OFF
-            greenLed.value = False #GREEN LED
-            redLed.value = True #RED LED
+            GPIO.output(40, GPIO.HIGH)  #BLE ON/OFF
+            GPIO.output(36, GPIO.LOW) #GREEN LED
+            GPIO.output(38, GPIO.HIGH) #RED LED
             time.sleep(.2)
-            greenLed.value = True #GREEN LED
-            redLed.value = False #RED LED
+            GPIO.output(36, GPIO.HIGH) #GREEN LED
+            GPIO.output(38, GPIO.LOW) #RED LED
             time.sleep(.2)
         elif modifyLocations:
-            ble.value = True  #BLE ON/OFF
-            greenLed.value = True #GREEN LED
-            redLed.value = True #RED LED
+            GPIO.output(40, GPIO.HIGH)  #BLE ON/OFF
+            GPIO.output(36, GPIO.HIGH) #GREEN LED
+            GPIO.output(38, GPIO.HIGH) #RED LED
             time.sleep(.2)
-            greenLed.value = False #GREEN LED
-            redLed.value = False #RED LED
+            GPIO.output(36, GPIO.LOW) #GREEN LED
+            GPIO.output(38, GPIO.LOW) #RED LED
             time.sleep(.2)
         elif restartWIFI:
-            ble.value = True  #BLE ON/OFF
-            greenLed.value = False #GREEN LED
-            redLed.value = True #RED LED
+            GPIO.output(40, GPIO.HIGH)  #BLE ON/OFF
+            GPIO.output(36, GPIO.LOW) #GREEN LED
+            GPIO.output(38, GPIO.HIGH) #RED LED
             time.sleep(.2)
-            greenLed.value = False #GREEN LED
-            redLed.value = False #RED LED
+            GPIO.output(36, GPIO.LOW) #GREEN LED
+            GPIO.output(38, GPIO.LOW) #RED LED
             time.sleep(.2)
-            greenLed.value = False #GREEN LED
-            redLed.value = True #RED LED
+            GPIO.output(36, GPIO.LOW) #GREEN LED
+            GPIO.output(38, GPIO.HIGH) #RED LED
             time.sleep(.2)
-            greenLed.value = False #GREEN LED
-            redLed.value = False #RED LED
+            GPIO.output(36, GPIO.LOW) #GREEN LED
+            GPIO.output(38, GPIO.LOW) #RED LED
             time.sleep(.2)
-            greenLed.value = True #GREEN LED
-            redLed.value = False #RED LED
+            GPIO.output(36, GPIO.HIGH) #GREEN LED
+            GPIO.output(38, GPIO.LOW) #RED LED
             time.sleep(.2)
-            greenLed.value = False #GREEN LED
-            redLed.value = False #RED LED
+            GPIO.output(36, GPIO.LOW) #GREEN LED
+            GPIO.output(38, GPIO.LOW) #RED LED
             time.sleep(.2)
-            greenLed.value = True #GREEN LED
-            redLed.value = False #RED LED
+            GPIO.output(36, GPIO.HIGH) #GREEN LED
+            GPIO.output(38, GPIO.LOW) #RED LED
             time.sleep(.2)
-            greenLed.value = False #GREEN LED
-            redLed.value = False #RED LED
+            GPIO.output(36, GPIO.LOW) #GREEN LED
+            GPIO.output(38, GPIO.LOW) #RED LED
             time.sleep(.2)
         elif allOn:
-            ble.value = True  #BLE ON/OFF
-            greenLed.value = True #GREEN LED
-            redLed.value = True #RED LED
+            GPIO.output(40, GPIO.HIGH)  #BLE ON/OFF
+            GPIO.output(36, GPIO.HIGH) #GREEN LED
+            GPIO.output(38, GPIO.HIGH) #RED LED
             time.sleep(.2)
         elif allOff:
-            greenLed.value = False #GREEN LED
-            redLed.value = False #RED LED
+            GPIO.output(36, GPIO.LOW) #GREEN LED
+            GPIO.output(38, GPIO.LOW) #RED LED
             time.sleep(.2)
         elif bleInit:
-            ble.value = True  #BLE ON/OFF
-            greenLed.value = True #GREEN LED
-            redLed.value = True #RED LED
+            GPIO.output(40, GPIO.HIGH)  #BLE ON/OFF
+            GPIO.output(36, GPIO.HIGH) #GREEN LED
+            GPIO.output(38, GPIO.HIGH) #RED LED
             time.sleep(.2)  
         elif greenOn:
-            greenLed.value = True #GREEN LED
-            redLed.value = False #RED LED
+            GPIO.output(36, GPIO.HIGH) #GREEN LED
+            GPIO.output(38, GPIO.LOW) #RED LED
         elif redOn:
-            greenLed.value = False #GREEN LED
-            redLed.value = True #RED LED
+            GPIO.output(36, GPIO.LOW) #GREEN LED
+            GPIO.output(38, GPIO.HIGH) #RED LED
 
 
 _thread.start_new_thread(lightSequence,(1,1)) #start thread for BLE init
@@ -539,7 +539,7 @@ def bluetoothMAIN():
         bleInit = False
         greenOn = True
         redOn = False
-        ble.value = False  #BLE ON/OFF
+        GPIO.output(40, GPIO.LOW)  #BLE ON/OFF
         status = "Connected"
     except requests.ConnectionError:
         #print(response.status_code)
@@ -557,7 +557,7 @@ def bluetoothMAIN():
         bleInit = False
         greenOn = False
         redOn = True
-        ble.value = True  #BLE ON/OFF
+        GPIO.output(40, GPIO.HIGH)  #BLE ON/OFF
         runReadSequence()
         modifyWPAFile()
         modifyTOKENFile()
