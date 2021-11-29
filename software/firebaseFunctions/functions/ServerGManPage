@@ -1,0 +1,15 @@
+." Manpage for ServerG.c
+.TH man 8 "17 October 2021" "1.0" "ServerGManPage"
+.SH NAME
+ServerG.c
+.SH DESCRIPTION
+ServerG.c acts as the server for each individual game of rock paper scissors.
+It keeps track of the following items for each individual game:
+Status (wins of player and computer)
+Generates rock, paper, or scissors for computer
+Checks who wins each round.
+etc
+.SH BUGS
+No known bugs.
+.SH AUTHOR
+Ryan Sweeney, Kevin Gruwell, Eric Scheeler, Thomas Xiong

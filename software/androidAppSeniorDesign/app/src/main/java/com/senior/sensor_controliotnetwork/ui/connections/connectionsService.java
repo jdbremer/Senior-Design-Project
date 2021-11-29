@@ -47,17 +47,24 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class connectionsService extends Service {
     private Looper serviceLooper;
     private ServiceHandler serviceHandler;
     private DatabaseReference mPostReference;
+    public DatabaseReference mDatabase;
+    private DatabaseReference mPulseReference;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String userId = user.getUid();  //assign userId the token for the user
 
     public ArrayList<String> arrayList = new ArrayList<String>();
     public ArrayList<String> allServices = new ArrayList<String>();
     public ArrayList<String> temp = new ArrayList<String>();
+
+    public int lightStatusValue;
+    public String lightStatus = "0";
 
     Intent lightIntent;
     Intent micIntent;
@@ -155,11 +162,7 @@ public class connectionsService extends Service {
         @Override
         public void handleMessage(Message msg) {
 
-
-
             try {
-
-
                 //CONSTANT LISTENER CODE//
                 ValueEventListener constantListener = new ValueEventListener(){
                     @Override
@@ -223,8 +226,48 @@ public class connectionsService extends Service {
                         System.out.println("The read failed: " + error.getMessage());
                     }
                 };
+
+                //ENTERS CODE BELOW WHEN Pulse -> Pulse RECEIVES NEW VALUE
+                ValueEventListener pulseConstantListener = new ValueEventListener(){
+                    @Override
+                    public void onDataChange (DataSnapshot dataSnapshot){
+                        String key = dataSnapshot.getKey();
+                        Map<String, Object> td = (HashMap<String,Object>) dataSnapshot.getValue();
+                        List<Object> values = new ArrayList<>(td.values());
+                        String value = (String) td.get(key);
+
+                        if(key.equals("Pulse")){
+                            if(value.equals("1")){
+                                try {
+                                    Thread.sleep(1000);    //sleep for 1 seconds
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                if (lightStatus.equals("0")){
+                                    mDatabase.child(userId).child("Connections").child("LightSensor").setValue("0");
+                                }
+                            }
+                            else{   //reset all pulse -> sensor values
+                                mDatabase.child(userId).child("Pulse").child("LightSensor").setValue("0");
+                            }
+                        }
+                        else if(key.equals("LightSensor")){
+                            lightStatus = dataSnapshot.getValue().toString();   //update value to match database
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled (@NonNull DatabaseError error){
+                        //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                        System.out.println("The read failed: " + error.getMessage());
+                    }
+                };
+
+
                 mPostReference.addListenerForSingleValueEvent(singleListener); //Uncomment this to start the continuous grab of updated data (runs code above, constant listener code)
                 mPostReference.addValueEventListener(constantListener);
+                mPulseReference.addValueEventListener(pulseConstantListener);
+                mDatabase = FirebaseDatabase.getInstance().getReference();  //DATABASE OBJECT
                 //END SINGLE LISTENER CODE//
 
 
@@ -232,7 +275,12 @@ public class connectionsService extends Service {
                 // For our sample, we just sleep for 5 seconds.
 
                 while(true) {
-                    Thread.sleep(1000);
+                    Thread.sleep(20000);    //sleep for 20 seconds
+                    mDatabase.child(userId).child("Pulse").child("Pulse").setValue("1");
+                    Thread.sleep(7000);    //sleep for 7 seconds
+                    mDatabase.child(userId).child("Pulse").child("Pulse").setValue("0");
+//                    mDatabase.child(userId).child("Status").child("LightSensor").setValue("0"); //reset status
+//                    mDatabase.child(userId).child("Pulse").child("LightSensor").setValue("0"); //reset status
                     if (ConnectionsFragment.active) {
                         //DO STUFF
                         talk();
@@ -252,6 +300,8 @@ public class connectionsService extends Service {
             // the service in the middle of handling another job
             stopSelf(msg.arg1);
         }
+
+
     }
 
     @Override
@@ -262,6 +312,7 @@ public class connectionsService extends Service {
         // background priority so CPU-intensive work doesn't disrupt our UI.
         //mPostReference = FirebaseDatabase.getInstance().getReference().child(userId).child("dataFromChild").child("LightSensor");  //LISTENER OBJECT
         mPostReference = FirebaseDatabase.getInstance().getReference().child(userId).child("Connections");  //LISTENER OBJECT
+        mPulseReference = FirebaseDatabase.getInstance().getReference().child(userId).child("Pulse");  //LISTENER OBJECT
         HandlerThread thread = new HandlerThread("ServiceStartArguments",
                 Process.THREAD_PRIORITY_BACKGROUND);
         thread.start();

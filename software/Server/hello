@@ -1,0 +1,7 @@
+char* fn1(const char* str)
+{
+	char* temp = malloc(sizeof(char) * strlen(str));
+	strcpy(temp, str);
+	strcat(temp, str);
+	return temp;
+}
