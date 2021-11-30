@@ -14,6 +14,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -56,6 +57,7 @@ public class connectionsService extends Service {
     private DatabaseReference mPostReference;
     public DatabaseReference mDatabase;
     private DatabaseReference mPulseReference;
+    private DatabaseReference mStatusReference;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     String userId = user.getUid();  //assign userId the token for the user
 
@@ -64,7 +66,7 @@ public class connectionsService extends Service {
     public ArrayList<String> temp = new ArrayList<String>();
 
     public int lightStatusValue;
-    public String lightStatus = "0";
+    public String lightStatus = "1";
 
     Intent lightIntent;
     Intent micIntent;
@@ -227,32 +229,87 @@ public class connectionsService extends Service {
                     }
                 };
 
-                //ENTERS CODE BELOW WHEN Pulse -> Pulse RECEIVES NEW VALUE
-                ValueEventListener pulseConstantListener = new ValueEventListener(){
+                //ENTERS CODE BELOW WHEN Pulse RECEIVES NEW VALUE
+//                ValueEventListener pulseConstantListener = new ValueEventListener(){
+//                    @Override
+//                    public void onDataChange (DataSnapshot dataSnapshot){
+//                        String key = dataSnapshot.getKey();
+//                        Map<String, Object> td = (HashMap<String,Object>) dataSnapshot.getValue();
+//                        List<Object> values = new ArrayList<>(td.values());
+//                        String value = (String) td.get("Pulse");
+//                        String lightValue = (String) td.get("LightSensor");
+//
+//                        if(key.equals("Pulse")){
+//                            if(value.equals("1") && (lightValue.equals("0"))){
+//                                try {
+//                                    Thread.sleep(3000);    //sleep for 3 seconds
+//                                } catch (InterruptedException e) {
+//                                    e.printStackTrace();
+//                                }
+//                                if (lightStatus.equals("0")){
+//                                    mDatabase.child(userId).child("Connections").child("LightSensor").setValue("0");
+//                                }
+//                                else{
+//                                    mDatabase.child(userId).child("Connections").child("LightSensor").setValue("1");
+//                                }
+//                            }
+//                            else{   //reset all pulse -> sensor values
+//                                mDatabase.child(userId).child("Pulse").child("LightSensor").setValue("0");
+//                                mDatabase.child(userId).child("Status").child("LightSensor").setValue("0");
+//                            }
+//                        }
+////                        else if(key.equals("LightSensor")){
+//////                            lightStatus = dataSnapshot.getValue().toString();   //update value to match database
+////                            lightStatus = value;
+////                        }
+//                    }
+//
+//                    @Override
+//                    public void onCancelled (@NonNull DatabaseError error){
+//                        //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+//                        System.out.println("The read failed: " + error.getMessage());
+//                    }
+//                };
+
+                //ENTERS CODE BELOW WHEN Status RECEIVES NEW VALUE
+//                ValueEventListener statusConstantListener = new ValueEventListener(){
+//                    @Override
+//                    public void onDataChange (DataSnapshot dataSnapshot){
+//                        String key = dataSnapshot.getKey();
+//                        Map<String, Object> td = (HashMap<String,Object>) dataSnapshot.getValue();
+//                        List<Object> values = new ArrayList<>(td.values());
+//                        String value = (String) td.get("LightSensor");
+//
+//                        if(value.equals("1")){
+//                            mDatabase.child(userId).child("Pulse").child("LightSensor").setValue("1");
+//                            lightStatus = "1";
+//                        }
+//                        else{
+//                            mDatabase.child(userId).child("Pulse").child("LightSensor").setValue("0");
+//                            lightStatus = "0";
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onCancelled (@NonNull DatabaseError error){
+//                        //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+//                        System.out.println("The read failed: " + error.getMessage());
+//                    }
+//                };
+
+                //SINGLE LISTENER CODE//
+                ValueEventListener singleStatusListener = new ValueEventListener(){
                     @Override
                     public void onDataChange (DataSnapshot dataSnapshot){
-                        String key = dataSnapshot.getKey();
-                        Map<String, Object> td = (HashMap<String,Object>) dataSnapshot.getValue();
-                        List<Object> values = new ArrayList<>(td.values());
-                        String value = (String) td.get(key);
-
-                        if(key.equals("Pulse")){
-                            if(value.equals("1")){
-                                try {
-                                    Thread.sleep(1000);    //sleep for 1 seconds
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                if (lightStatus.equals("0")){
-                                    mDatabase.child(userId).child("Connections").child("LightSensor").setValue("0");
-                                }
-                            }
-                            else{   //reset all pulse -> sensor values
-                                mDatabase.child(userId).child("Pulse").child("LightSensor").setValue("0");
-                            }
-                        }
-                        else if(key.equals("LightSensor")){
-                            lightStatus = dataSnapshot.getValue().toString();   //update value to match database
+                        Iterator<DataSnapshot> iter = dataSnapshot.getChildren().iterator();
+                        while (iter.hasNext()){
+                            DataSnapshot snap = iter.next();
+                            String key = snap.getKey();
+//                            int value = Integer.parseInt((String) snap.getValue());
+                            String value = (String) snap.getValue();
+                            Log.v("this", "value= " + value + "key = " + key);
+//                            String valueStr = value.toString();
+                            mDatabase.child(userId).child("Connections").child(key).setValue(value);
                         }
                     }
 
@@ -263,10 +320,10 @@ public class connectionsService extends Service {
                     }
                 };
 
-
                 mPostReference.addListenerForSingleValueEvent(singleListener); //Uncomment this to start the continuous grab of updated data (runs code above, constant listener code)
                 mPostReference.addValueEventListener(constantListener);
-                mPulseReference.addValueEventListener(pulseConstantListener);
+//                mPulseReference.addValueEventListener(pulseConstantListener);
+//                mStatusReference.addValueEventListener(singleStatusListener);
                 mDatabase = FirebaseDatabase.getInstance().getReference();  //DATABASE OBJECT
                 //END SINGLE LISTENER CODE//
 
@@ -277,9 +334,35 @@ public class connectionsService extends Service {
                 while(true) {
                     Thread.sleep(20000);    //sleep for 20 seconds
                     mDatabase.child(userId).child("Pulse").child("Pulse").setValue("1");
-                    Thread.sleep(7000);    //sleep for 7 seconds
+                    Thread.sleep(20000);    //sleep for 7 seconds
+//                    mDatabase.child(userId).child("Pulse").child("Pulse").setValue("0");
+//                    mStatusReference.addListenerForSingleValueEvent(singleStatusListener);
+                    mDatabase.child("users").child(userId).child("Status").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DataSnapshot> task) {
+                            if (!task.isSuccessful()) {
+                                Log.v("firebase", "Error getting data");
+                            }
+                            else {
+//                                Log.v("firebase", String.valueOf(task.getResult().getChildren();
+                                Iterator<DataSnapshot> iter = task.getResult().getChildren().iterator();
+                                while (iter.hasNext()){
+                                    DataSnapshot snap = iter.next();
+                                    String key = snap.getKey();
+//                            int value = Integer.parseInt((String) snap.getValue());
+                                    String value = (String) snap.getValue();
+                                    Log.v("this", "value= " + value + "key = " + key);
+//                            String valueStr = value.toString();
+                                    mDatabase.child(userId).child("Connections").child(key).setValue(value);
+                                }
+                            }
+                        }
+                    });
+                    Thread.sleep(10000);
+//                    mStatusReference.addListenerForSingleValueEvent(singleStatusListener);
+//                    Thread.sleep(4000);
+                    mDatabase.child(userId).child("Status").child("LightSensor").setValue("0"); //reset status
                     mDatabase.child(userId).child("Pulse").child("Pulse").setValue("0");
-//                    mDatabase.child(userId).child("Status").child("LightSensor").setValue("0"); //reset status
 //                    mDatabase.child(userId).child("Pulse").child("LightSensor").setValue("0"); //reset status
                     if (ConnectionsFragment.active) {
                         //DO STUFF
@@ -312,7 +395,8 @@ public class connectionsService extends Service {
         // background priority so CPU-intensive work doesn't disrupt our UI.
         //mPostReference = FirebaseDatabase.getInstance().getReference().child(userId).child("dataFromChild").child("LightSensor");  //LISTENER OBJECT
         mPostReference = FirebaseDatabase.getInstance().getReference().child(userId).child("Connections");  //LISTENER OBJECT
-        mPulseReference = FirebaseDatabase.getInstance().getReference().child(userId).child("Pulse");  //LISTENER OBJECT
+//        mPulseReference = FirebaseDatabase.getInstance().getReference().child(userId).child("Pulse");  //LISTENER OBJECT
+        mStatusReference = FirebaseDatabase.getInstance().getReference().child(userId).child("Status");  //LISTENER OBJECT
         HandlerThread thread = new HandlerThread("ServiceStartArguments",
                 Process.THREAD_PRIORITY_BACKGROUND);
         thread.start();
