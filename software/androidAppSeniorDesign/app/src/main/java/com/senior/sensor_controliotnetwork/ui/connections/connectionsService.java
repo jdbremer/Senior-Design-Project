@@ -334,10 +334,10 @@ public class connectionsService extends Service {
                 while(true) {
                     Thread.sleep(20000);    //sleep for 20 seconds
                     mDatabase.child(userId).child("Pulse").child("Pulse").setValue("1");
-                    Thread.sleep(20000);    //sleep for 7 seconds
+                    Thread.sleep(5000);    //sleep for 7 seconds
 //                    mDatabase.child(userId).child("Pulse").child("Pulse").setValue("0");
 //                    mStatusReference.addListenerForSingleValueEvent(singleStatusListener);
-                    mDatabase.child("users").child(userId).child("Status").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    mDatabase.child(userId).child("Status").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DataSnapshot> task) {
                             if (!task.isSuccessful()) {
@@ -358,7 +358,7 @@ public class connectionsService extends Service {
                             }
                         }
                     });
-                    Thread.sleep(10000);
+                    Thread.sleep(1000);
 //                    mStatusReference.addListenerForSingleValueEvent(singleStatusListener);
 //                    Thread.sleep(4000);
                     mDatabase.child(userId).child("Status").child("LightSensor").setValue("0"); //reset status
