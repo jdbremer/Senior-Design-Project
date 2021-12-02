@@ -1,3 +1,4 @@
+
 # Import socket module
 import RPi.GPIO as GPIO #pulls in the GPIO pin numbers
 import socket
@@ -7,8 +8,8 @@ import math
 import os
 from uuid import getnode as get_mac
 
-import Adafruit_GPIO.SPI as SPI #ADC SPI library
-import Adafruit_MCP3008
+#import Adafruit_GPIO.SPI as SPI #ADC SPI library
+#import Adafruit_MCP3008
 
 import nexmo
 
@@ -20,14 +21,25 @@ import pyrebase
 from cryptography.fernet import Fernet
 
 
+import busio
+import digitalio
+import board
+import adafruit_mcp3xxx.mcp3008 as MCP
+from adafruit_mcp3xxx.analog_in import AnalogIn
+spi = busio.SPI(clock=board.SCK, MISO=board.MISO, MOSI=board.MOSI)
+cs = digitalio.DigitalInOut(board.D5)
+mcp = MCP.MCP3008(spi, cs)
+
+channel = AnalogIn(mcp, MCP.P0)
+
 mac = get_mac()
 print("MAC address: " + str(mac))
 
 
 # tokenFileName = "~/Desktop/Senior-Design-Project/software/Token/token.txt"
 # keyFileName = "~/Desktop/Senior-Design-Project/software/Token/tokenFileKey.key"
-tokenFileName = "/home/pi/Desktop/Senior-Design-Project/software/Token/token.txt"
-keyFileName = "/home/pi/Desktop/Senior-Design-Project/software/Token/tokenFileKey.key"
+tokenFileName = "/home/pi/Desktop/seniorDesign/Senior-Design-Project/software/Token/token.txt"
+keyFileName = "/home/pi/Desktop/seniorDesign/Senior-Design-Project/software/Token/tokenFileKey.key"
 key = ""
 
 
@@ -46,7 +58,7 @@ deviceName = "LightSensor"
 
 
 #setup the bluetooth config.. this does not include timeout
-serialPort = serial.Serial("/dev/serial0", baudrate=9600)
+#serialPort = serial.Serial("/dev/serial0", baudrate=9600)
 
 appValues = {}
 
@@ -120,6 +132,14 @@ def decryptFileContents(fileName, key):
     return decrypted
     # For debug
     # print(decrypted)
+
+
+#tokenConfig = open("/home/pi/Desktop/seniorDesign/Senior-Design-Project/software/Token/token.txt", "r+")
+#tokenConfig.seek(0)
+#tokenConfig.truncate(0)
+#tokenConfig.write(('X4KVbWNlW8XhHE6b1NfcxCMUkGc2').strip())
+#tokenConfig.close()
+
 
 
 
@@ -201,20 +221,20 @@ def BLEModuleInit(fun,fun1):
 _thread.start_new_thread(BLEModuleInit,(1,1)) #start thread for BLE init
 
 BLEReceived = False
-serialPort.write(("AT").encode())
-while BLEReceived == False: continue
-BLEReceived = False
-serialPort.write(("AT+IMME1").encode())
-while BLEReceived == False: continue
-BLEReceived = False
-serialPort.write(("AT+NAMESERVER_IoT").encode())
-while BLEReceived == False: continue
-BLEReceived = False
-serialPort.write(("AT+IMME0").encode())
-while BLEReceived == False: continue
-BLEReceived = False
-serialPort.write(("AT+RESET").encode())
-while BLEReceived == False: continue
+#serialPort.write(("AT").encode())
+#while BLEReceived == False: continue
+#BLEReceived = False
+#serialPort.write(("AT+IMME1").encode())
+#while BLEReceived == False: continue
+#BLEReceived = False
+#serialPort.write(("AT+NAMESERVER_IoT").encode())
+#while BLEReceived == False: continue
+#BLEReceived = False
+#serialPort.write(("AT+IMME0").encode())
+#while BLEReceived == False: continue
+#BLEReceived = False
+#serialPort.write(("AT+RESET").encode())
+#while BLEReceived == False: continue
 
 
 stopBLEThread = True
@@ -430,10 +450,10 @@ def sendSampleThread(sendSocket,receive):
 
 
 #hardware SPI configuration
-SPI_PORT   = 0
-SPI_DEVICE = 0
+#SPI_PORT   = 0
+#SPI_DEVICE = 0
 #connects the SPI port and device to the variable
-mcp = Adafruit_MCP3008.MCP3008(spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE))
+#mcp = Adafruit_MCP3008.MCP3008(spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE))
 
 #set the GPIO to the board layout (used for pin numbers)
 # GPIO.setmode(GPIO.BOARD)
@@ -442,12 +462,10 @@ mcp = Adafruit_MCP3008.MCP3008(spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE))
 
 
 
-
-
 # Find the firebase token, and verify it is correct
 if(os.path.exists(tokenFileName)): #check if the token txt file exists
     print("Token file exists")
-    users = database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + "/").get()
+    users = database.child('X4KVbWNlW8XhHE6b1NfcxCMUkGc2').get()  # tokenFileName, key)).decode("utf-8") + "/").get()
     if users.val() == None:
         print("Invalid token")
         # JUMP TO BLUETOOTH INIT HERE
@@ -492,7 +510,8 @@ try:
         #start the thread to send the average lux on a user specified interval
         _thread.start_new_thread(sendSampleThread,(sending,receiving)) 
         while True:
-            sensorTotal += mcp.read_adc(0) #read adc value of channel 0
+            #sensorTotal += mcp.read_adc(0) #read adc value of channel 
+            sensorTotal += channel.value
             #take the average of the value
             #increment the incrementor
             inc = inc+1
@@ -519,7 +538,7 @@ finally:
     print("clean up")
     GPIO.cleanup()
     #update the database to display connected sensor
-    database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + "/Connections").update({str(deviceName) : "0"})
+    #database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + "/Connections").update({str(deviceName) : "0"})
     print("connection closed")
 
 

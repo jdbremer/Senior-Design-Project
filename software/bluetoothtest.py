@@ -16,7 +16,7 @@ def checkUart(here,here2):
 _thread.start_new_thread(checkUart ,(1,1)) 
 
 while True:
-    user = raw_input("type stuff:")
+    user = input("type stuff:")
     user = user.replace("\n", " ")
     print(user)
     serialPort.write((user).encode())

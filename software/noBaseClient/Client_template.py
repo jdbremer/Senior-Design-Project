@@ -80,13 +80,13 @@ token = ""
 
 #GPIO Setup
 
-greenLed = digitalio.DigitalInOut(board.D36)
-redLed = digitalio.DigitalInOut(board.D38)
-ble = digitalio.DigitalInOut(board.D40)
+greenLed = digitalio.DigitalInOut(board.D16)
+redLed = digitalio.DigitalInOut(board.D20)
+ble = digitalio.DigitalInOut(board.D21)
 
-greenLed.direction = digitalio.direction.output
-redLed.direction = digitalio.direction.output
-ble.direction = digitalio.direction.output
+greenLed.direction = digitalio.Direction.OUTPUT
+redLed.direction = digitalio.Direction.OUTPUT
+ble.direction = digitalio.Direction.OUTPUT
 
 
 # GPIO.setmode(GPIO.BOARD)
@@ -328,7 +328,7 @@ serialPort.write(("AT+IMME1").encode())
 time.sleep(2)
 # while BLEReceived == False: continue
 # BLEReceived = False
-serialPort.write(("AT+NAMESERVER_IoT").encode())
+serialPort.write(("AT+NAMELIGHT_IoT").encode())
 time.sleep(2)
 # while BLEReceived == False: continue
 # BLEReceived = False
@@ -493,7 +493,7 @@ def modifyTOKENFile():
     greenOn = False
     redOn = False
 
-    tokenConfig = open("/home/pi/Desktop/Senior-Design-Project/software/Token/token.txt", "r+")
+    tokenConfig = open(tokenFileName, "r+")
     tokenConfig.seek(0)
     tokenConfig.truncate(0)
     tokenConfig.write(appValues.get("uid").strip())
@@ -635,10 +635,10 @@ def sendSampleThread(sendSocket,receive):
 
 
 #hardware SPI configuration
-SPI_PORT   = 0
-SPI_DEVICE = 0
+#SPI_PORT   = 0
+#SPI_DEVICE = 0
 #connects the SPI port and device to the variable
-mcp = Adafruit_MCP3008.MCP3008(spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE))
+#mcp = Adafruit_MCP3008.MCP3008(spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE))
 
 #set the GPIO to the board layout (used for pin numbers)
 # GPIO.setmode(GPIO.BOARD)
@@ -696,6 +696,7 @@ try:
         _thread.start_new_thread(sendSampleThread,(sending,receiving)) 
         while True:
             sensorTotal += chan.value #read adc value of channel 0
+            print(chan.value)
             #take the average of the value
             #increment the incrementor
             inc = inc+1
