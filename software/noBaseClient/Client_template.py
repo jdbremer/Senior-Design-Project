@@ -1,4 +1,4 @@
-#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
+#AAAHHOpFl9ms1OltNglAAARWMQoPZbUGXEFE3PCYuwAAA
 
 # Import socket module
 import RPi.GPIO as GPIO #pulls in the GPIO pin numbers
