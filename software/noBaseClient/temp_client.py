@@ -439,18 +439,26 @@ def read_temp():
         rand = random.randint(-10,10)
         rand = rand*.01
 
-        temp_c = (float(temp_string) / 1000.000)+rand
-        temp_f = round((temp_c * 9.000 / 5.000 + 32.000),2)  #temp in F
-        temp_c = round(float(temp_string) / 1000.000,2)    #temp in C
+        # temp_c = (float(temp_string) / 1000.000)+rand
+        # temp_f = round((temp_c * 9.000 / 5.000 + 32.000),2)  #temp in F
+        # temp_c = round(float(temp_string) / 1000.000,2)    #temp in C
         
-#        rand = round(random.uniform(-.10,.10),2)
-#        rand = rand*.01
- #       temp_c = round(rand + temp_c,2)
- #       temp_f = round(rand + temp_f,2)
     
         # sendingSocket(sendSocket, (str(temp_c) + '~' + str(temp_f)))  #return the temp in the form: #degrees C~#degrees F
         return str(temp_c) + ' C ~ ' + str(temp_f) + ' F'  #return the temp in the form: #degrees C~#degrees F
 
+
+
+def read_temp():
+    lines = read_temp_raw()
+    equals_pos = lines[1].find('t=')
+    if equals_pos != -1:
+        temp_string = lines[1][equals_pos+2:]
+
+        temp_c = round(float(temp_string) / 1000.000,2)    #temp in C
+        temp_f = round((temp_c * 9.000 / 5.000 + 32.000),2) #temp in F
+
+        return str(temp_c) + ' C ~ ' + str(temp_f) + ' F'  #return the temp in the form: #degrees C~#degrees F
 
 #hardware SPI configuration
 SPI_PORT   = 0

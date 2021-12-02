@@ -499,35 +499,19 @@ try:
 
         #start the thread to send the average lux on a user specified interval
         _thread.start_new_thread(sendSampleThread,(sending,receiving)) 
+
         while True:
-
-
-            # print('Raw ADC Value: ', chan.value)
-            # print('ADC Voltage: ' + str(chan.voltage) + 'V')
-
-
-
-
-            # sensorTotal += mcp.read_adc(0) #read adc value of channel 0
             sensorTotal += chan.value
-            #take the average of the value
             #increment the incrementor
             inc = inc+1
             #if the incrementor is greater than the numberOfSamples, enough samples have been taken
             if(inc > numberOfSamples):
-            
-                #https://learn.adafruit.com/photocells/using-a-photocell
-                
                 #divide the sensor total by the total number of samples to get the average
                 adcValue  = sensorTotal / numberOfSamples
                 if adcValue < 65450:
                     isFire = 1
                 else:
                     isFire = 0
-                #use the generated equation to determine the average lux
-                # average_lux = math.e**(((100*adcValue)-23529)/(11996))
-                #round the average 2 decimal places
-                # average_lux = round(average_lux, 2)
             
                 inc = 0
                 sensorTotal = 0
