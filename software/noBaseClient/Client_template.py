@@ -172,7 +172,7 @@ def lightSequence(n,a):
             redLed.value = True #RED LED
 
 
-def encryptInitialization()
+def encryptInitialization():
     global tokenFileName, keyFileName, tokenFileKey, key
 
     if (os.path.exists(tokenFileName)):
@@ -205,7 +205,7 @@ def encryptInitialization()
         # to the pi and send the token aka. turn on
         # bluetooth and wait for user input
         print("token.txt does not exist")
-        
+
 
 _thread.start_new_thread(lightSequence,(1,1)) #start thread for BLE init
 
