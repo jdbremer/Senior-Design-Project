@@ -359,7 +359,7 @@ def bluetoothMAIN(forToken):
             redOn = False
 
             ble.value = False  #BLE ON/OFF
-            status = "Connected"
+            status = "Connected" 
         except requests.ConnectionError:
             status = "Not connected"
             
@@ -382,6 +382,7 @@ def bluetoothMAIN(forToken):
         modifyWPAFile()
         modifyTOKENFile()
         RestartWifi()
+        print("in not connected loop")
         bluetoothMAIN(False)
 
 
@@ -432,6 +433,7 @@ def decryptFileContents(fileName, key):
             decrypted = fernet.decrypt(encrypted)
             break
         except:
+            print("in except")
             bluetoothMAIN(True)
 
     return decrypted
