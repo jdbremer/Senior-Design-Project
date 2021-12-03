@@ -104,6 +104,14 @@ bleInit = False
 greenOn = False
 redOn = False
 
+def wrapper(dbPath):
+    while True:
+        try:
+            myStream = database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + dbPath + deviceName).stream(firebaseStreamHandler, None)
+            break
+        except:
+            bluetoothMAIN()
+
 def lightSequence(n,a):
     global runReadSeq, modifyLocations, restartWIFI, allOff, allOn, bleInit, greenOn, redOn
 
@@ -551,28 +559,29 @@ def sendSampleThread(sendSocket,receive):
         print('average_lux: ' + str(average_lux))
         sendingToDatabase(average_lux)
 
-
-# Find the firebase token, and verify it is correct
-if(os.path.exists(tokenFileName)): #check if the token txt file exists
-    print("Token file exists")
-    users = database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + "/").get()
-    if users.val() == None:
-        print("Invalid token")
-        # JUMP TO BLUETOOTH INIT HERE
-    else:
-        print("Token exists")   #token exists in db
-        #update the database to display connected sensor
-        database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + "/Connections").update({str(deviceName) : "1"})
-
+while True:
+    try:
+        # Find the firebase token, and verify it is correct
+        if(os.path.exists(tokenFileName)): #check if the token txt file exists
+            print("Token file exists")
+            users = database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + "/").get()
+            if users.val() == None:
+                print("Invalid token")
+                # JUMP TO BLUETOOTH INIT HERE
+            else:
+                print("Token exists")   #token exists in db
+                #update the database to display connected sensor
+                database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + "/Connections").update({str(deviceName) : "1"})
+    except:
+        bluetoothMAIN()
 # else:
     # JUMP TO BLUETOOTH INIT HERE
 
 
-#initialize the firebase listener
+#initialize the firebase listener and pulse listener
 myStream = database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + "/dataFromApp/" + deviceName).stream(firebaseStreamHandler, None)
-
-#initialize the Pulse firebase listener
 myPulse = database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + "/Pulse/Pulse").stream(firebasePulseHandler, None)
+
 
 inc = 0
 average = 0
