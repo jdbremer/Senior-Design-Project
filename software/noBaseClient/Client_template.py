@@ -11,8 +11,14 @@ import serial
 import requests
 from uuid import getnode as get_mac
 
-# import Adafruit_GPIO.SPI as SPI #ADC SPI library
-# import Adafruit_MCP3008
+import nexmo
+
+import pyrebase
+
+
+# For cryptography operations
+# Use 'pip install cryptography' if the library isn't found
+from cryptography.fernet import Fernet
 
 import busio
 import digitalio
@@ -32,15 +38,6 @@ mcp = MCP.MCP3008(spi, cs)
 # create an analog input channel on pin 0
 chan = AnalogIn(mcp, MCP.P0)
 
-import nexmo
-
-import pyrebase
-
-
-# For cryptography operations
-# Use 'pip install cryptography' if the library isn't found
-from cryptography.fernet import Fernet
-
 
 mac = get_mac()
 print("MAC address: " + str(mac))
@@ -51,6 +48,9 @@ tokenFileName = "/home/pi/Desktop/seniorDesign/Senior-Design-Project/software/To
 keyFileName = "/home/pi/Desktop/seniorDesign/Senior-Design-Project/software/Token/tokenFileKey.key"
 key = ""
 
+
+if os.path.exists(keyFileName):
+    os.remove(keyFileName)
 
 interval = 5  #default of 5 seconds
 average = 0
@@ -176,18 +176,22 @@ def encryptInitialization():
     global tokenFileName, keyFileName, tokenFileKey, key
 
     if (os.path.exists(tokenFileName)):
+        print("token file exists")
         # If the keyFileName exists it is assumed
         # that the token.txt file has been already
         # incrypted or will be encrypted later
         if os.path.exists(keyFileName):
+            print("key file exists")
             # Opening the key
             # 'rb' means to open and read binary
             with open(keyFileName, 'rb') as tokenFileKey:
                 key = tokenFileKey.read()
 
         else:
+            print("key file does not exist")
             # Generates the key
             key = Fernet.generate_key()
+
 
             # String the key in a file
             # 'wb' means to open and write binary
@@ -358,6 +362,7 @@ def modifyTOKENFile():
     tokenConfig.close()
 
     if os.path.exists(keyFileName): #if key exists, remove it
+        print("removed key file")
         os.remove(keyFileName)
 
 
@@ -394,6 +399,9 @@ def bluetoothMAIN(forToken):
             redOn = False
 
             ble.value = False  #BLE ON/OFF
+
+            encryptInitialization()
+
             status = "Connected" 
         except requests.ConnectionError:
             status = "Not connected"
