@@ -110,7 +110,7 @@ def wrapper(dbPath):
             myStream = database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + dbPath + deviceName).stream(firebaseStreamHandler, None)
             break
         except:
-            bluetoothMAIN()
+            bluetoothMAIN(True)
 
 def lightSequence(n,a):
     global runReadSeq, modifyLocations, restartWIFI, allOff, allOn, bleInit, greenOn, redOn
@@ -573,7 +573,7 @@ while True:
                 #update the database to display connected sensor
                 database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + "/Connections").update({str(deviceName) : "1"})
     except:
-        bluetoothMAIN()
+        bluetoothMAIN(True)
 # else:
     # JUMP TO BLUETOOTH INIT HERE
 
