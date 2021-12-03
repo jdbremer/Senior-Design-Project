@@ -476,8 +476,6 @@ def decryptFileContents(fileName, key):
     # For debug
     # print(decrypted)
 
-encryptInitialization()
-
 
 
 ##DATABASE INIT##
