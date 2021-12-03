@@ -419,7 +419,7 @@ def firebaseStreamHandler(event):
 
 
 #firebase listener "Pulse" -> "Pulse"
-def firebasePulseHandler(event):
+def ƒ(event):
     eventPathString = event["path"]
     #pulls out the pulse value
     dataReceivedFromDatabase = eventPathString = event["data"]

@@ -501,6 +501,18 @@ def firebaseStreamHandler(event):
         interval = int(dataReceivedFromDatabase)
         print(interval)
         #END CODE TO DO SOMETHING WITH RECEIVED DATA
+
+#firebase listener "Pulse" -> "Pulse"
+def firebasePulseHandler(event):
+    eventPathString = event["path"]
+    #pulls out the pulse value
+    dataReceivedFromDatabase = eventPathString = event["data"]
+    #CODE TO DO SOMETHING WITH RECEIVED DATA
+    if int(dataReceivedFromDatabase) == 1:
+        print("Pulse = 1")
+        database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + "/Status").update({str(deviceName) : str(1)}) #update Status to "1"
+    else:
+        print("Pulse = 0")
             
 
 
@@ -538,7 +550,8 @@ if(os.path.exists(tokenFileName)): #check if the token txt file exists
 #initialize the firebase listener
 myStream = database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + "/dataFromApp/" + deviceName).stream(firebaseStreamHandler, None)
 
-
+#initialize the Pulse firebase listener
+myPulse = database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + "/Pulse/Pulse").stream(firebasePulseHandler, None)
 
 inc = 0
 average = 0
