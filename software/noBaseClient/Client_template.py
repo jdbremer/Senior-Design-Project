@@ -172,6 +172,41 @@ def lightSequence(n,a):
             redLed.value = True #RED LED
 
 
+def encryptInitialization()
+    global tokenFileName, keyFileName, tokenFileKey, key
+
+    if (os.path.exists(tokenFileName)):
+        # If the keyFileName exists it is assumed
+        # that the token.txt file has been already
+        # incrypted or will be encrypted later
+        if os.path.exists(keyFileName):
+            # Opening the key
+            # 'rb' means to open and read binary
+            with open(keyFileName, 'rb') as tokenFileKey:
+                key = tokenFileKey.read()
+
+        else:
+            # Generates the key
+            key = Fernet.generate_key()
+
+            # String the key in a file
+            # 'wb' means to open and write binary
+            with open(keyFileName, 'wb') as tokenFileKey:
+                tokenFileKey.write(key)
+
+            encryptFile(tokenFileName, key)
+
+    else:
+        if os.path.exists(keyFileName):
+            os.remove(keyFileName)
+        
+        # If the token.txt file does not exist, the 
+        # user will need to use bluetooth to connect
+        # to the pi and send the token aka. turn on
+        # bluetooth and wait for user input
+        print("token.txt does not exist")
+        
+
 _thread.start_new_thread(lightSequence,(1,1)) #start thread for BLE init
 
 #BLE Init
@@ -382,6 +417,7 @@ def bluetoothMAIN(forToken):
         modifyWPAFile()
         modifyTOKENFile()
         RestartWifi()
+        encryptInitialization()
         print("in not connected loop")
         bluetoothMAIN(False)
 
@@ -440,32 +476,7 @@ def decryptFileContents(fileName, key):
     # For debug
     # print(decrypted)
 
-
-
-if (os.path.exists(tokenFileName)):
-    # If the keyFileName exists it is assumed
-    # that the token.txt file has been already
-    # incrypted or will be encrypted later
-    if os.path.exists(keyFileName):
-        # Opening the key
-        # 'rb' means to open and read binary
-        with open(keyFileName, 'rb') as tokenFileKey:
-            key = tokenFileKey.read()
-
-    else:
-        # Generates the key
-        key = Fernet.generate_key()
-
-        # String the key in a file
-        # 'wb' means to open and write binary
-        with open(keyFileName, 'wb') as tokenFileKey:
-            tokenFileKey.write(key)
-
-        encryptFile(tokenFileName, key)
-
-else:
-    if os.path.exists(keyFileName):
-        os.remove(keyFileName)
+encryptInitialization()
     
     # If the token.txt file does not exist, the 
     # user will need to use bluetooth to connect
