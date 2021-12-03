@@ -326,7 +326,7 @@ def modifyTOKENFile():
         os.remove(keyFileName)
 
 
-def bluetoothMAIN():
+def bluetoothMAIN(forToken):
     global runReadSeq, modifyLocations, restartWIFI, allOff, allOn, bleInit, greenOn, redOn
     runReadSeq = False
     modifyLocations = False
@@ -340,27 +340,28 @@ def bluetoothMAIN():
 
     print("Bluetooth MAIN")
     internet = False
-    status = ""
+    status = "Not connected"
 
-    try:
-        url = "https://www.google.com"
-        #urllib.request.urlopen(url)
-        response = requests.get(url)
-        internet = True
+    if not forToken:
+        try:
+            url = "https://www.google.com"
+            #urllib.request.urlopen(url)
+            response = requests.get(url)
+            internet = True
 
-        runReadSeq = False
-        modifyLocations = False
-        restartWIFI = False
-        allOff = False
-        allOn = False
-        bleInit = False
-        greenOn = True
-        redOn = False
+            runReadSeq = False
+            modifyLocations = False
+            restartWIFI = False
+            allOff = False
+            allOn = False
+            bleInit = False
+            greenOn = True
+            redOn = False
 
-        ble.value = False  #BLE ON/OFF
-        status = "Connected"
-    except requests.ConnectionError:
-        status = "Not connected"
+            ble.value = False  #BLE ON/OFF
+            status = "Connected"
+        except requests.ConnectionError:
+            status = "Not connected"
             
             
             
@@ -381,10 +382,10 @@ def bluetoothMAIN():
         modifyWPAFile()
         modifyTOKENFile()
         RestartWifi()
-        bluetoothMAIN()
+        bluetoothMAIN(False)
 
 
-bluetoothMAIN()
+bluetoothMAIN(False)
 
 
 #####
@@ -431,7 +432,7 @@ def decryptFileContents(fileName, key):
             decrypted = fernet.decrypt(encrypted)
             break
         except:
-            bluetoothMAIN()
+            bluetoothMAIN(True)
 
     return decrypted
     # For debug
