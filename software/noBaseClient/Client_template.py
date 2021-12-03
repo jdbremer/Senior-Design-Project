@@ -172,6 +172,58 @@ def lightSequence(n,a):
             redLed.value = True #RED LED
 
 
+#####
+# Using cryptography, we are under the impression that if a tokenFileKey.key file
+# has been made, that the contents are assumed to be encrypted within token.txt.
+# This means that the program should not encrypt the data within token.txt
+# if tokenFileKey.key has been created.
+
+# If the user uses bluetooth to change the wifi ssid password, the token.txt 
+# file needs to be encrypted after modification.
+
+
+# Encrypt the entire file contents
+def encryptFile(fileName, key):
+    # Using the generated key
+    fernet = Fernet(key)
+
+    # Opening the original file to encrypt
+    with open(fileName, 'rb') as file:
+        original = file.read()
+        
+    # Encrypting the file
+    encrypted = fernet.encrypt(original)
+
+    # Epening the file in write mode and
+    # Writing the encrypted data
+    with open(fileName, 'wb') as encrypted_file:
+        encrypted_file.write(encrypted)
+
+# For decrypting file contents, not the file itself
+def decryptFileContents(fileName, key):
+    decrypted = ""
+
+    # Decrypting the file
+    while True:
+        try:
+            # Using the key
+            fernet = Fernet(key)
+
+            # Opening the encrypted file
+            with open(fileName, 'rb') as enc_file:
+                encrypted = enc_file.read()
+
+            decrypted = fernet.decrypt(encrypted)
+            break
+        except:
+            print("in except")
+            bluetoothMAIN(True)
+
+    return decrypted
+    # For debug
+    # print(decrypted)
+
+
 def encryptInitialization():
     global tokenFileName, keyFileName, tokenFileKey, key
 
@@ -430,59 +482,7 @@ def bluetoothMAIN(forToken):
         bluetoothMAIN(False)
 
 
-bluetoothMAIN(False)
-
-
-#####
-# Using cryptography, we are under the impression that if a tokenFileKey.key file
-# has been made, that the contents are assumed to be encrypted within token.txt.
-# This means that the program should not encrypt the data within token.txt
-# if tokenFileKey.key has been created.
-
-# If the user uses bluetooth to change the wifi ssid password, the token.txt 
-# file needs to be encrypted after modification.
-
-
-# Encrypt the entire file contents
-def encryptFile(fileName, key):
-    # Using the generated key
-    fernet = Fernet(key)
-
-    # Opening the original file to encrypt
-    with open(fileName, 'rb') as file:
-        original = file.read()
-        
-    # Encrypting the file
-    encrypted = fernet.encrypt(original)
-
-    # Epening the file in write mode and
-    # Writing the encrypted data
-    with open(fileName, 'wb') as encrypted_file:
-        encrypted_file.write(encrypted)
-
-# For decrypting file contents, not the file itself
-def decryptFileContents(fileName, key):
-    decrypted = ""
-
-    # Decrypting the file
-    while True:
-        try:
-            # Using the key
-            fernet = Fernet(key)
-
-            # Opening the encrypted file
-            with open(fileName, 'rb') as enc_file:
-                encrypted = enc_file.read()
-
-            decrypted = fernet.decrypt(encrypted)
-            break
-        except:
-            print("in except")
-            bluetoothMAIN(True)
-
-    return decrypted
-    # For debug
-    # print(decrypted)
+bluetoothMAIN(False) 
 
 
 
