@@ -477,12 +477,6 @@ def decryptFileContents(fileName, key):
     # print(decrypted)
 
 encryptInitialization()
-    
-    # If the token.txt file does not exist, the 
-    # user will need to use bluetooth to connect
-    # to the pi and send the token aka. turn on
-    # bluetooth and wait for user input
-    print("token.txt does not exist")
 
 
 
