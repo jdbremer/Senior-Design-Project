@@ -541,6 +541,7 @@ def firebasePulseHandler(event):
     #if this is the first time in here, the data will be initialization data, which we want to discard
     if(firstHandlerEntryPulse == 0):
         firstHandlerEntryPulse = 1
+        print()
 
     else:
         eventPathString = event["path"]
@@ -569,7 +570,7 @@ def sendSampleThread(sendSocket,receive):
     while True:
         time.sleep(interval)
         print('average_lux: ' + str(average_lux))
-        sendingToDatabase(average_lux)
+        sendingToDatabase(10)
 
 while True:
     try:
@@ -579,6 +580,7 @@ while True:
             users = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/").get()
             if users.val() == None:
                 print("Invalid token")
+                raise
                 # JUMP TO BLUETOOTH INIT HERE
             else:
                 print("Token exists")   #token exists in db
