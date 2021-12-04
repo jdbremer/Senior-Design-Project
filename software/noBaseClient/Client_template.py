@@ -58,7 +58,8 @@ average_lux = 0
 
 
 #used for firebase handler
-firstHandlerEntry = 0
+firstHandlerEntryFromApp = 0
+firstHandlerEntryPulse = 0
 token = ""
 deviceName = "LightSensor"
 
@@ -517,12 +518,12 @@ auth = firebase.auth()
 
 #firebase listener "dataFromApp"
 def firebaseStreamHandler(event):
-    global firstHandlerEntry
+    global firstHandlerEntryFromApp
     global interval
 
     #if this is the first time in here, the data will be initialization data, which we want to discard
-    if(firstHandlerEntry == 0):
-        firstHandlerEntry = 1
+    if(firstHandlerEntryFromApp == 0):
+        firstHandlerEntryFromApp = 1
 
     else:
         eventPathString = event["path"]
@@ -536,17 +537,23 @@ def firebaseStreamHandler(event):
 
 #firebase listener "Pulse" -> "Pulse"
 def firebasePulseHandler(event):
-    eventPathString = event["path"]
-    #pulls out the pulse value
-    dataReceivedFromDatabase = eventPathString = event["data"]
-    print(dataReceivedFromDatabase)
-    print(type(dataReceivedFromDatabase))
-    #CODE TO DO SOMETHING WITH RECEIVED DATA
-    if int(dataReceivedFromDatabase) == 1:
-        print("Pulse = 1")
-        database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/Status").update({str(deviceName) : str(1)}) #update Status to "1"
+    global firstHandlerEntryPulse
+    #if this is the first time in here, the data will be initialization data, which we want to discard
+    if(firstHandlerEntryPulse == 0):
+        firstHandlerEntryPulse = 1
+
     else:
-        print("Pulse = 0")
+        eventPathString = event["path"]
+        #pulls out the pulse value
+        dataReceivedFromDatabase = eventPathString = event["data"]
+        print(dataReceivedFromDatabase)
+        print(type(dataReceivedFromDatabase))
+        #CODE TO DO SOMETHING WITH RECEIVED DATA
+        if int(dataReceivedFromDatabase) == 1:
+            print("Pulse = 1")
+            database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/Status").update({str(deviceName) : str(1)}) #update Status to "1"
+        else:
+            print("Pulse = 0")
             
 
 
