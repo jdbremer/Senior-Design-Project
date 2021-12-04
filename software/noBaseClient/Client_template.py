@@ -107,7 +107,7 @@ redOn = False
 def wrapper(dbPath):
     while True:
         try:
-            myStream = database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + dbPath + deviceName).stream(firebaseStreamHandler, None)
+            myStream = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + dbPath + deviceName).stream(firebaseStreamHandler, None)
             break
         except:
             bluetoothMAIN(True)
@@ -191,7 +191,8 @@ def lightSequence(n,a):
 
 
 # Encrypt the entire file contents
-def encryptFile(fileName, key):
+def encryptFile(fileName):
+    global key
     # Using the generated key
     fernet = Fernet(key)
 
@@ -208,7 +209,9 @@ def encryptFile(fileName, key):
         encrypted_file.write(encrypted)
 
 # For decrypting file contents, not the file itself
-def decryptFileContents(fileName, key):
+def decryptFileContents(fileName):
+    global key
+
     decrypted = ""
 
     # Decrypting the file
@@ -258,7 +261,7 @@ def encryptInitialization():
             with open(keyFileName, 'wb') as tokenFileKey:
                 tokenFileKey.write(key)
 
-            encryptFile(tokenFileName, key)
+            encryptFile(tokenFileName)
 
     else:
         if os.path.exists(keyFileName):
@@ -539,7 +542,7 @@ def firebasePulseHandler(event):
     #CODE TO DO SOMETHING WITH RECEIVED DATA
     if int(dataReceivedFromDatabase) == 1:
         print("Pulse = 1")
-        database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + "/Status").update({str(deviceName) : str(1)}) #update Status to "1"
+        database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/Status").update({str(deviceName) : str(1)}) #update Status to "1"
     else:
         print("Pulse = 0")
             
@@ -548,7 +551,7 @@ def firebasePulseHandler(event):
 #function to send data to the server in a sequence
 def sendingToDatabase(data):
     #send the data to the database
-    database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + "/dataFromChild").update({str(deviceName) : str(data)})
+    database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromChild").update({str(deviceName) : str(data)})
 
 
 def sendSampleThread(sendSocket,receive):
@@ -564,14 +567,14 @@ while True:
         # Find the firebase token, and verify it is correct
         if(os.path.exists(tokenFileName)): #check if the token txt file exists
             print("Token file exists")
-            users = database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + "/").get()
+            users = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/").get()
             if users.val() == None:
                 print("Invalid token")
                 # JUMP TO BLUETOOTH INIT HERE
             else:
                 print("Token exists")   #token exists in db
                 #update the database to display connected sensor
-                database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + "/Connections").update({str(deviceName) : "1"})
+                database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/Connections").update({str(deviceName) : "1"})
         break
     except:
         bluetoothMAIN(True)
@@ -580,8 +583,8 @@ while True:
 
 
 #initialize the firebase listener and pulse listener
-myStream = database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + "/dataFromApp/" + deviceName).stream(firebaseStreamHandler, None)
-myPulse = database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + "/Pulse/Pulse").stream(firebasePulseHandler, None)
+myStream = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromApp/" + deviceName).stream(firebaseStreamHandler, None)
+myPulse = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/Pulse/Pulse").stream(firebasePulseHandler, None)
 
 
 inc = 0
@@ -637,7 +640,7 @@ finally:
     print("clean up")
     GPIO.cleanup()
     #update the database to display connected sensor
-    database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + "/Connections").update({str(deviceName) : "0"})
+    database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/Connections").update({str(deviceName) : "0"})
     print("connection closed")
 
 
