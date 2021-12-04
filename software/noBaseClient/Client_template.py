@@ -539,6 +539,8 @@ def firebasePulseHandler(event):
     eventPathString = event["path"]
     #pulls out the pulse value
     dataReceivedFromDatabase = eventPathString = event["data"]
+    print(dataReceivedFromDatabase)
+    print(type(dataReceivedFromDatabase))
     #CODE TO DO SOMETHING WITH RECEIVED DATA
     if int(dataReceivedFromDatabase) == 1:
         print("Pulse = 1")
