@@ -156,8 +156,6 @@ public class connectionsService extends Service {
             }
         }
 
-
-
         public ServiceHandler(Looper looper) {
             super(looper);
         }
@@ -229,74 +227,6 @@ public class connectionsService extends Service {
                     }
                 };
 
-                //ENTERS CODE BELOW WHEN Pulse RECEIVES NEW VALUE
-//                ValueEventListener pulseConstantListener = new ValueEventListener(){
-//                    @Override
-//                    public void onDataChange (DataSnapshot dataSnapshot){
-//                        String key = dataSnapshot.getKey();
-//                        Map<String, Object> td = (HashMap<String,Object>) dataSnapshot.getValue();
-//                        List<Object> values = new ArrayList<>(td.values());
-//                        String value = (String) td.get("Pulse");
-//                        String lightValue = (String) td.get("LightSensor");
-//
-//                        if(key.equals("Pulse")){
-//                            if(value.equals("1") && (lightValue.equals("0"))){
-//                                try {
-//                                    Thread.sleep(3000);    //sleep for 3 seconds
-//                                } catch (InterruptedException e) {
-//                                    e.printStackTrace();
-//                                }
-//                                if (lightStatus.equals("0")){
-//                                    mDatabase.child(userId).child("Connections").child("LightSensor").setValue("0");
-//                                }
-//                                else{
-//                                    mDatabase.child(userId).child("Connections").child("LightSensor").setValue("1");
-//                                }
-//                            }
-//                            else{   //reset all pulse -> sensor values
-//                                mDatabase.child(userId).child("Pulse").child("LightSensor").setValue("0");
-//                                mDatabase.child(userId).child("Status").child("LightSensor").setValue("0");
-//                            }
-//                        }
-////                        else if(key.equals("LightSensor")){
-//////                            lightStatus = dataSnapshot.getValue().toString();   //update value to match database
-////                            lightStatus = value;
-////                        }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled (@NonNull DatabaseError error){
-//                        //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-//                        System.out.println("The read failed: " + error.getMessage());
-//                    }
-//                };
-
-                //ENTERS CODE BELOW WHEN Status RECEIVES NEW VALUE
-//                ValueEventListener statusConstantListener = new ValueEventListener(){
-//                    @Override
-//                    public void onDataChange (DataSnapshot dataSnapshot){
-//                        String key = dataSnapshot.getKey();
-//                        Map<String, Object> td = (HashMap<String,Object>) dataSnapshot.getValue();
-//                        List<Object> values = new ArrayList<>(td.values());
-//                        String value = (String) td.get("LightSensor");
-//
-//                        if(value.equals("1")){
-//                            mDatabase.child(userId).child("Pulse").child("LightSensor").setValue("1");
-//                            lightStatus = "1";
-//                        }
-//                        else{
-//                            mDatabase.child(userId).child("Pulse").child("LightSensor").setValue("0");
-//                            lightStatus = "0";
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled (@NonNull DatabaseError error){
-//                        //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
-//                        System.out.println("The read failed: " + error.getMessage());
-//                    }
-//                };
-
                 //SINGLE LISTENER CODE//
                 ValueEventListener singleStatusListener = new ValueEventListener(){
                     @Override
@@ -332,9 +262,33 @@ public class connectionsService extends Service {
                 // For our sample, we just sleep for 5 seconds.
 
                 while(true) {
-                    Thread.sleep(20000);    //sleep for 20 seconds
+                    for(int i = 0; i < 20; i++)
+                    {
+                        if (ConnectionsFragment.active) {
+                            //DO STUFF
+                            talk();
+                        }
+                        else {
+                            //Whatever
+
+                        }
+                        Thread.sleep(1000);
+                    }
+//                    Thread.sleep(20000);    //sleep for 20 seconds
                     mDatabase.child(userId).child("Pulse").child("Pulse").setValue("1");
-                    Thread.sleep(5000);    //sleep for 7 seconds
+//                    Thread.sleep(5000);    //sleep for 7 seconds
+                    for(int i = 0; i < 5; i++)
+                    {
+                        if (ConnectionsFragment.active) {
+                            //DO STUFF
+                            talk();
+                        }
+                        else {
+                            //Whatever
+
+                        }
+                        Thread.sleep(1000);
+                    }
 //                    mDatabase.child(userId).child("Pulse").child("Pulse").setValue("0");
 //                    mStatusReference.addListenerForSingleValueEvent(singleStatusListener);
                     mDatabase.child(userId).child("Status").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
@@ -401,6 +355,10 @@ public class connectionsService extends Service {
                 Process.THREAD_PRIORITY_BACKGROUND);
         thread.start();
 
+        HandlerThread pulseThread = new HandlerThread("pulseServiceStart",
+                Process.THREAD_PRIORITY_BACKGROUND);
+        pulseThread.start();
+
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             NotificationChannel channel = new NotificationChannel("NotificationCH", "NotificationCH", NotificationManager.IMPORTANCE_DEFAULT);
             NotificationManager manager = getSystemService(NotificationManager.class);
@@ -413,7 +371,6 @@ public class connectionsService extends Service {
         fireIntent = new Intent(getBaseContext(), fireService.class);
         waterIntent = new Intent(getBaseContext(), waterService.class);
 
-        //getBaseContext().startService(lightIntent);
 
         // Get the HandlerThread's Looper and use it for our Handler
         serviceLooper = thread.getLooper();
@@ -430,8 +387,7 @@ public class connectionsService extends Service {
         msg.arg1 = startId;
         serviceHandler.sendMessage(msg);
 
-
-
+        
         // If we get killed, after returning from here, restart
         return START_STICKY;
     }

@@ -44,13 +44,13 @@ print("MAC address: " + str(mac))
 
 #MODIFY
 #Modify the path to these two within the Token folder...
-tokenFileName = "/home/pi/Desktop/seniorDesign/Senior-Design-Project/software/Token/token.txt"
-keyFileName = "/home/pi/Desktop/seniorDesign/Senior-Design-Project/software/Token/tokenFileKey.key"
+tokenFileName = "/home/pi/Desktop/Senior-Design-Project/software/Token/token.txt"
+keyFileName = "/home/pi/Desktop/Senior-Design-Project/software/Token/tokenFileKey.key"
 key = ""
 
 
-if os.path.exists(keyFileName):
-    os.remove(keyFileName)
+# if os.path.exists(keyFileName):
+#     os.remove(keyFileName)
 
 interval = 5  #default of 5 seconds
 average = 0
@@ -570,7 +570,7 @@ def sendSampleThread(sendSocket,receive):
     while True:
         time.sleep(interval)
         print('average_lux: ' + str(average_lux))
-        sendingToDatabase(10)
+        sendingToDatabase(average_lux)
 
 while True:
     try:
@@ -651,7 +651,7 @@ finally:
     print("clean up")
     GPIO.cleanup()
     #update the database to display connected sensor
-    database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/Connections").update({str(deviceName) : "0"})
+    # database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/Connections").update({str(deviceName) : "0"})
     print("connection closed")
 
 
