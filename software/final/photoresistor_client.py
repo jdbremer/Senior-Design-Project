@@ -49,9 +49,6 @@ keyFileName = "/home/pi/Desktop/Senior-Design-Project/software/Token/tokenFileKe
 key = ""
 
 
-# if os.path.exists(keyFileName):
-#     os.remove(keyFileName)
-
 interval = 5  #default of 5 seconds
 average = 0
 average_lux = 0
@@ -104,14 +101,6 @@ allOn = False
 bleInit = False
 greenOn = False
 redOn = False
-
-def wrapper(dbPath):
-    while True:
-        try:
-            myStream = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + dbPath + deviceName).stream(firebaseStreamHandler, None)
-            break
-        except:
-            bluetoothMAIN(True)
 
 def lightSequence(n,a):
     global runReadSeq, modifyLocations, restartWIFI, allOff, allOn, bleInit, greenOn, redOn
