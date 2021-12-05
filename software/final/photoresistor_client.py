@@ -232,8 +232,6 @@ def decryptFileContents(fileName):
             bluetoothMAIN(True)
 
     return decrypted
-    # For debug
-    # print(decrypted)
 
 
 def encryptInitialization():
@@ -589,8 +587,6 @@ while True:
         break
     except:
         bluetoothMAIN(True)
-# else:
-    # JUMP TO BLUETOOTH INIT HERE
 
 
 #initialize the firebase listener and pulse listener
@@ -624,7 +620,6 @@ try:
         _thread.start_new_thread(sendSampleThread,(sending,receiving)) 
         while True:
             sensorTotal += chan.value #read adc value of channel 0
-            print(chan.value)
             #take the average of the value
             #increment the incrementor
             inc = inc+1
