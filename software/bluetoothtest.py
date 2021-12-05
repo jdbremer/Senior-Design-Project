@@ -6,6 +6,13 @@ import _thread
 serialPort = serial.Serial("/dev/serial0", baudrate=9600)
 
 
+import digitalio
+import board
+#GPIO Setup
+ble = digitalio.DigitalInOut(board.D21)
+ble.direction = digitalio.Direction.OUTPUT
+ble.value = True  #BLE ON/OFF
+
 def checkUart(here,here2):
     while True:
         for c in serialPort.read().decode():
