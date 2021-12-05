@@ -262,7 +262,7 @@ public class connectionsService extends Service {
                 // For our sample, we just sleep for 5 seconds.
 
                 while(true) {
-                    for(int i = 0; i < 20; i++)
+                    for(int i = 0; i < 10; i++)
                     {
                         if (ConnectionsFragment.active) {
                             //DO STUFF
@@ -316,8 +316,10 @@ public class connectionsService extends Service {
 //                    mStatusReference.addListenerForSingleValueEvent(singleStatusListener);
 //                    Thread.sleep(4000);
                     mDatabase.child(userId).child("Status").child("LightSensor").setValue("0"); //reset status
+                    mDatabase.child(userId).child("Status").child("TempSensor").setValue("0"); //reset status
+                    mDatabase.child(userId).child("Status").child("Fire").setValue("0"); //reset status
+                    mDatabase.child(userId).child("Status").child("ControlSwitch").setValue("0"); //reset status
                     mDatabase.child(userId).child("Pulse").child("Pulse").setValue("0");
-//                    mDatabase.child(userId).child("Pulse").child("LightSensor").setValue("0"); //reset status
                     if (ConnectionsFragment.active) {
                         //DO STUFF
                         talk();
@@ -387,7 +389,7 @@ public class connectionsService extends Service {
         msg.arg1 = startId;
         serviceHandler.sendMessage(msg);
 
-        
+
         // If we get killed, after returning from here, restart
         return START_STICKY;
     }
