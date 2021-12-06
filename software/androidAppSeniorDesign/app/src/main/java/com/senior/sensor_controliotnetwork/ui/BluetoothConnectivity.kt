@@ -37,7 +37,7 @@ private const val WRITE_READ_UUID = "0000ffe1-0000-1000-8000-00805f9b34fb"
 class BluetoothConnectivity : AppCompatActivity()  {
 
     //private var isScanning = false
-    private val scanResults = mutableListOf<BluetoothDevice>()
+    private val bleScanResults = mutableListOf<BluetoothDevice>()
     private val handler = Handler(Looper.getMainLooper())
 
     lateinit var bluetoothGatt: BluetoothGatt
@@ -162,7 +162,7 @@ class BluetoothConnectivity : AppCompatActivity()  {
     }
 
 
-    // Stops scanning after 10 seconds.
+    // Stops scanning after 5 seconds.
     private val SCAN_PERIOD: Long = 5000
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -179,13 +179,11 @@ class BluetoothConnectivity : AppCompatActivity()  {
                 handler.postDelayed({
                     scanning = false
                     scanner.stopScan(leScanCallback)
-//                    finding()
-//                    loadingPanel
                     val loadingCircle = findViewById<View>(R.id.loadingPanel)
                     loadingCircle.isVisible = false
                 }, SCAN_PERIOD)
                 scanning = true
-                scanResults.clear()
+                bleScanResults.clear()
                 scanner.startScan(leScanCallback)
             } else {
                 scanning = false
@@ -200,8 +198,8 @@ class BluetoothConnectivity : AppCompatActivity()  {
     fun finding(){
         var str = arrayListOf<String>()
         val ble_dropdown = findViewById<View>(R.id.ble_spinner) as Spinner?
-//        val textView = findViewById(R.id.device_name) as TextView
-        for(item in scanResults){
+        ble_dropdown?.adapter = null
+        for(item in bleScanResults){
             if(item.name != null){
                 if(item.name.toString().contains("_IoT")) {  //make sure to change this to "_IoT"
                     str.add(item.name.toString())
@@ -217,7 +215,7 @@ class BluetoothConnectivity : AppCompatActivity()  {
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun findResultViaName(name: String){
-        for(item in scanResults){
+        for(item in bleScanResults){
             if(item.name != null){
                 if(item.name.toString().contains(name)) {  //make sure to change this to "_IoT"
                     bluetoothGatt = item.connectGatt(this, false, gattCallback)
@@ -360,8 +358,9 @@ class BluetoothConnectivity : AppCompatActivity()  {
     object : ScanCallback() {
         override fun onScanResult(callbackType: Int, result: ScanResult) {
             super.onScanResult(callbackType, result)
-            if(!scanResults.contains(result.device)) {
-                scanResults.add(result.device);
+            Log.v(result.device.name,"device")
+            if(!bleScanResults.contains(result.device)) {
+                bleScanResults.add(result.device);
                 finding() //load the ble spinner with new values
             }
         }

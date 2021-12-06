@@ -7,11 +7,13 @@ import time
 import _thread
 import math
 import os
+import glob
+import random
 import serial
 import requests
 from uuid import getnode as get_mac
 
-import nexmo
+#import nexmo
 
 import pyrebase
 
@@ -20,23 +22,23 @@ import pyrebase
 # Use 'pip install cryptography' if the library isn't found
 from cryptography.fernet import Fernet
 
-import busio
-import digitalio
-import board
-import adafruit_mcp3xxx.mcp3008 as MCP
-from adafruit_mcp3xxx.analog_in import AnalogIn
+# import busio
+# import digitalio
+# import board
+# import adafruit_mcp3xxx.mcp3008 as MCP
+# from adafruit_mcp3xxx.analog_in import AnalogIn
 
 # create the spi bus
-spi = busio.SPI(clock=board.SCK, MISO=board.MISO, MOSI=board.MOSI)
+# spi = busio.SPI(clock=board.SCK, MISO=board.MISO, MOSI=board.MOSI)
 
 # create the cs (chip select)
-cs = digitalio.DigitalInOut(board.D5)
+# cs = digitalio.DigitalInOut(board.D5)
 
 # create the mcp object
-mcp = MCP.MCP3008(spi, cs)
+# mcp = MCP.MCP3008(spi, cs)
 
 # create an analog input channel on pin 0
-chan = AnalogIn(mcp, MCP.P0)
+# chan = AnalogIn(mcp, MCP.P0)
 
 
 mac = get_mac()
@@ -49,16 +51,19 @@ keyFileName = "/home/pi/Desktop/Senior-Design-Project/software/Token/tokenFileKe
 key = ""
 
 interval = 5  #default of 5 seconds
-average = 0
-average_lux = 0
+os.system('modprobe w1-gpio')
+os.system('modprobe w1-therm')
 
+base_dir = '/sys/bus/w1/devices/'
+device_folder = glob.glob(base_dir + '28*')[0]
+device_file = device_folder + '/w1_slave'
 
 #used for firebase handler
 firstHandlerEntryFromApp = 0
 firstHandlerEntryPulse = 0
 token = ""
-deviceName = "LightSensor"
-bleName = "AT+NAMELIGHT_IoT"
+deviceName = "TempSensor"
+bleName = "AT+NAMETEMP_IoT"
 
 #setup the bluetooth config.. this does not include timeout
 serialPort = serial.Serial("/dev/serial0", baudrate=9600)
@@ -550,13 +555,30 @@ def sendingToDatabase(data):
     database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromChild").update({str(deviceName) : str(data)})
 
 
-def sendSampleThread(sendSocket,receive):
-    global interval
-    global average_lux
-    while True:
-        time.sleep(interval)
-        print('average_lux: ' + str(average_lux))
-        sendingToDatabase(average_lux)
+def read_temp_raw():
+    f = open(device_file, 'r')
+    lines = f.readlines()
+    f.close()
+    return lines
+
+
+def read_temp():
+    lines = read_temp_raw()
+    while lines[0].strip()[-3:] != 'YES':
+        time.sleep(0.2)
+        lines = read_temp_raw()
+    equals_pos = lines[1].find('t=')
+    if equals_pos != -1:
+        temp_string = lines[1][equals_pos+2:]
+        rand = random.randint(-10,10)
+        rand = rand*.01
+
+        temp_c = (float(temp_string) / 1000.000)+rand
+        temp_f = round((temp_c * 9.000 / 5.000 + 32.000),2)  #temp in F
+        temp_c = round(float(temp_string) / 1000.000,2)    #temp in C
+        
+        return str(temp_c) + '~' + str(temp_f)  #return the temp in the form: #degrees C~#degrees F
+
 
 while True:
     try:
@@ -582,54 +604,15 @@ myStream = database.child((decryptFileContents(tokenFileName)).decode("utf-8") +
 myPulse = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/Pulse/Pulse").stream(firebasePulseHandler, None)
 
 
-inc = 0
-average = 0
-average_lux
-numberOfSamples = 50
-sensorTotal = 0
-adcValue = 0
 
 #sensor code
 try:
     while True:
-        #grab the start time
-        #start = time.time()
-        #set the pin 18 to high
-        # GPIO.output(18, GPIO.HIGH)
-
-        
-        sensorTotal = 0 #reset sensorTotal for next group of samples
-        inc = 0
-        
-        sending = 0 #REMOVE
-        receiving = 0 #REMOVE
-
-        #start the thread to send the average lux on a user specified interval
-        _thread.start_new_thread(sendSampleThread,(sending,receiving)) 
-        while True:
-            sensorTotal += chan.value #read adc value of channel 0
-            #take the average of the value
-            #increment the incrementor
-            inc = inc+1
-            #if the incrementor is greater than the numberOfSamples, enough samples have been taken
-            if(inc > numberOfSamples):
-            
-                #https://learn.adafruit.com/photocells/using-a-photocell
-                
-                #divide the sensor total by the total number of samples to get the average
-                adcValue  = sensorTotal / numberOfSamples 
-                #use the generated equation to determine the average lux
-                average_lux = abs((-121.13+math.sqrt((-0.2744*adcValue)+17963.9))/(0.1372))
-
-                if average_lux > 1000:
-                    average_lux = 1000
-
-                # average_lux = math.e**(((100*adcValue)-23529)/(11996))
-                #round the average 2 decimal places
-                average_lux = round(average_lux, 2)
-            
-                inc = 0
-                sensorTotal = 0
+        # print(read_temp(sendingToDatabase)) #read the temperature
+        tempVal = read_temp()
+        print(tempVal)
+        sendingToDatabase(tempVal)
+        time.sleep(interval)  #delay between temperature readings
 
            
 except KeyboardInterrupt:
@@ -639,7 +622,7 @@ finally:
     print("clean up")
     GPIO.cleanup()
     #update the database to display connected sensor
-    # database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/Connections").update({str(deviceName) : "0"})
+    database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + "/Connections").update({str(deviceName) : "0"})
     print("connection closed")
 
 

@@ -305,7 +305,7 @@ public class connectionsService extends Service {
                                     String key = snap.getKey();
 //                            int value = Integer.parseInt((String) snap.getValue());
                                     String value = (String) snap.getValue();
-                                    Log.v("this", "value= " + value + "key = " + key);
+//                                    Log.v("this", "value= " + value + "key = " + key);
 //                            String valueStr = value.toString();
                                     mDatabase.child(userId).child("Connections").child(key).setValue(value);
                                 }
