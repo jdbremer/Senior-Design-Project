@@ -22,9 +22,9 @@ import pyrebase
 # Use 'pip install cryptography' if the library isn't found
 from cryptography.fernet import Fernet
 
-# import busio
+import busio
 import digitalio
-# import board
+import board
 # import adafruit_mcp3xxx.mcp3008 as MCP
 # from adafruit_mcp3xxx.analog_in import AnalogIn
 
@@ -35,10 +35,10 @@ spi = busio.SPI(clock=board.SCK, MISO=board.MISO, MOSI=board.MOSI)
 cs = digitalio.DigitalInOut(board.D5)
 
 # create the mcp object
-mcp = MCP.MCP3008(spi, cs)
+# mcp = MCP.MCP3008(spi, cs)
 
 # create an analog input channel on pin 0
-chan = AnalogIn(mcp, MCP.P0)
+# chan = AnalogIn(mcp, MCP.P0)
 
 
 mac = get_mac()
