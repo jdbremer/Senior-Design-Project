@@ -579,7 +579,6 @@ def read_temp():
         
         return str(temp_c) + '~' + str(temp_f)  #return the temp in the form: #degrees C~#degrees F
 
-
 while True:
     try:
         # Find the firebase token, and verify it is correct
@@ -598,11 +597,12 @@ while True:
     except:
         bluetoothMAIN(True)
 
+#Initialize the sending interval
+database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromApp").update({str(deviceName) : str(interval)})
 
 #initialize the firebase listener and pulse listener
 myStream = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromApp/" + deviceName).stream(firebaseStreamHandler, None)
 myPulse = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/Pulse/Pulse").stream(firebasePulseHandler, None)
-
 
 
 #sensor code

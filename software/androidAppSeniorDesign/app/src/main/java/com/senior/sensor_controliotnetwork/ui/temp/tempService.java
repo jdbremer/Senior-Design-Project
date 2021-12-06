@@ -110,12 +110,12 @@ public class tempService extends Service {
                             int maxGraphPoints = 26;
                             value = (String) dataSnapshot.getValue();
                             valueArray = value.split("~");  //[tempC~tempF]
-                            //     float valueFloatC = Float.parseFloat(valueArray[0]);    //grab the Celsius value
-                            //  float valueFloatF = Float.parseFloat(valueArray[1]);    //grab the Fahrenheit value
-//                        if(thresholdFloat < valueFloatC && thresholdFloat != 0.0){
-//                            thresholdMetValue = value;
-//                            sendNotification(thresholdMetValue);
-//                        }
+                                 float valueFloatC = Float.parseFloat(valueArray[0]);    //grab the Celsius value
+//                              float valueFloatF = Float.parseFloat(valueArray[1]);    //grab the Fahrenheit value
+                        if(thresholdFloat < valueFloatC && thresholdFloat != 0.0){
+                            thresholdMetValue = value;
+                            sendNotification(valueFloatC);
+                        }
                             if (valueArray.length > 1) {
                                 //add data to a hash table
                                 sensorValuesC.put(inc, valueArray[0]);
@@ -292,10 +292,10 @@ public class tempService extends Service {
         return true;
     }
 
-    public void sendNotification(String tempData){
+    public void sendNotification(Float tempData){
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "NotificationTempThreshold");
         builder.setContentTitle("Temp Threshold Met");
-        String temp = String.format("%.2f", Float.parseFloat(thresholdMetValue));
+        String temp = String.format("%.2f", tempData);
         builder.setContentText("Threshold Value: " + thresholdFloat + " Temp Value: " + temp);
         builder.setSmallIcon(R.drawable.ic_menu_send);
         builder.setAutoCancel(true);

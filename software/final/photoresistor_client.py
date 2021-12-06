@@ -576,6 +576,9 @@ while True:
     except:
         bluetoothMAIN(True)
 
+#Initialize the sending interval
+database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromApp").update({str(deviceName) : str(interval)})
+
 
 #initialize the firebase listener and pulse listener
 myStream = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromApp/" + deviceName).stream(firebaseStreamHandler, None)
