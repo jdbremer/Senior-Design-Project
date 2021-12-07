@@ -174,228 +174,6 @@ def encryptInitialization():
         print("token.txt does not exist")
 
 
-# _thread.start_new_thread(lightSequence,(1,1)) #start thread for BLE init
-
-#BLE Init
-BLEReceived = True
-stopBLEThread = False
-
-
-# bleInit = True
-# serialPort.write(("AT").encode())
-# time.sleep(2)
-# serialPort.write(("AT+IMME1").encode())
-# time.sleep(2)
-# serialPort.write((bleName).encode())
-# time.sleep(2)
-# serialPort.write(("AT+IMME0").encode())
-# time.sleep(2)
-# serialPort.write(("AT+RESET").encode())
-# time.sleep(2)
-
-
-print("BLE Initialization Complete")
-bleInit = False
-
-#END BLE Init    
-
-
-
-def runReadSequence():
-    global runReadSeq, modifyLocations, restartWIFI, allOff, allOn, bleInit, greenOn, redOn
-    runReadSeq = True
-    modifyLocations = False
-    restartWIFI = False
-    allOff = False
-    allOn = False
-    bleInit = False
-    greenOn = False
-    redOn = False
-
-    
-    global line
-    global fullString
-    startMsg = "start"
-    endMsg = "stop"
-    ssid = "ssid"
-    ssid_pswd = "password"
-    uid = "uid"
-    dataStart = False
-    dataStop = False
-    line = []
-    while True:
-        for c in serialPort.read().decode():
-            line.append(c)
-            if c == '\n':
-                print("newString")
-                fullString = ''.join(line).replace("\n"," ")
-                print(fullString)
-                line = []
-
-                if startMsg in fullString:
-                    dataStart = True
-                    dataStop = False
-                    print("start")
-                elif endMsg in fullString:
-                    dataStart = False
-                    dataStop = True
-                    print("end")
-                    return
-                elif dataStart == True and dataStop == False:
-                    if ssid in fullString or ssid_pswd in fullString or uid in fullString:
-                        try:
-                            valName = fullString.split(':')[0]
-                            print(valName)
-                            valData = fullString.split(':')[1]
-                            print(valData)
-                            appValues[valName] = valData
-                        except:
-                            print("invalid data")
-                            return
-
-
-
-#restarts the wifi services
-def RestartWifi():
-    global runReadSeq, modifyLocations, restartWIFI, allOff, allOn, bleInit, greenOn, redOn
-    runReadSeq = False
-    modifyLocations = False
-    restartWIFI = True
-    allOff = False
-    allOn = False
-    bleInit = False
-    greenOn = False
-    redOn = False
-
-    os.system('sudo systemctl daemon-reload')
-    time.sleep(5)
-    os.system('sudo systemctl stop dhcpcd.service')
-    time.sleep(5)
-    os.system('sudo systemctl start dhcpcd.service')
-    time.sleep(20)
-
-
-def modifyWPAFile():
-
-    global runReadSeq, modifyLocations, restartWIFI, allOff, allOn, bleInit, greenOn, redOn
-    runReadSeq = False
-    modifyLocations = True
-    restartWIFI = False
-    allOff = False
-    allOn = False
-    bleInit = False
-    greenOn = False
-    redOn = False
-
-    wifiConfig = open("/etc/wpa_supplicant/wpa_supplicant.conf", "r+")
-    fileContents = wifiConfig.readlines()
-    newFileContents = ""
-    currentFileContents = ""
-    for line in fileContents:
-        newLine = line
-        if "ssid" in line:
-            newLine = "        ssid=" + '"'  + appValues.get("ssid").strip() + '"' + "\n"
-            print(newLine)
-        elif "psk" in line:
-            newLine = "        psk=" + '"' + appValues.get("password").strip() + '"' + "\n"
-            print(newLine)
-        newFileContents += newLine
-    wifiConfig.seek(0)
-    wifiConfig.truncate(0)
-    wifiConfig.write(newFileContents)
-    wifiConfig.close()
-    
-    
-    
-def modifyTOKENFile():
-    global runReadSeq, modifyLocations, restartWIFI, allOff, allOn, bleInit, greenOn, redOn, keyFileName
-    runReadSeq = False
-    modifyLocations = True
-    restartWIFI = False
-    allOff = False
-    allOn = False
-    bleInit = False
-    greenOn = False
-    redOn = False
-
-    tokenConfig = open(tokenFileName, "r+")
-    tokenConfig.seek(0)
-    tokenConfig.truncate(0)
-    tokenConfig.write(appValues.get("uid").strip())
-    tokenConfig.close()
-
-    if os.path.exists(keyFileName): #if key exists, remove it
-        print("removed key file")
-        os.remove(keyFileName)
-
-
-def bluetoothMAIN(forToken):
-    global runReadSeq, modifyLocations, restartWIFI, allOff, allOn, bleInit, greenOn, redOn
-    runReadSeq = False
-    modifyLocations = False
-    restartWIFI = False
-    allOff = False
-    allOn = False
-    bleInit = False
-    greenOn = False
-    redOn = False
-
-
-    print("Bluetooth MAIN")
-    internet = False
-    status = "Not connected"
-
-    if not forToken:
-        try:
-            url = "https://www.google.com"
-            #urllib.request.urlopen(url)
-            response = requests.get(url)
-            internet = True
-
-            runReadSeq = False
-            modifyLocations = False
-            restartWIFI = False
-            allOff = False
-            allOn = False
-            bleInit = False
-            greenOn = True
-            redOn = False
-
-            ble.value = False  #BLE ON/OFF
-
-            encryptInitialization()
-
-            status = "Connected" 
-        except requests.ConnectionError:
-            status = "Not connected"
-            
-            
-            
-    print(status)
-    if status == "Not connected":
-        
-        runReadSeq = False
-        modifyLocations = False
-        restartWIFI = False
-        allOff = False
-        allOn = False
-        bleInit = False
-        greenOn = False
-        redOn = True
-
-        # ble.value = True  #BLE ON/OFF
-        # runReadSequence()
-        # modifyWPAFile()
-        # modifyTOKENFile()
-        # RestartWifi()
-        encryptInitialization()
-        print("in not connected loop")
-        bluetoothMAIN(False)
-
-
-bluetoothMAIN(False) 
-
-
 
 ##DATABASE INIT##
 #firebase database config
@@ -463,23 +241,23 @@ def sendingToDatabase(data):
     database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromChild").update({str(deviceName) : str(data)})
 
 
-while True:
-    try:
-        # Find the firebase token, and verify it is correct
-        if(os.path.exists(tokenFileName)): #check if the token txt file exists
-            print("Token file exists")
-            users = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/").get()
-            if users.val() == None:
-                print("Invalid token")
-                raise
-                # JUMP TO BLUETOOTH INIT HERE
-            else:
-                print("Token exists")   #token exists in db
-                #update the database to display connected sensor
-                database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/Connections").update({str(deviceName) : "1"})
-        break
-    except:
-        bluetoothMAIN(True)
+# while True:
+#     try:
+#         # Find the firebase token, and verify it is correct
+#         if(os.path.exists(tokenFileName)): #check if the token txt file exists
+#             print("Token file exists")
+#             users = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/").get()
+#             if users.val() == None:
+#                 print("Invalid token")
+#                 raise
+#                 # JUMP TO BLUETOOTH INIT HERE
+#             else:
+#                 print("Token exists")   #token exists in db
+#                 #update the database to display connected sensor
+#                 database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/Connections").update({str(deviceName) : "1"})
+#         break
+#     except:
+#         bluetoothMAIN(True)
 
 #Initialize the sending interval
 database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromApp").update({str(deviceName) : str(interval)})
