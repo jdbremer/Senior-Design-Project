@@ -134,6 +134,13 @@ def decryptFileContents(fileName):
     return decrypted
 
 
+def modifyTOKENFile():
+    tokenConfig = open("/home/pi/Desktop/Senior-Design-Project/software/Token/token.txt", "r+")
+    tokenConfig.seek(0)
+    tokenConfig.truncate(0)
+    tokenConfig.write(appValues.get("uid").strip())
+    tokenConfig.close()
+
 def encryptInitialization():
     global tokenFileName, keyFileName, tokenFileKey, key
 
@@ -290,6 +297,7 @@ except KeyboardInterrupt:
     print("keyboard interrupt")
 
 finally:
+    modifyTOKENFile()
     print("clean up")
     GPIO.cleanup()
     #update the database to display connected sensor
