@@ -172,7 +172,7 @@ def encryptInitialization():
         # bluetooth and wait for user input
         print("token.txt does not exist")
 
-
+encryptInitialization()
 
 ##DATABASE INIT##
 #firebase database config
