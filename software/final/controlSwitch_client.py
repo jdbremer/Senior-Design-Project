@@ -44,8 +44,8 @@ print("MAC address: " + str(mac))
 
 #MODIFY
 #Modify the path to these two within the Token folder...
-tokenFileName = "/home/pi/Desktop/Senior-Design-Project/software/Token/token.txt"
-keyFileName = "/home/pi/Desktop/Senior-Design-Project/software/Token/tokenFileKey.key"
+# tokenFileName = "/home/pi/Desktop/Senior-Design-Project/software/Token/token.txt"
+# keyFileName = "/home/pi/Desktop/Senior-Design-Project/software/Token/tokenFileKey.key"
 key = "X4KVbWNlW8XhHE6b1NfcxCMUkGc2"
 
 interval = 5  #default of 5 seconds
@@ -56,41 +56,6 @@ firstHandlerEntryPulse = 0
 token = ""
 deviceName = "ControlSwitch"
 # bleName = "AT+NAMESWITCH_IoT"
-
-#setup the bluetooth config.. this does not include timeout
-# serialPort = serial.Serial("/dev/serial0", baudrate=9600)
-
-appValues = {}
-
-line = []
-fullString = ""
-
-
-grabToken = ""
-token = ""
-
-
-
-#Light Sequence GLOBALS
-runReadSeq = False
-modifyLocations = False
-restartWIFI = False
-allOff = False
-allOn = False
-bleInit = False
-greenOn = False
-redOn = False
-
-
-#####
-# Using cryptography, we are under the impression that if a tokenFileKey.key file
-# has been made, that the contents are assumed to be encrypted within token.txt.
-# This means that the program should not encrypt the data within token.txt
-# if tokenFileKey.key has been created.
-
-# If the user uses bluetooth to change the wifi ssid password, the token.txt 
-# file needs to be encrypted after modification.
-
 
 
 ##DATABASE INIT##
@@ -109,6 +74,7 @@ firebase = pyrebase.initialize_app(config)
 storage = firebase.storage()
 database = firebase.database()
 auth = firebase.auth()
+print("reached end database")
 ##END DATABASE##
 
 #firebase listener "dataFromApp"
@@ -160,14 +126,13 @@ def sendingToDatabase(data):
 
 database.child(key + "/Connections").update({str(deviceName) : "1"})
 
-
 #Initialize the sending interval
 database.child(key + "/dataFromApp").update({str(deviceName) : str(interval)})
-
+print("updated connections and dataFromApp")
 #initialize the firebase listener and pulse listener
 myStream = database.child(key + "/dataFromApp/" + deviceName).stream(firebaseStreamHandler, None)
 myPulse = database.child(key + "/Pulse/Pulse").stream(firebasePulseHandler, None)
-
+print("initialized firebase listener and pulse listener")
 
 #sensor code
 #CODE FOR OPERATIONS#
