@@ -615,7 +615,14 @@ myPulse = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + 
 try:
     while True:
         if stopOperation:
+            myStream.close()
+            myPulse.close()
+
             bluetoothMAIN(True)
+
+            myStream = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromApp/" + deviceName).stream(firebaseStreamHandler, None)
+            myPulse = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/Pulse/Pulse").stream(firebasePulseHandler, None)
+            
         while not stopOperation:
             # print(read_temp(sendingToDatabase)) #read the temperature
             tempVal = read_temp()
