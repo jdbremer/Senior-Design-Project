@@ -111,20 +111,27 @@ def encryptFile(fileName):
         encrypted_file.write(encrypted)
 
 # For decrypting file contents, not the file itself
-def decryptFileContents(fileName, key):
-    # Using the key
-    fernet = Fernet(key)
+def decryptFileContents(fileName):
+    global key
 
-    # Opening the encrypted file
-    with open(fileName, 'rb') as enc_file:
-        encrypted = enc_file.read()
+    decrypted = ""
 
     # Decrypting the file
-    decrypted = fernet.decrypt(encrypted)
+    while True:
+        try:
+            # Using the key
+            fernet = Fernet(key)
+
+            # Opening the encrypted file
+            with open(fileName, 'rb') as enc_file:
+                encrypted = enc_file.read()
+
+            decrypted = fernet.decrypt(encrypted)
+            break
+        except:
+            print("in except")
 
     return decrypted
-    # For debug
-    # print(decrypted)
 
 
 def encryptInitialization():
