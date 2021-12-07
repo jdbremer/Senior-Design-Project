@@ -216,7 +216,14 @@ public class TempDataFragment extends Fragment {
             }
         });
 
+        Button tempReset = (Button) root.findViewById(R.id.resetTemp);
 
+        tempReset.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Do something in response to button click
+                mDatabase.child(userId).child("dataFromApp").child("TempSensor").setValue("resetPI");    //set reset flag
+            }
+        });
 
 
 

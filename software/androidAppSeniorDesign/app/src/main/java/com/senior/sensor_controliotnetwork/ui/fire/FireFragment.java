@@ -97,6 +97,17 @@ public class FireFragment extends Fragment {
         mPostReferenceFireStatus.addValueEventListener(fireStatusConstantListener);  //Uncomment this to start the continuous grab of updated data (runs code above, constant listener code)
         //END CONSTANT LISTENER CODE//
 
+
+        Button fireReset = (Button) root.findViewById(R.id.resetFire);
+
+        fireReset.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // Do something in response to button click
+                mDatabase.child(userId).child("dataFromApp").child("Fire").setValue("resetPI");    //set reset flag
+            }
+        });
+
+
         return root;
     }
 }

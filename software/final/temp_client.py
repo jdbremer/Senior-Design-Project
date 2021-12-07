@@ -40,6 +40,7 @@ cs = digitalio.DigitalInOut(board.D5)
 # create an analog input channel on pin 0
 # chan = AnalogIn(mcp, MCP.P0)
 
+stopOperation = False
 
 mac = get_mac()
 print("MAC address: " + str(mac))
@@ -422,7 +423,7 @@ def modifyTOKENFile():
 
 
 def bluetoothMAIN(forToken):
-    global runReadSeq, modifyLocations, restartWIFI, allOff, allOn, bleInit, greenOn, redOn
+    global runReadSeq, modifyLocations, restartWIFI, allOff, allOn, bleInit, greenOn, redOn, stopOperation
     runReadSeq = False
     modifyLocations = False
     restartWIFI = False
@@ -457,6 +458,7 @@ def bluetoothMAIN(forToken):
 
             encryptInitialization()
 
+            stopOperation = False
             status = "Connected" 
         except requests.ConnectionError:
             status = "Not connected"
@@ -509,11 +511,10 @@ auth = firebase.auth()
 
 #firebase listener "dataFromApp"
 def firebaseStreamHandler(event):
-    global firstHandlerEntryFromApp
-    global interval
+    global firstHandlerEntryFromApp, interval, stopOperation
 
     #if this is the first time in here, the data will be initialization data, which we want to discard
-    if(firstHandlerEntryFromApp == 0):
+    if(firstHandlerEntryFromApp == 0 or stopOperation):
         firstHandlerEntryFromApp = 1
 
     else:
@@ -522,15 +523,18 @@ def firebaseStreamHandler(event):
         dataReceivedFromDatabase = eventPathString = event["data"]
         #CODE TO DO SOMETHING WITH RECEIVED DATA
         print("dataReceivedFromDatabase: " + str(dataReceivedFromDatabase))
-        interval = int(dataReceivedFromDatabase)
-        print(interval)
+        if dataReceivedFromDatabase == "resetPI":
+            stopOperation = True
+        else:
+            interval = int(dataReceivedFromDatabase)
+            print(interval)
         #END CODE TO DO SOMETHING WITH RECEIVED DATA
 
 #firebase listener "Pulse" -> "Pulse"
 def firebasePulseHandler(event):
-    global firstHandlerEntryPulse
+    global firstHandlerEntryPulse, stopOperation
     #if this is the first time in here, the data will be initialization data, which we want to discard
-    if(firstHandlerEntryPulse == 0):
+    if(firstHandlerEntryPulse == 0 or stopOperation):
         firstHandlerEntryPulse = 1
         print()
 
@@ -551,8 +555,11 @@ def firebasePulseHandler(event):
 
 #function to send data to the server in a sequence
 def sendingToDatabase(data):
-    #send the data to the database
-    database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromChild").update({str(deviceName) : str(data)})
+    global stopOperation
+    
+    if not stopOperation:
+        #send the data to the database
+        database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromChild").update({str(deviceName) : str(data)})
 
 
 def read_temp_raw():
@@ -608,11 +615,12 @@ myPulse = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + 
 #sensor code
 try:
     while True:
-        # print(read_temp(sendingToDatabase)) #read the temperature
-        tempVal = read_temp()
-        print(tempVal)
-        sendingToDatabase(tempVal)
-        time.sleep(interval)  #delay between temperature readings
+        while not stopOperation:
+            # print(read_temp(sendingToDatabase)) #read the temperature
+            tempVal = read_temp()
+            print(tempVal)
+            sendingToDatabase(tempVal)
+            time.sleep(interval)  #delay between temperature readings
 
            
 except KeyboardInterrupt:

@@ -131,8 +131,6 @@ public class DataFragment extends Fragment {
 
         TextView connectionLightText = (TextView) root.findViewById(R.id.textLightConnectionStatus);
         Button lightSampleIntervalButton = (Button) root.findViewById(R.id.buttonLightSampleInterval);
-        Button lightRenameButton = (Button) root.findViewById(R.id.LightRenameButton);
-        EditText lightRenameText = (EditText) root.findViewById(R.id.LightRenameText);
         EditText lightIntervalText = (EditText) root.findViewById(R.id.textLightDataSampleInterval);
 
 
@@ -218,17 +216,12 @@ public class DataFragment extends Fragment {
             }
         });
 
+        Button lightReset = (Button) root.findViewById(R.id.resetLight);
 
-
-
-        lightRenameButton.setOnClickListener(new View.OnClickListener() {
-            @Override
+        lightReset.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String tempNewName;
-                tempNewName = lightRenameText.getText().toString(); //grab new name
-                //assign new name to the strings.xml file
-
-                Utils.hideKeyboard(getActivity());  //hide keyboard after button press
+                // Do something in response to button click
+                mDatabase.child(userId).child("dataFromApp").child("LightSensor").setValue("resetPI");    //set reset flag
             }
         });
 

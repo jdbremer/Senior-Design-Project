@@ -530,29 +530,29 @@ def firebaseStreamHandler(event):
 #firebase listener "Pulse" -> "Pulse"
 def firebasePulseHandler(event):
     global firstHandlerEntryPulse, stopOperation
-        #if this is the first time in here, the data will be initialization data, which we want to discard
-        if(firstHandlerEntryPulse == 0 or stopOperation):
-            firstHandlerEntryPulse = 1
+    #if this is the first time in here, the data will be initialization data, which we want to discard
+    if(firstHandlerEntryPulse == 0 or stopOperation):
+        firstHandlerEntryPulse = 1
 
+    else:
+        eventPathString = event["path"]
+        #pulls out the pulse value
+        dataReceivedFromDatabase = eventPathString = event["data"]
+        print(dataReceivedFromDatabase)
+        print(type(dataReceivedFromDatabase))
+        #CODE TO DO SOMETHING WITH RECEIVED DATA
+        if int(dataReceivedFromDatabase) == 1:
+            print("Pulse = 1")
+            database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/Status").update({str(deviceName) : str(1)}) #update Status to "1"
         else:
-            eventPathString = event["path"]
-            #pulls out the pulse value
-            dataReceivedFromDatabase = eventPathString = event["data"]
-            print(dataReceivedFromDatabase)
-            print(type(dataReceivedFromDatabase))
-            #CODE TO DO SOMETHING WITH RECEIVED DATA
-            if int(dataReceivedFromDatabase) == 1:
-                print("Pulse = 1")
-                database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/Status").update({str(deviceName) : str(1)}) #update Status to "1"
-            else:
-                print("Pulse = 0")
+            print("Pulse = 0")
             
 
 
 #function to send data to the server in a sequence
 def sendingToDatabase(data):
     global stopOperation
-    
+
     if not stopOperation:
         #send the data to the database
         database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromChild").update({str(deviceName) : str(data)})

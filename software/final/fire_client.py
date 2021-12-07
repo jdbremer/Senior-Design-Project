@@ -38,6 +38,7 @@ mcp = MCP.MCP3008(spi, cs)
 # create an analog input channel on pin 0
 chan = AnalogIn(mcp, MCP.P0)
 
+stopOperation = False
 
 mac = get_mac()
 print("MAC address: " + str(mac))
@@ -417,7 +418,7 @@ def modifyTOKENFile():
 
 
 def bluetoothMAIN(forToken):
-    global runReadSeq, modifyLocations, restartWIFI, allOff, allOn, bleInit, greenOn, redOn
+    global runReadSeq, modifyLocations, restartWIFI, allOff, allOn, bleInit, greenOn, redOn, stopOperation
     runReadSeq = False
     modifyLocations = False
     restartWIFI = False
@@ -452,6 +453,7 @@ def bluetoothMAIN(forToken):
 
             encryptInitialization()
 
+            stopOperation = False
             status = "Connected" 
         except requests.ConnectionError:
             status = "Not connected"
@@ -504,11 +506,10 @@ auth = firebase.auth()
 
 #firebase listener "dataFromApp"
 def firebaseStreamHandler(event):
-    global firstHandlerEntryFromApp
-    global interval
+    global firstHandlerEntryFromApp, interval, stopOperation
 
     #if this is the first time in here, the data will be initialization data, which we want to discard
-    if(firstHandlerEntryFromApp == 0):
+    if(firstHandlerEntryFromApp == 0 or stopOperation):
         firstHandlerEntryFromApp = 1
 
     else:
@@ -517,15 +518,18 @@ def firebaseStreamHandler(event):
         dataReceivedFromDatabase = eventPathString = event["data"]
         #CODE TO DO SOMETHING WITH RECEIVED DATA
         print("dataReceivedFromDatabase: " + str(dataReceivedFromDatabase))
-        interval = int(dataReceivedFromDatabase)
-        print(interval)
+        if dataReceivedFromDatabase == "resetPI":
+            stopOperation = True
+        else:
+            interval = int(dataReceivedFromDatabase)
+            print(interval)
         #END CODE TO DO SOMETHING WITH RECEIVED DATA
 
 #firebase listener "Pulse" -> "Pulse"
 def firebasePulseHandler(event):
-    global firstHandlerEntryPulse
+    global firstHandlerEntryPulse, stopOperation
     #if this is the first time in here, the data will be initialization data, which we want to discard
-    if(firstHandlerEntryPulse == 0):
+    if(firstHandlerEntryPulse == 0 or stopOperation):
         firstHandlerEntryPulse = 1
         print()
 
@@ -546,8 +550,11 @@ def firebasePulseHandler(event):
 
 #function to send data to the server in a sequence
 def sendingToDatabase(data):
-    #send the data to the database
-    database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromChild").update({str(deviceName) : str(data)})
+    global stopOperation
+
+    if not stopOperation:
+        #send the data to the database
+        database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromChild").update({str(deviceName) : str(data)})
 
 
 def sendSampleThread(sendSocket,receive):
@@ -586,31 +593,24 @@ myStream = database.child((decryptFileContents(tokenFileName)).decode("utf-8") +
 myPulse = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/Pulse/Pulse").stream(firebasePulseHandler, None)
 
 
-inc = 0
-average = 0
-numberOfSamples = 50
-sensorTotal = 0
-adcValue = 0
 
 #sensor code
 try:
-    while True:
-        #grab the start time
-        #start = time.time()
-        #set the pin 18 to high
-        # GPIO.output(18, GPIO.HIGH)
+    sending = 0 #REMOVE
+    receiving = 0 #REMOVE
 
+    #start the thread to send the average lux on a user specified interval
+    _thread.start_new_thread(sendSampleThread,(sending,receiving)) 
+    while True:
         
         sensorTotal = 0 #reset sensorTotal for next group of samples
         inc = 0
-        
-        sending = 0 #REMOVE
-        receiving = 0 #REMOVE
+        adcValue = 0
+        numberOfSamples = 50
+        average_lux = 0
+        average = 0
 
-        #start the thread to send the average lux on a user specified interval
-        _thread.start_new_thread(sendSampleThread,(sending,receiving)) 
-
-        while True:
+        while not stopOperation:
             sensorTotal += chan.value
             #increment the incrementor
             inc = inc+1
