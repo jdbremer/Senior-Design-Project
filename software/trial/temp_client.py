@@ -40,6 +40,7 @@ cs = digitalio.DigitalInOut(board.D5)
 # create an analog input channel on pin 0
 # chan = AnalogIn(mcp, MCP.P0)
 
+stopOperation = False
 
 mac = get_mac()
 print("MAC address: " + str(mac))
@@ -228,7 +229,7 @@ def decryptFileContents(fileName):
 
 
 def encryptInitialization():
-    global tokenFileName, keyFileName, tokenFileKey, key
+    global tokenFileName, keyFileName, key
 
     if (os.path.exists(tokenFileName)):
         print("token file exists")
@@ -270,7 +271,6 @@ _thread.start_new_thread(lightSequence,(1,1)) #start thread for BLE init
 
 #BLE Init
 BLEReceived = True
-stopBLEThread = False
 
 
 bleInit = True
@@ -400,7 +400,7 @@ def modifyWPAFile():
     
     
 def modifyTOKENFile():
-    global runReadSeq, modifyLocations, restartWIFI, allOff, allOn, bleInit, greenOn, redOn, keyFileName
+    global runReadSeq, modifyLocations, restartWIFI, allOff, allOn, bleInit, greenOn, redOn, keyFileName, tokenFileName
     runReadSeq = False
     modifyLocations = True
     restartWIFI = False
@@ -421,8 +421,26 @@ def modifyTOKENFile():
         os.remove(keyFileName)
 
 
+##DATABASE INIT##
+#firebase database config
+config = {
+    "apiKey": "AIzaSyAcaqrqFZYmvcAb0qFCI9N4QiZ6L6OeuZ8",
+    "authDomain": "seniordesign-ajr.firebaseapp.com",
+    "databaseURL": "https://seniordesign-ajr-default-rtdb.firebaseio.com",
+    "storageBucket": "seniordesign-ajr.appspot.com",
+}
+
+#initialize the pyrebase config instance 
+firebase = pyrebase.initialize_app(config)
+
+#instantiate both the storage and database firebase libraries
+storage = firebase.storage()
+database = firebase.database()
+auth = firebase.auth()
+##END DATABASE##
+
 def bluetoothMAIN(forToken):
-    global runReadSeq, modifyLocations, restartWIFI, allOff, allOn, bleInit, greenOn, redOn
+    global runReadSeq, modifyLocations, restartWIFI, allOff, allOn, bleInit, greenOn, redOn, stopOperation
     runReadSeq = False
     modifyLocations = False
     restartWIFI = False
@@ -439,6 +457,7 @@ def bluetoothMAIN(forToken):
 
     if not forToken:
         try:
+            print("if not forToken")
             url = "https://www.google.com"
             #urllib.request.urlopen(url)
             response = requests.get(url)
@@ -457,6 +476,7 @@ def bluetoothMAIN(forToken):
 
             encryptInitialization()
 
+            stopOperation = False
             status = "Connected" 
         except requests.ConnectionError:
             status = "Not connected"
@@ -476,10 +496,15 @@ def bluetoothMAIN(forToken):
         redOn = True
 
         ble.value = True  #BLE ON/OFF
+        print("runReadSequence")
         runReadSequence()
+        print("modifyWPAFile")
         modifyWPAFile()
+        print("modifyTOKENFile")
         modifyTOKENFile()
+        print("RestartWifi")
         RestartWifi()
+        print("encryptInitialization")
         encryptInitialization()
         print("in not connected loop")
         bluetoothMAIN(False)
@@ -488,32 +513,12 @@ def bluetoothMAIN(forToken):
 bluetoothMAIN(False) 
 
 
-
-##DATABASE INIT##
-#firebase database config
-config = {
-    "apiKey": "AIzaSyAcaqrqFZYmvcAb0qFCI9N4QiZ6L6OeuZ8",
-    "authDomain": "seniordesign-ajr.firebaseapp.com",
-    "databaseURL": "https://seniordesign-ajr-default-rtdb.firebaseio.com",
-    "storageBucket": "seniordesign-ajr.appspot.com",
-}
-
-#initialize the pyrebase config instance 
-firebase = pyrebase.initialize_app(config)
-
-#instantiate both the storage and database firebase libraries
-storage = firebase.storage()
-database = firebase.database()
-auth = firebase.auth()
-##END DATABASE##
-
 #firebase listener "dataFromApp"
 def firebaseStreamHandler(event):
-    global firstHandlerEntryFromApp
-    global interval
+    global firstHandlerEntryFromApp, interval, stopOperation
 
     #if this is the first time in here, the data will be initialization data, which we want to discard
-    if(firstHandlerEntryFromApp == 0):
+    if(firstHandlerEntryFromApp == 0 or stopOperation):
         firstHandlerEntryFromApp = 1
 
     else:
@@ -522,22 +527,19 @@ def firebaseStreamHandler(event):
         dataReceivedFromDatabase = eventPathString = event["data"]
         #CODE TO DO SOMETHING WITH RECEIVED DATA
         print("dataReceivedFromDatabase: " + str(dataReceivedFromDatabase))
-        if str(dataReceivedFromDatabase) == "resetPI":
-            if os.path.exists(keyFileName): #if key exists, remove it
-                print("removed key file")
-                os.remove(keyFileName)
-            os.system('sudo reboot')
-        interval = int(dataReceivedFromDatabase)
-        print(interval)
+        if dataReceivedFromDatabase == "resetPI":
+            stopOperation = True
+        elif int(dataReceivedFromDatabase):
+            interval = int(dataReceivedFromDatabase)
+            print(interval)
         #END CODE TO DO SOMETHING WITH RECEIVED DATA
 
 #firebase listener "Pulse" -> "Pulse"
 def firebasePulseHandler(event):
-    global firstHandlerEntryPulse
+    global firstHandlerEntryPulse, stopOperation
     #if this is the first time in here, the data will be initialization data, which we want to discard
-    if(firstHandlerEntryPulse == 0):
+    if(firstHandlerEntryPulse == 0 or stopOperation):
         firstHandlerEntryPulse = 1
-        print()
 
     else:
         eventPathString = event["path"]
@@ -556,8 +558,11 @@ def firebasePulseHandler(event):
 
 #function to send data to the server in a sequence
 def sendingToDatabase(data):
-    #send the data to the database
-    database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromChild").update({str(deviceName) : str(data)})
+    global stopOperation, tokenFileName, deviceName
+    
+    if not stopOperation:
+        #send the data to the database
+        database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromChild").update({str(deviceName) : str(data)})
 
 
 def read_temp_raw():
@@ -602,6 +607,7 @@ while True:
     except:
         bluetoothMAIN(True)
 
+print("Initialize streams 1")
 #Initialize the sending interval
 database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromApp").update({str(deviceName) : str(interval)})
 
@@ -613,11 +619,25 @@ myPulse = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + 
 #sensor code
 try:
     while True:
-        # print(read_temp(sendingToDatabase)) #read the temperature
-        tempVal = read_temp()
-        print(tempVal)
-        sendingToDatabase(tempVal)
-        time.sleep(interval)  #delay between temperature readings
+        if stopOperation:
+            print("disable streams")
+            # myStream.close()
+            # myPulse.close()
+
+            bluetoothMAIN(True)
+
+            print("Initialize streams 2")
+            database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromApp").update({str(deviceName) : str(interval)})
+            # myStream = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromApp/" + deviceName).stream(firebaseStreamHandler, None)
+            # myPulse = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/Pulse/Pulse").stream(firebasePulseHandler, None)
+
+        while not stopOperation:
+            print("in while")
+            # print(read_temp(sendingToDatabase)) #read the temperature
+            # tempVal = read_temp()
+            # print(tempVal)
+            # sendingToDatabase(tempVal)
+            time.sleep(interval)  #delay between temperature readings
 
            
 except KeyboardInterrupt:
