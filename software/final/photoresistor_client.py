@@ -398,7 +398,7 @@ def modifyWPAFile():
     
     
 def modifyTOKENFile():
-    global runReadSeq, modifyLocations, restartWIFI, allOff, allOn, bleInit, greenOn, redOn, keyFileName
+    global runReadSeq, modifyLocations, restartWIFI, allOff, allOn, bleInit, greenOn, redOn, keyFileName, tokenFileName
     runReadSeq = False
     modifyLocations = True
     restartWIFI = False
@@ -420,7 +420,7 @@ def modifyTOKENFile():
 
 
 def bluetoothMAIN(forToken):
-    global runReadSeq, modifyLocations, restartWIFI, allOff, allOn, bleInit, greenOn, redOn, stopOperation
+    global runReadSeq, modifyLocations, restartWIFI, allOff, allOn, bleInit, greenOn, redOn, stopOperation, tokenFileName, deviceName, interval
     runReadSeq = False
     modifyLocations = False
     restartWIFI = False
@@ -455,6 +455,7 @@ def bluetoothMAIN(forToken):
 
             encryptInitialization()
 
+            database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromApp").update({str(deviceName) : str(interval)})
             stopOperation = False
             status = "Connected" 
         except requests.ConnectionError:
@@ -523,14 +524,14 @@ def firebaseStreamHandler(event):
         if dataReceivedFromDatabase == "resetPI":
             stopOperation = True
             bluetoothMAIN(True)
-        else:
+        elif int(dataReceivedFromDatabase):
             interval = int(dataReceivedFromDatabase)
             print(interval)
         #END CODE TO DO SOMETHING WITH RECEIVED DATA
 
 #firebase listener "Pulse" -> "Pulse"
 def firebasePulseHandler(event):
-    global firstHandlerEntryPulse, stopOperation
+    global firstHandlerEntryPulse, stopOperation, tokenFileName, deviceName
     #if this is the first time in here, the data will be initialization data, which we want to discard
     if(firstHandlerEntryPulse == 0 or stopOperation):
         firstHandlerEntryPulse = 1
@@ -552,7 +553,7 @@ def firebasePulseHandler(event):
 
 #function to send data to the server in a sequence
 def sendingToDatabase(data):
-    global stopOperation
+    global stopOperation, tokenFileName, deviceName
 
     if not stopOperation:
         #send the data to the database
