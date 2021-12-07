@@ -91,9 +91,29 @@ def firebaseStreamHandler(event):
         #pulls out the sensor data from the event data, this data is not delimited
         dataReceivedFromDatabase = eventPathString = event["data"]
         #CODE TO DO SOMETHING WITH RECEIVED DATA
-        print("dataReceivedFromDatabase: " + str(dataReceivedFromDatabase))
-        interval = int(dataReceivedFromDatabase)
-        print(interval)
+        try:
+            print("Received data.. " + str(dataReceivedFromDatabase))
+            relay1 = str(dataReceivedFromDatabase).split('~')[0]
+            relay2 = str(dataReceivedFromDatabase).split('~')[1]
+            if(int(relay1) == 0):
+                GPIO.output(18, GPIO.LOW)
+            elif(int(relay1) == 1):
+                GPIO.output(18, GPIO.HIGH)
+                
+                
+            if(int(relay2) == 0):
+                GPIO.output(16, GPIO.LOW)
+            elif(int(relay2) == 1):
+                GPIO.output(16, GPIO.HIGH)
+                
+            sendingToDatabase(str(dataReceivedFromDatabase))
+            # sendsSocket(sendingSocket, receivedData)
+        
+        except KeyboardInterrupt:
+            print("keyboard interrupt")
+        # print("dataReceivedFromDatabase: " + str(dataReceivedFromDatabase))
+        # interval = int(dataReceivedFromDatabase)
+        # print(interval)
         #END CODE TO DO SOMETHING WITH RECEIVED DATA
 
 #firebase listener "Pulse" -> "Pulse"
