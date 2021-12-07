@@ -27,10 +27,10 @@ from cryptography.fernet import Fernet
 # from adafruit_mcp3xxx.analog_in import AnalogIn
 
 # create the spi bus
-spi = busio.SPI(clock=board.SCK, MISO=board.MISO, MOSI=board.MOSI)
+# spi = busio.SPI(clock=board.SCK, MISO=board.MISO, MOSI=board.MOSI)
 
 # create the cs (chip select)
-cs = digitalio.DigitalInOut(board.D5)
+# cs = digitalio.DigitalInOut(board.D5)
 
 # create the mcp object
 # mcp = MCP.MCP3008(spi, cs)
@@ -69,23 +69,6 @@ fullString = ""
 grabToken = ""
 token = ""
 
-#GPIO Setup
-greenLed = digitalio.DigitalInOut(board.D16)
-redLed = digitalio.DigitalInOut(board.D20)
-ble = digitalio.DigitalInOut(board.D21)
-
-greenLed.direction = digitalio.Direction.OUTPUT
-redLed.direction = digitalio.Direction.OUTPUT
-ble.direction = digitalio.Direction.OUTPUT
-
-
-ble.value = False  #BLE ON/OFF
-time.sleep(2) # We want the bluetooth module to go off initially as a reset
-
-#GPIO defaults
-greenLed.value = True #GREEN LED
-redLed.value = True #RED LED
-ble.value = True  #BLE ON/OFF
 
 
 #Light Sequence GLOBALS
