@@ -229,7 +229,7 @@ def decryptFileContents(fileName):
 
 
 def encryptInitialization():
-    global tokenFileName, keyFileName, tokenFileKey, key
+    global tokenFileName, keyFileName, key
 
     if (os.path.exists(tokenFileName)):
         print("token file exists")
@@ -271,7 +271,6 @@ _thread.start_new_thread(lightSequence,(1,1)) #start thread for BLE init
 
 #BLE Init
 BLEReceived = True
-stopBLEThread = False
 
 
 bleInit = True
@@ -441,7 +440,7 @@ auth = firebase.auth()
 ##END DATABASE##
 
 def bluetoothMAIN(forToken):
-    global runReadSeq, modifyLocations, restartWIFI, allOff, allOn, bleInit, greenOn, redOn, stopOperation, deviceName, interval
+    global runReadSeq, modifyLocations, restartWIFI, allOff, allOn, bleInit, greenOn, redOn, stopOperation
     runReadSeq = False
     modifyLocations = False
     restartWIFI = False
@@ -458,6 +457,7 @@ def bluetoothMAIN(forToken):
 
     if not forToken:
         try:
+            print("if not forToken")
             url = "https://www.google.com"
             #urllib.request.urlopen(url)
             response = requests.get(url)
@@ -477,7 +477,6 @@ def bluetoothMAIN(forToken):
             encryptInitialization()
 
             stopOperation = False
-            database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromApp").update({str(deviceName) : str(interval)})
             status = "Connected" 
         except requests.ConnectionError:
             status = "Not connected"
@@ -497,10 +496,15 @@ def bluetoothMAIN(forToken):
         redOn = True
 
         ble.value = True  #BLE ON/OFF
+        print("runReadSequence")
         runReadSequence()
+        print("modifyWPAFile")
         modifyWPAFile()
+        print("modifyTOKENFile")
         modifyTOKENFile()
+        print("RestartWifi")
         RestartWifi()
+        print("encryptInitialization")
         encryptInitialization()
         print("in not connected loop")
         bluetoothMAIN(False)
@@ -603,6 +607,7 @@ while True:
     except:
         bluetoothMAIN(True)
 
+print("Initialize streams 1")
 #Initialize the sending interval
 database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromApp").update({str(deviceName) : str(interval)})
 
@@ -615,19 +620,23 @@ myPulse = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + 
 try:
     while True:
         if stopOperation:
+            print("disable streams")
             myStream.close()
             myPulse.close()
 
             bluetoothMAIN(True)
 
+            print("Initialize streams 2")
+            database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromApp").update({str(deviceName) : str(interval)})
             myStream = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromApp/" + deviceName).stream(firebaseStreamHandler, None)
             myPulse = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/Pulse/Pulse").stream(firebasePulseHandler, None)
-            
+
         while not stopOperation:
+            print("in while")
             # print(read_temp(sendingToDatabase)) #read the temperature
-            tempVal = read_temp()
-            print(tempVal)
-            sendingToDatabase(tempVal)
+            # tempVal = read_temp()
+            # print(tempVal)
+            # sendingToDatabase(tempVal)
             time.sleep(interval)  #delay between temperature readings
 
            
