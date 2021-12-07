@@ -525,7 +525,6 @@ def firebaseStreamHandler(event):
         print("dataReceivedFromDatabase: " + str(dataReceivedFromDatabase))
         if dataReceivedFromDatabase == "resetPI":
             stopOperation = True
-            bluetoothMAIN(True)
         elif int(dataReceivedFromDatabase):
             interval = int(dataReceivedFromDatabase)
             print(interval)
@@ -537,7 +536,6 @@ def firebasePulseHandler(event):
     #if this is the first time in here, the data will be initialization data, which we want to discard
     if(firstHandlerEntryPulse == 0 or stopOperation):
         firstHandlerEntryPulse = 1
-        print()
 
     else:
         eventPathString = event["path"]
@@ -616,6 +614,8 @@ myPulse = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + 
 #sensor code
 try:
     while True:
+        if stopOperation:
+            bluetoothMAIN(True)
         while not stopOperation:
             # print(read_temp(sendingToDatabase)) #read the temperature
             tempVal = read_temp()
