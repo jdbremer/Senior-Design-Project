@@ -416,6 +416,23 @@ def modifyTOKENFile():
         print("removed key file")
         os.remove(keyFileName)
 
+##DATABASE INIT##
+#firebase database config
+config = {
+    "apiKey": "AIzaSyAcaqrqFZYmvcAb0qFCI9N4QiZ6L6OeuZ8",
+    "authDomain": "seniordesign-ajr.firebaseapp.com",
+    "databaseURL": "https://seniordesign-ajr-default-rtdb.firebaseio.com",
+    "storageBucket": "seniordesign-ajr.appspot.com",
+}
+
+#initialize the pyrebase config instance 
+firebase = pyrebase.initialize_app(config)
+
+#instantiate both the storage and database firebase libraries
+storage = firebase.storage()
+database = firebase.database()
+auth = firebase.auth()
+##END DATABASE##
 
 def bluetoothMAIN(forToken):
     global runReadSeq, modifyLocations, restartWIFI, allOff, allOn, bleInit, greenOn, redOn, stopOperation, tokenFileName, deviceName, interval
@@ -483,26 +500,6 @@ def bluetoothMAIN(forToken):
 
 
 bluetoothMAIN(False) 
-
-
-
-##DATABASE INIT##
-#firebase database config
-config = {
-    "apiKey": "AIzaSyAcaqrqFZYmvcAb0qFCI9N4QiZ6L6OeuZ8",
-    "authDomain": "seniordesign-ajr.firebaseapp.com",
-    "databaseURL": "https://seniordesign-ajr-default-rtdb.firebaseio.com",
-    "storageBucket": "seniordesign-ajr.appspot.com",
-}
-
-#initialize the pyrebase config instance 
-firebase = pyrebase.initialize_app(config)
-
-#instantiate both the storage and database firebase libraries
-storage = firebase.storage()
-database = firebase.database()
-auth = firebase.auth()
-##END DATABASE##
 
 #firebase listener "dataFromApp"
 def firebaseStreamHandler(event):

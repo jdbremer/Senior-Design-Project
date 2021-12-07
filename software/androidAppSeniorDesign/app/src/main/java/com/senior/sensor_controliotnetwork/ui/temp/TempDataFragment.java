@@ -171,10 +171,12 @@ public class TempDataFragment extends Fragment {
         ValueEventListener tempIntervalConstantListener = new ValueEventListener(){
             @Override
             public void onDataChange (DataSnapshot dataSnapshot){
-                tempIntervalText.setText(dataSnapshot.getValue().toString());
-                sampleInterval = dataSnapshot.getValue().toString();
-                if(sampleInterval.equals("0"))
-                    tempIntervalText.setText("5");
+                if(isNumeric(dataSnapshot.getValue().toString())) {
+                    tempIntervalText.setText(dataSnapshot.getValue().toString());
+                    sampleInterval = dataSnapshot.getValue().toString();
+                    if (sampleInterval.equals("0"))
+                        tempIntervalText.setText("5");
+                }
             }
 
             @Override

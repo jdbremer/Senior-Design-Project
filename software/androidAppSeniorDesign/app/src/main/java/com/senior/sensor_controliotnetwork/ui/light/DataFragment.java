@@ -171,10 +171,13 @@ public class DataFragment extends Fragment {
         ValueEventListener lightIntervalConstantListener = new ValueEventListener(){
             @Override
             public void onDataChange (DataSnapshot dataSnapshot){
-                lightIntervalText.setText(dataSnapshot.getValue().toString());
-                sampleInterval = dataSnapshot.getValue().toString();
-                if(sampleInterval.equals("0"))
-                    lightIntervalText.setText("5");
+                if(isNumeric(dataSnapshot.getValue().toString()))
+                {
+                    lightIntervalText.setText(dataSnapshot.getValue().toString());
+                    sampleInterval = dataSnapshot.getValue().toString();
+                    if(sampleInterval.equals("0"))
+                        lightIntervalText.setText("5");
+                }
             }
 
             @Override
