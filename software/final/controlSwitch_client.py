@@ -46,7 +46,7 @@ print("MAC address: " + str(mac))
 #Modify the path to these two within the Token folder...
 tokenFileName = "/home/pi/Desktop/Senior-Design-Project/software/Token/token.txt"
 keyFileName = "/home/pi/Desktop/Senior-Design-Project/software/Token/tokenFileKey.key"
-key = ""
+key = "X4KVbWNlW8XhHE6b1NfcxCMUkGc2"
 
 interval = 5  #default of 5 seconds
 
@@ -92,94 +92,6 @@ redOn = False
 # file needs to be encrypted after modification.
 
 
-# Encrypt the entire file contents
-def encryptFile(fileName):
-    global key
-    # Using the generated key
-    fernet = Fernet(key)
-
-    # Opening the original file to encrypt
-    with open(fileName, 'rb') as file:
-        original = file.read()
-        
-    # Encrypting the file
-    encrypted = fernet.encrypt(original)
-
-    # Epening the file in write mode and
-    # Writing the encrypted data
-    with open(fileName, 'wb') as encrypted_file:
-        encrypted_file.write(encrypted)
-
-# For decrypting file contents, not the file itself
-def decryptFileContents(fileName):
-    global key
-
-    decrypted = ""
-
-    # Decrypting the file
-    while True:
-        try:
-            # Using the key
-            fernet = Fernet(key)
-
-            # Opening the encrypted file
-            with open(fileName, 'rb') as enc_file:
-                encrypted = enc_file.read()
-
-            decrypted = fernet.decrypt(encrypted)
-            break
-        except:
-            print("in except")
-
-    return decrypted
-
-
-def modifyTOKENFile():
-    tokenConfig = open("/home/pi/Desktop/Senior-Design-Project/software/Token/token.txt", "r+")
-    tokenConfig.seek(0)
-    tokenConfig.truncate(0)
-    tokenConfig.write(appValues.get("uid").strip())
-    tokenConfig.close()
-
-def encryptInitialization():
-    global tokenFileName, keyFileName, tokenFileKey, key
-
-    if (os.path.exists(tokenFileName)):
-        print("token file exists")
-        # If the keyFileName exists it is assumed
-        # that the token.txt file has been already
-        # incrypted or will be encrypted later
-        if os.path.exists(keyFileName):
-            print("key file exists")
-            # Opening the key
-            # 'rb' means to open and read binary
-            with open(keyFileName, 'rb') as tokenFileKey:
-                key = tokenFileKey.read()
-
-        else:
-            print("key file does not exist")
-            # Generates the key
-            key = Fernet.generate_key()
-
-
-            # String the key in a file
-            # 'wb' means to open and write binary
-            with open(keyFileName, 'wb') as tokenFileKey:
-                tokenFileKey.write(key)
-
-            encryptFile(tokenFileName)
-
-    else:
-        if os.path.exists(keyFileName):
-            os.remove(keyFileName)
-        
-        # If the token.txt file does not exist, the 
-        # user will need to use bluetooth to connect
-        # to the pi and send the token aka. turn on
-        # bluetooth and wait for user input
-        print("token.txt does not exist")
-
-encryptInitialization()
 
 ##DATABASE INIT##
 #firebase database config
@@ -235,7 +147,7 @@ def firebasePulseHandler(event):
         #CODE TO DO SOMETHING WITH RECEIVED DATA
         if int(dataReceivedFromDatabase) == 1:
             print("Pulse = 1")
-            database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/Status").update({str(deviceName) : str(1)}) #update Status to "1"
+            database.child(key + "/Status").update({str(deviceName) : str(1)}) #update Status to "1"
         else:
             print("Pulse = 0")
             
@@ -244,33 +156,17 @@ def firebasePulseHandler(event):
 #function to send data to the server in a sequence
 def sendingToDatabase(data):
     #send the data to the database
-    database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromChild").update({str(deviceName) : str(data)})
+    database.child(key + "/dataFromChild").update({str(deviceName) : str(data)})
 
+database.child(key + "/Connections").update({str(deviceName) : "1"})
 
-# while True:
-#     try:
-#         # Find the firebase token, and verify it is correct
-#         if(os.path.exists(tokenFileName)): #check if the token txt file exists
-#             print("Token file exists")
-#             users = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/").get()
-#             if users.val() == None:
-#                 print("Invalid token")
-#                 raise
-#                 # JUMP TO BLUETOOTH INIT HERE
-#             else:
-#                 print("Token exists")   #token exists in db
-#                 #update the database to display connected sensor
-#                 database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/Connections").update({str(deviceName) : "1"})
-#         break
-#     except:
-#         bluetoothMAIN(True)
 
 #Initialize the sending interval
-database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromApp").update({str(deviceName) : str(interval)})
+database.child(key + "/dataFromApp").update({str(deviceName) : str(interval)})
 
 #initialize the firebase listener and pulse listener
-myStream = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromApp/" + deviceName).stream(firebaseStreamHandler, None)
-myPulse = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/Pulse/Pulse").stream(firebasePulseHandler, None)
+myStream = database.child(key + "/dataFromApp/" + deviceName).stream(firebaseStreamHandler, None)
+myPulse = database.child(key + "/Pulse/Pulse").stream(firebasePulseHandler, None)
 
 
 #sensor code
@@ -297,11 +193,10 @@ except KeyboardInterrupt:
     print("keyboard interrupt")
 
 finally:
-    modifyTOKENFile()
     print("clean up")
     GPIO.cleanup()
     #update the database to display connected sensor
-    database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + "/Connections").update({str(deviceName) : "0"})
+    database.child(key + "/Connections").update({str(deviceName) : "0"})
     print("connection closed")
 #END CODE FOR OPERATIONS#
 #delay
