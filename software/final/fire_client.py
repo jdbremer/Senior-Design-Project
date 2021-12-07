@@ -520,6 +520,7 @@ def firebaseStreamHandler(event):
         print("dataReceivedFromDatabase: " + str(dataReceivedFromDatabase))
         if dataReceivedFromDatabase == "resetPI":
             stopOperation = True
+            bluetoothMAIN(True)
         else:
             interval = int(dataReceivedFromDatabase)
             print(interval)
