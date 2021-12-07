@@ -111,28 +111,20 @@ def encryptFile(fileName):
         encrypted_file.write(encrypted)
 
 # For decrypting file contents, not the file itself
-def decryptFileContents(fileName):
-    global key
+def decryptFileContents(fileName, key):
+    # Using the key
+    fernet = Fernet(key)
 
-    decrypted = ""
+    # Opening the encrypted file
+    with open(fileName, 'rb') as enc_file:
+        encrypted = enc_file.read()
 
     # Decrypting the file
-    while True:
-        try:
-            # Using the key
-            fernet = Fernet(key)
-
-            # Opening the encrypted file
-            with open(fileName, 'rb') as enc_file:
-                encrypted = enc_file.read()
-
-            decrypted = fernet.decrypt(encrypted)
-            break
-        except:
-            print("in except")
-            bluetoothMAIN(True)
+    decrypted = fernet.decrypt(encrypted)
 
     return decrypted
+    # For debug
+    # print(decrypted)
 
 
 def encryptInitialization():
