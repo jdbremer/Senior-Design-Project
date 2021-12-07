@@ -621,15 +621,15 @@ try:
     while True:
         if stopOperation:
             print("disable streams")
-            myStream.close()
-            myPulse.close()
+            # myStream.close()
+            # myPulse.close()
 
             bluetoothMAIN(True)
 
             print("Initialize streams 2")
             database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromApp").update({str(deviceName) : str(interval)})
-            myStream = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromApp/" + deviceName).stream(firebaseStreamHandler, None)
-            myPulse = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/Pulse/Pulse").stream(firebasePulseHandler, None)
+            # myStream = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromApp/" + deviceName).stream(firebaseStreamHandler, None)
+            # myPulse = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/Pulse/Pulse").stream(firebasePulseHandler, None)
 
         while not stopOperation:
             print("in while")
@@ -647,7 +647,7 @@ finally:
     print("clean up")
     GPIO.cleanup()
     #update the database to display connected sensor
-    database.child((decryptFileContents(tokenFileName, key)).decode("utf-8") + "/Connections").update({str(deviceName) : "0"})
+    database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/Connections").update({str(deviceName) : "0"})
     print("connection closed")
 
 
