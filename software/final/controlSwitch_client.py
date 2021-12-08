@@ -144,7 +144,7 @@ def sendingToDatabase(data):
     #send the data to the database
     database.child(key + "/dataFromChild").update({str(deviceName) : str(data)})
 
-database.child(key + "/Connections").update({str(deviceName) : "1"})
+# database.child(key + "/Connections").update({str(deviceName) : "1"})
 
 #Initialize the sending interval
 database.child(key + "/dataFromApp").update({str(deviceName) : str(interval)})
@@ -181,7 +181,7 @@ finally:
     print("clean up")
     GPIO.cleanup()
     #update the database to display connected sensor
-    database.child(key + "/Connections").update({str(deviceName) : "0"})
+    # database.child(key + "/Connections").update({str(deviceName) : "0"})
     print("connection closed")
 #END CODE FOR OPERATIONS#
 #delay
