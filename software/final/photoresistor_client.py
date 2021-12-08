@@ -53,9 +53,6 @@ average = 0
 average_lux = 0
 
 
-stopOperation = False
-
-
 #used for firebase handler
 firstHandlerEntryFromApp = 0
 firstHandlerEntryPulse = 0
@@ -398,7 +395,7 @@ def modifyWPAFile():
     
     
 def modifyTOKENFile():
-    global runReadSeq, modifyLocations, restartWIFI, allOff, allOn, bleInit, greenOn, redOn, keyFileName, tokenFileName
+    global runReadSeq, modifyLocations, restartWIFI, allOff, allOn, bleInit, greenOn, redOn, keyFileName
     runReadSeq = False
     modifyLocations = True
     restartWIFI = False
@@ -419,26 +416,8 @@ def modifyTOKENFile():
         os.remove(keyFileName)
 
 
-##DATABASE INIT##
-#firebase database config
-config = {
-    "apiKey": "AIzaSyAcaqrqFZYmvcAb0qFCI9N4QiZ6L6OeuZ8",
-    "authDomain": "seniordesign-ajr.firebaseapp.com",
-    "databaseURL": "https://seniordesign-ajr-default-rtdb.firebaseio.com",
-    "storageBucket": "seniordesign-ajr.appspot.com",
-}
-
-#initialize the pyrebase config instance 
-firebase = pyrebase.initialize_app(config)
-
-#instantiate both the storage and database firebase libraries
-storage = firebase.storage()
-database = firebase.database()
-auth = firebase.auth()
-##END DATABASE##
-
 def bluetoothMAIN(forToken):
-    global runReadSeq, modifyLocations, restartWIFI, allOff, allOn, bleInit, greenOn, redOn, stopOperation, tokenFileName, deviceName, interval
+    global runReadSeq, modifyLocations, restartWIFI, allOff, allOn, bleInit, greenOn, redOn
     runReadSeq = False
     modifyLocations = False
     restartWIFI = False
@@ -473,8 +452,6 @@ def bluetoothMAIN(forToken):
 
             encryptInitialization()
 
-            database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromApp").update({str(deviceName) : str(interval)})
-            stopOperation = False
             status = "Connected" 
         except requests.ConnectionError:
             status = "Not connected"
@@ -506,12 +483,32 @@ def bluetoothMAIN(forToken):
 bluetoothMAIN(False) 
 
 
+
+##DATABASE INIT##
+#firebase database config
+config = {
+    "apiKey": "AIzaSyAcaqrqFZYmvcAb0qFCI9N4QiZ6L6OeuZ8",
+    "authDomain": "seniordesign-ajr.firebaseapp.com",
+    "databaseURL": "https://seniordesign-ajr-default-rtdb.firebaseio.com",
+    "storageBucket": "seniordesign-ajr.appspot.com",
+}
+
+#initialize the pyrebase config instance 
+firebase = pyrebase.initialize_app(config)
+
+#instantiate both the storage and database firebase libraries
+storage = firebase.storage()
+database = firebase.database()
+auth = firebase.auth()
+##END DATABASE##
+
 #firebase listener "dataFromApp"
 def firebaseStreamHandler(event):
-    global firstHandlerEntryFromApp, interval, stopOperation
+    global firstHandlerEntryFromApp
+    global interval
 
     #if this is the first time in here, the data will be initialization data, which we want to discard
-    if(firstHandlerEntryFromApp == 0 or stopOperation):
+    if(firstHandlerEntryFromApp == 0):
         firstHandlerEntryFromApp = 1
 
     else:
@@ -520,20 +517,22 @@ def firebaseStreamHandler(event):
         dataReceivedFromDatabase = eventPathString = event["data"]
         #CODE TO DO SOMETHING WITH RECEIVED DATA
         print("dataReceivedFromDatabase: " + str(dataReceivedFromDatabase))
-        if dataReceivedFromDatabase == "resetPI":
-            stopOperation = True
-            bluetoothMAIN(True)
-        elif int(dataReceivedFromDatabase):
-            interval = int(dataReceivedFromDatabase)
-            print(interval)
+        if str(dataReceivedFromDatabase) == "resetPI":
+            if os.path.exists(keyFileName): #if key exists, remove it
+                print("removed key file")
+                os.remove(keyFileName)
+            os.system('sudo reboot')
+        interval = int(dataReceivedFromDatabase)
+        print(interval)
         #END CODE TO DO SOMETHING WITH RECEIVED DATA
 
 #firebase listener "Pulse" -> "Pulse"
 def firebasePulseHandler(event):
-    global firstHandlerEntryPulse, stopOperation, tokenFileName, deviceName
+    global firstHandlerEntryPulse
     #if this is the first time in here, the data will be initialization data, which we want to discard
-    if(firstHandlerEntryPulse == 0 or stopOperation):
+    if(firstHandlerEntryPulse == 0):
         firstHandlerEntryPulse = 1
+        print()
 
     else:
         eventPathString = event["path"]
@@ -552,11 +551,8 @@ def firebasePulseHandler(event):
 
 #function to send data to the server in a sequence
 def sendingToDatabase(data):
-    global stopOperation, tokenFileName, deviceName
-
-    if not stopOperation:
-        #send the data to the database
-        database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromChild").update({str(deviceName) : str(data)})
+    #send the data to the database
+    database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/dataFromChild").update({str(deviceName) : str(data)})
 
 
 def sendSampleThread(sendSocket,receive):
@@ -594,23 +590,31 @@ myStream = database.child((decryptFileContents(tokenFileName)).decode("utf-8") +
 myPulse = database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/Pulse/Pulse").stream(firebasePulseHandler, None)
 
 
+inc = 0
+average = 0
+average_lux
+numberOfSamples = 50
+sensorTotal = 0
+adcValue = 0
+
 #sensor code
 try:
-    sending = 0 #REMOVE
-    receiving = 0 #REMOVE
-
-    #start the thread to send the average lux on a user specified interval
-    _thread.start_new_thread(sendSampleThread,(sending,receiving)) 
     while True:
+        #grab the start time
+        #start = time.time()
+        #set the pin 18 to high
+        # GPIO.output(18, GPIO.HIGH)
+
         
         sensorTotal = 0 #reset sensorTotal for next group of samples
         inc = 0
-        adcValue = 0
-        numberOfSamples = 50
-        average_lux = 0
-        average = 0
         
-        while not stopOperation :
+        sending = 0 #REMOVE
+        receiving = 0 #REMOVE
+
+        #start the thread to send the average lux on a user specified interval
+        _thread.start_new_thread(sendSampleThread,(sending,receiving)) 
+        while True:
             sensorTotal += chan.value #read adc value of channel 0
             #take the average of the value
             #increment the incrementor
@@ -621,7 +625,7 @@ try:
                 #https://learn.adafruit.com/photocells/using-a-photocell
                 
                 #divide the sensor total by the total number of samples to get the average
-                adcValue = sensorTotal / numberOfSamples 
+                adcValue  = sensorTotal / numberOfSamples 
                 #use the generated equation to determine the average lux
                 average_lux = abs((-121.13+math.sqrt((-0.2744*adcValue)+17963.9))/(0.1372))
 
