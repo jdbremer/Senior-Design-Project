@@ -576,7 +576,7 @@ while True:
             else:
                 print("Token exists")   #token exists in db
                 #update the database to display connected sensor
-                database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/Connections").update({str(deviceName) : "1"})
+                # database.child((decryptFileContents(tokenFileName)).decode("utf-8") + "/Connections").update({str(deviceName) : "1"})
         break
     except:
         bluetoothMAIN(True)
